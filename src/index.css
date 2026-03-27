@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary-50: #fff0f2;
+  --color-primary-100: #ffd6dc;
+  --color-primary-200: #ffadb9;
+  --color-primary-300: #ff8496;
+  --color-primary-400: #ff3d5c;
+  --color-primary-500: #ff0033;
+  --color-primary-600: #e6002e;
+  --color-primary-700: #bf0026;
+  --color-primary-800: #99001f;
+  --color-primary-900: #660015;
+  --color-primary-950: #33000a;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/*
+ * Mobile keyboard fix:
+ * --app-height is updated by useVisualViewport hook (in MainLayout) via the
+ * Visual Viewport API so the layout always matches the *visible* viewport,
+ * even when the soft keyboard is open on iOS/Android.
+ */
+:root {
+  --app-height: 100dvh; /* default; overridden by JS */
+}
+
+html {
+  height: 100%;
+  overflow: hidden;           /* block iOS from rubber-band scrolling */
+  overscroll-behavior: none;
+}
+
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;           /* prevent browser scrolling body to show focused input */
+  overscroll-behavior: none;
+  font-family: system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  height: var(--app-height);  /* tracks visual viewport, shrinks when keyboard opens */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}

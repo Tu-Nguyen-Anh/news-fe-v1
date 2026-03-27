@@ -1,0 +1,69 @@
+{
+  "login": {
+    "title": "Đăng nhập",
+    "username": "Tên đăng nhập",
+    "usernamePlaceholder": "Nhập tên đăng nhập",
+    "email": "Email",
+    "emailPlaceholder": "ban@example.com",
+    "password": "Mật khẩu",
+    "passwordPlaceholder": "••••••••",
+    "submit": "Đăng nhập",
+    "defaultError": "Thông tin đăng nhập không hợp lệ. Vui lòng thử lại."
+  },
+  "layout": {
+    "appName": "news",
+    "logout": "Đăng xuất",
+    "copyright": "© {{year}} news. Bảo lưu mọi quyền."
+  },
+  "nav": {
+    "dashboard": "Tổng quan",
+    "users": "Người dùng",
+    "sources": "Nguồn tin",
+    "topics": "Chủ đề",
+    "articles": "Bài viết",
+    "favorites": "Yêu thích",
+    "viewHistory": "Đã xem",
+    "blog": "Cộng đồng",
+    "chat": "Tin nhắn",
+    "settings": "Cài đặt"
+  },
+  "common": {
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "delete": "Xóa",
+    "edit": "Sửa",
+    "view": "Xem",
+    "create": "Thêm mới",
+    "search": "Tìm kiếm",
+    "loading": "Đang tải...",
+    "noData": "Không có dữ liệu",
+    "confirm": "Xác nhận",
+    "back": "Quay lại",
+    "actions": "Thao tác",
+    "status": "Trạng thái",
+    "all": "Tất cả",
+    "active": "Hoạt động",
+    "inactive": "Vô hiệu hóa",
+    "page": "Trang",
+    "of": "của",
+    "rowsPerPage": "Dòng/trang"
+  },
+  "error": {
+    "unexpectedTitle": "Lỗi!",
+    "unexpectedMessage": "Đã xảy ra lỗi không mong muốn. Vui lòng thử lại.",
+    "notFound": "Trang bạn tìm kiếm không tồn tại.",
+    "refresh": "Tải lại trang",
+    "goHome": "Về trang chủ"
+  },
+  "home": {
+    "dashboard": "Tổng quan",
+    "welcomeBack": "Chào mừng, {{name}}",
+    "users": "Người dùng",
+    "loadingUsers": "Đang tải người dùng…",
+    "loadError": "Không thể tải danh sách người dùng.",
+    "totalUsers": "Tổng người dùng",
+    "totalSources": "Nguồn tin",
+    "totalTopics": "Chủ đề",
+    "totalArticles": "Bài viết"
+  }
+}

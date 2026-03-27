@@ -1,0 +1,69 @@
+{
+  "login": {
+    "title": "Sign in",
+    "username": "Username",
+    "usernamePlaceholder": "Enter username",
+    "email": "Email",
+    "emailPlaceholder": "you@example.com",
+    "password": "Password",
+    "passwordPlaceholder": "••••••••",
+    "submit": "Sign in",
+    "defaultError": "Invalid credentials. Please try again."
+  },
+  "layout": {
+    "appName": "news",
+    "logout": "Logout",
+    "copyright": "© {{year}} news. All rights reserved."
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "users": "Users",
+    "sources": "Sources",
+    "topics": "Topics",
+    "articles": "Articles",
+    "favorites": "Favorites",
+    "viewHistory": "History",
+    "blog": "Community",
+    "chat": "Messages",
+    "settings": "Settings"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "create": "Create",
+    "search": "Search",
+    "loading": "Loading...",
+    "noData": "No data",
+    "confirm": "Confirm",
+    "back": "Back",
+    "actions": "Actions",
+    "status": "Status",
+    "all": "All",
+    "active": "Active",
+    "inactive": "Inactive",
+    "page": "Page",
+    "of": "of",
+    "rowsPerPage": "Rows/page"
+  },
+  "error": {
+    "unexpectedTitle": "Error!",
+    "unexpectedMessage": "An unexpected error occurred. Please try again.",
+    "notFound": "The page you are looking for does not exist.",
+    "refresh": "Reload page",
+    "goHome": "Go home"
+  },
+  "home": {
+    "dashboard": "Dashboard",
+    "welcomeBack": "Welcome back, {{name}}",
+    "users": "Users",
+    "loadingUsers": "Loading users…",
+    "loadError": "Failed to load users.",
+    "totalUsers": "Total users",
+    "totalSources": "Sources",
+    "totalTopics": "Topics",
+    "totalArticles": "Articles"
+  }
+}
