@@ -1,0 +1,18 @@
+services:
+  netapp-fe:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: http://api.codedeohayduoc.io.vn/api/v1
+    image: netapp-fe:latest
+    container_name: netapp-fe
+    ports:
+      - "3080:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:80"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
