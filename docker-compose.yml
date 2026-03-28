@@ -4,11 +4,11 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        VITE_API_BASE_URL: http://api.codedeohayduoc.io.vn/api/v1
+        VITE_API_BASE_URL: https://api.codedeohayduoc.io.vn/api/v1
     image: netapp-fe:latest
     container_name: netapp-fe
     ports:
-      - "3080:80"
+      - "3272:80"
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:80"]
