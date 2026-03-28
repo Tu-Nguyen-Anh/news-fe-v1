@@ -12,12 +12,18 @@ export const chatKeys = {
 
 // ─── Groups ───────────────────────────────────────────────────────────────────
 
-export function useMyGroups() {
+type UseMyGroupsOptions = {
+  /** Mặc định true. Đặt false khi chưa đăng nhập. Bật từ layout để prefetch nhóm → subscribe WS `/topic/chat/{id}`. */
+  enabled?: boolean;
+};
+
+export function useMyGroups(options?: UseMyGroupsOptions) {
   return useQuery({
     queryKey: chatKeys.groups(),
     queryFn: chatService.getMyGroups,
     // Refetch periodically so new DM groups from other users appear without F5
     refetchInterval: 30_000,
+    enabled: options?.enabled ?? true,
   });
 }
 

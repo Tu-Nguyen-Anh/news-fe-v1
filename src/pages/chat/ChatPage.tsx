@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { GroupList } from "@/components/chat/GroupList";
 import { ChatWindow } from "@/components/chat/ChatWindow";
 import { GroupInfoModal } from "@/components/chat/GroupInfoModal";
@@ -14,6 +14,11 @@ export default function ChatPage() {
   const user = useUserStore((s) => s.user);
   const { setActiveGroup } = useChatStore();
   const { data: groups, refetch } = useMyGroups();
+
+  // Rời trang chat → không còn "đang xem" nhóm nào; nếu giữ activeGroupId, tin mới sẽ không tăng badge (store so sánh với active).
+  useEffect(() => {
+    return () => setActiveGroup(null);
+  }, [setActiveGroup]);
 
   const [selectedGroup, setSelectedGroup] = useState<ChatGroup | null>(null);
   const [showInfo, setShowInfo] = useState(false);

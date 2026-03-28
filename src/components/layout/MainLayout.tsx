@@ -5,6 +5,8 @@ import { Header } from "./Header";
 import { Navbar } from "./Navbar";
 import type { NavItem } from "./Navbar";
 import { ChatNotificationProvider } from "@/components/chat/ChatNotificationProvider";
+import { useUserStore } from "@/store/userStore";
+import { useMyGroups } from "@/hooks/useChatGroups";
 
 const navItems: NavItem[] = [
   { to: "/", label: "nav.dashboard" },
@@ -22,6 +24,10 @@ export function MainLayout() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const location = useRouterState({ select: (s) => s.location.pathname });
   const isChatPage = location === "/chat";
+  const isAuthenticated = useUserStore((s) => s.isAuthenticated);
+  // Prefetch danh sách nhóm khi đã login để ChatNotificationProvider subscribe đủ /topic/chat/{groupId}
+  // (xem docs/MESSAGE_UNREAD_BADGE_API.md — badge icon tin nhắn dựa vào state local + STOMP chat).
+  useMyGroups({ enabled: isAuthenticated });
 
   // Keep --app-height in sync with visual viewport (handles mobile keyboard).
   useVisualViewport();

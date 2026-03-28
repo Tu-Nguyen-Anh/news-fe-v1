@@ -65,7 +65,10 @@ export function ChatNotificationProvider() {
 
       // Read activeGroupId fresh from store (avoid stale closure)
       const activeGroupId = useChatStore.getState().activeGroupId;
-      if (msg.group_id !== activeGroupId) {
+      const myId = useUserStore.getState().user?.id;
+      // Chỉ đếm tin từ người khác khi không đang mở đúng nhóm (docs/MESSAGE_UNREAD_BADGE_API.md §5).
+      const fromOther = myId === undefined || msg.sender_id !== myId;
+      if (fromOther && msg.group_id !== activeGroupId) {
         useChatStore.getState().incrementUnread(groupId);
       }
 
