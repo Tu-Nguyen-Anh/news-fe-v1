@@ -14,3 +14,10 @@ export function useArticlesBySource(year?: number) {
     queryFn: () => dashboardService.getArticlesBySource(year),
   });
 }
+
+export function useArticleDaily(year?: number, month?: number) {
+  return useQuery({
+    queryKey: ["dashboard", "article-daily", year ?? "current", month ?? "current"],
+    queryFn: () => dashboardService.getArticleDaily(year, month),
+  });
+}

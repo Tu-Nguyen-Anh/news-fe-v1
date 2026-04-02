@@ -29,6 +29,19 @@ export interface ArticleBySourceResponse {
   sources: SourceArticleData[];
 }
 
+export interface DayEntry {
+  day: number;
+  count: number;
+}
+
+export interface ArticleDailyResponse {
+  year: number;
+  month: number;
+  total_days: number;
+  days: DayEntry[];
+  total: number;
+}
+
 export const dashboardService = {
   getArticleGrowth: async (year?: number): Promise<ArticleGrowthResponse> => {
     const { data } = await apiClient.get<{ data: ArticleGrowthResponse }>(
@@ -42,6 +55,17 @@ export const dashboardService = {
     const { data } = await apiClient.get<{ data: ArticleBySourceResponse }>(
       "/dashboard/articles/by-source",
       { params: year ? { year } : {} },
+    );
+    return data.data;
+  },
+
+  getArticleDaily: async (year?: number, month?: number): Promise<ArticleDailyResponse> => {
+    const params: Record<string, number> = {};
+    if (year) params.year = year;
+    if (month) params.month = month;
+    const { data } = await apiClient.get<{ data: ArticleDailyResponse }>(
+      "/dashboard/articles/daily",
+      { params },
     );
     return data.data;
   },

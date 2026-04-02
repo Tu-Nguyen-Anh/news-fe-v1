@@ -7,16 +7,22 @@ import type {
   ArticleViewHistory,
 } from "@/types";
 import { apiClient } from "./apiClient";
+import { decodeEntities } from "@/utils/articleDisplay";
+
+const decodeTitle = <T extends { title: string }>(item: T): T => ({
+  ...item,
+  title: decodeEntities(item.title),
+});
 
 export const articleService = {
   filter: async (req: ArticleFilterRequest): Promise<PageResponse<Article>> => {
     const { data } = await apiClient.post<{ data: PageResponse<Article> }>("/articles/filter", req);
-    return data.data;
+    return { ...data.data, content: data.data.content.map(decodeTitle) };
   },
 
   getById: async (id: number): Promise<Article> => {
     const { data } = await apiClient.get<{ data: Article }>(`/articles/${id}`);
-    return data.data;
+    return decodeTitle(data.data);
   },
 
   create: async (req: ArticleRequest): Promise<Article> => {
@@ -54,7 +60,7 @@ export const articleService = {
     const { data } = await apiClient.get<{ data: PageResponse<FavoriteArticle> }>("/articles/favorites", {
       params: { page, size },
     });
-    return data.data;
+    return { ...data.data, content: data.data.content.map(decodeTitle) };
   },
 
   recordView: async (articleId: number): Promise<void> => {
@@ -65,6 +71,6 @@ export const articleService = {
     const { data } = await apiClient.get<{ data: PageResponse<ArticleViewHistory> }>("/articles/view-history", {
       params: { page, size },
     });
-    return data.data;
+    return { ...data.data, content: data.data.content.map(decodeTitle) };
   },
 };

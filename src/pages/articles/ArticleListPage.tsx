@@ -12,8 +12,7 @@ import {
 } from "@/hooks/useArticles";
 import { FavoriteButton } from "@/components/articles/FavoriteButton";
 import { CommentSection } from "@/components/articles/CommentSection";
-import { useTopicFilter } from "@/hooks/useTopics";
-import { useSourceFilter } from "@/hooks/useSources";
+import { useSourcesWithTopics } from "@/hooks/useSources";
 import ArticleFormPage from "@/pages/articles/ArticleFormPage";
 import type { Article, ArticleFilterRequest } from "@/types";
 import { getArticleSourceLabel } from "@/utils/articleDisplay";
@@ -149,14 +148,17 @@ export default function ArticleListPage() {
     !!filters.sourceId ||
     filters.datePreset !== "all";
 
-  const { data: topicsData, isPending: topicsLoading } = useTopicFilter({ page: 0, size: 999 });
-  const { data: sourcesData, isPending: sourcesLoading } = useSourceFilter({ page: 0, size: 999 });
-  const topics = topicsData?.content ?? [];
-  const sources = sourcesData?.content ?? [];
+  const { data: sourcesWithTopics, isPending: sourcesLoading } = useSourcesWithTopics();
+  const sources = sourcesWithTopics ?? [];
+  const topics = useMemo(() => {
+    if (!filters.sourceId) return sources.flatMap((s) => s.topics);
+    return sources.find((s) => s.id === Number(filters.sourceId))?.topics ?? [];
+  }, [sources, filters.sourceId]);
 
   const {
     data,
     isPending,
+    isFetching,
     isError,
     error,
     isFetchingNextPage,
@@ -164,6 +166,9 @@ export default function ArticleListPage() {
     fetchNextPage,
     refetch,
   } = useArticleFilterInfinite(apiFilters, PAGE_SIZE);
+
+  // True khi filter thay đổi nhưng vẫn còn dữ liệu cũ (placeholderData đang hiện)
+  const isFilterFetching = isFetching && !isPending && !isFetchingNextPage;
   const detailId = modal.kind === "detail" ? modal.id : 0;
   const { data: detailArticle, isPending: detailLoading } = useArticleDetail(detailId);
   const { data: isModalArticleFavorited, isPending: isCheckingFavorite } = useFavoriteStatus(detailId);
@@ -223,7 +228,8 @@ export default function ArticleListPage() {
     if (!node || !hasNextPage) return;
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0]?.isIntersecting && hasNextPage && !isFetchingNextPage) {
+        // Block when any fetch is in progress (filter change or next page already loading)
+        if (entries[0]?.isIntersecting && hasNextPage && !isFetching) {
           void fetchNextPage();
         }
       },
@@ -231,7 +237,7 @@ export default function ArticleListPage() {
     );
     observer.observe(node);
     return () => observer.disconnect();
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+  }, [hasNextPage, isFetching, fetchNextPage]);
 
   const handleReset = () => {
     setFilters(EMPTY_FILTER);
@@ -420,34 +426,40 @@ export default function ArticleListPage() {
               />
             </div>
 
-            {/* Topic */}
-            <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium text-gray-600">Chủ đề</label>
-              <select
-                value={filters.topicId}
-                onChange={(e) => setFilters((f) => ({ ...f, topicId: e.target.value }))}
-                disabled={topicsLoading}
-                className="rounded-md border border-gray-300 px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:cursor-wait disabled:bg-gray-50 disabled:text-gray-400"
-              >
-                <option value="">{topicsLoading ? "Đang tải..." : "Tất cả chủ đề"}</option>
-                {topics.map((t) => (
-                  <option key={t.id} value={t.id}>{t.name}</option>
-                ))}
-              </select>
-            </div>
-
             {/* Source */}
             <div className="flex flex-col gap-1">
               <label className="text-xs font-medium text-gray-600">Nguồn tin</label>
               <select
                 value={filters.sourceId}
-                onChange={(e) => setFilters((f) => ({ ...f, sourceId: e.target.value }))}
+                onChange={(e) =>
+                  setFilters((f) => ({ ...f, sourceId: e.target.value, topicId: "" }))
+                }
                 disabled={sourcesLoading}
                 className="rounded-md border border-gray-300 px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:cursor-wait disabled:bg-gray-50 disabled:text-gray-400"
               >
                 <option value="">{sourcesLoading ? "Đang tải..." : "Tất cả nguồn"}</option>
                 {sources.map((s) => (
                   <option key={s.id} value={s.id}>{s.name}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Topic — filtered by selected source */}
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-medium text-gray-600">
+                Chủ đề{filters.sourceId ? ` (${sources.find((s) => s.id === Number(filters.sourceId))?.name ?? ""})` : ""}
+              </label>
+              <select
+                value={filters.topicId}
+                onChange={(e) => setFilters((f) => ({ ...f, topicId: e.target.value }))}
+                disabled={sourcesLoading || topics.length === 0}
+                className="rounded-md border border-gray-300 px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:cursor-wait disabled:bg-gray-50 disabled:text-gray-400"
+              >
+                <option value="">
+                  {sourcesLoading ? "Đang tải..." : topics.length === 0 && filters.sourceId ? "Không có chủ đề" : "Tất cả chủ đề"}
+                </option>
+                {topics.map((t) => (
+                  <option key={t.id} value={t.id}>{t.name}</option>
                 ))}
               </select>
             </div>
@@ -542,7 +554,12 @@ export default function ArticleListPage() {
       </div>
 
       {/* Article list */}
-      <div className="overflow-x-auto overflow-y-visible rounded-2xl border border-gray-200 bg-white shadow-sm">
+      <div className="relative overflow-x-auto overflow-y-visible rounded-2xl border border-gray-200 bg-white shadow-sm">
+        {/* Thin top bar: visible only when filter changes while old data is still showing */}
+        {isFilterFetching && (
+          <div className="absolute inset-x-0 top-0 z-10 h-0.5 rounded-t-2xl bg-gradient-to-r from-indigo-500 via-fuchsia-400 to-rose-500 animate-pulse" />
+        )}
+        <div className={`transition-opacity duration-150 ${isFilterFetching ? "opacity-60" : "opacity-100"}`}>
         {isError ? (
           <div className="p-10">
             <div className="mx-auto max-w-xl rounded-2xl border border-red-100 bg-red-50/60 p-6 text-center">
@@ -619,13 +636,13 @@ export default function ArticleListPage() {
                     <td className="px-4 py-3 text-sm text-gray-500">{i + 1}</td>
                     <td className="px-4 py-3">{thumb(article, "h-12 w-16")}</td>
                     <td className="max-w-[240px] px-4 py-3 text-sm font-medium text-gray-900">
-                      <span className="line-clamp-2">{article.title}</span>
+                      <span className="line-clamp-2">{article.title || "—"}</span>
                     </td>
                     <td className="max-w-[140px] px-4 py-3 text-sm text-gray-600">
                       <span className="line-clamp-2" title={getArticleSourceLabel(article)}>{getArticleSourceLabel(article)}</span>
                     </td>
                     <td className="max-w-[140px] px-4 py-3 text-sm text-gray-600">
-                      <span className="line-clamp-2" title={article.topic_name}>{article.topic_name}</span>
+                      <span className="line-clamp-2" title={article.topic_name || ""}>{article.topic_name || "—"}</span>
                     </td>
                     <td className="px-4 py-3 text-sm whitespace-nowrap text-gray-500">{formatDate(article.pub_date)}</td>
                     <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
@@ -679,14 +696,16 @@ export default function ArticleListPage() {
                     </span>
                   </div>
                   <div className="flex flex-1 flex-col gap-2 p-4">
-                    <h2 className="line-clamp-2 text-sm leading-snug font-semibold text-gray-900">{article.title}</h2>
+                    <h2 className="line-clamp-2 text-sm leading-snug font-semibold text-gray-900">{article.title || "—"}</h2>
                     <div className="flex flex-wrap items-center gap-1.5">
                       <span className="inline-flex items-center rounded-full bg-indigo-50 px-2 py-1 text-[11px] font-semibold text-indigo-700 ring-1 ring-inset ring-indigo-500/10">
                         Nguồn: {getArticleSourceLabel(article)}
                       </span>
-                      <span className="inline-flex items-center rounded-full bg-fuchsia-50 px-2 py-1 text-[11px] font-semibold text-fuchsia-700 ring-1 ring-inset ring-fuchsia-500/10">
-                        Chủ đề: {article.topic_name}
-                      </span>
+                      {article.topic_name && (
+                        <span className="inline-flex items-center rounded-full bg-fuchsia-50 px-2 py-1 text-[11px] font-semibold text-fuchsia-700 ring-1 ring-inset ring-fuchsia-500/10">
+                          Chủ đề: {article.topic_name}
+                        </span>
+                      )}
                     </div>
                     {article.description ? (
                       <p className="line-clamp-3 text-xs leading-relaxed text-gray-600">
@@ -727,13 +746,13 @@ export default function ArticleListPage() {
                   </span>
                   {thumb(article, "h-8 w-11 flex-shrink-0 sm:h-9 sm:w-12")}
                   <div className="min-w-0 flex-1">
-                    <span className="block truncate text-xs font-medium text-gray-900 sm:text-sm" title={article.title}>
-                      {article.title}
+                    <span className="block truncate text-xs font-medium text-gray-900 sm:text-sm" title={article.title || ""}>
+                      {article.title || "—"}
                     </span>
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-gray-500 sm:text-xs">
                       <span className="max-w-[42%] truncate" title={getArticleSourceLabel(article)}>{getArticleSourceLabel(article)}</span>
                       <span className="text-gray-300">·</span>
-                      <span className="max-w-[42%] truncate" title={article.topic_name}>{article.topic_name}</span>
+                      <span className="max-w-[42%] truncate" title={article.topic_name || ""}>{article.topic_name || "—"}</span>
                       <span className="hidden text-gray-300 sm:inline">·</span>
                       <span className="whitespace-nowrap">{formatDate(article.pub_date)}</span>
                     </div>
@@ -760,11 +779,23 @@ export default function ArticleListPage() {
         {isFetchingNextPage && (
           <div className="border-t border-gray-100 py-4 text-center text-sm text-gray-500">Đang tải thêm...</div>
         )}
+        </div>{/* end opacity wrapper */}
       </div>
 
       {!isPending && (
         <div className="mt-4 flex flex-wrap items-center justify-between gap-2 text-sm text-gray-600">
-          <span>Tổng: {totalAmount} bản ghi</span>
+          <span className="flex items-center gap-2">
+            Tổng: {totalAmount} bản ghi
+            {isFilterFetching && (
+              <span className="inline-flex items-center gap-1 text-xs text-indigo-500">
+                <svg className="h-3 w-3 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                </svg>
+                đang làm mới
+              </span>
+            )}
+          </span>
           {articles.length > 0 && (
             <span className="text-gray-400">
               {hasNextPage ? "Cuộn xuống để tải thêm" : "Đã hiển thị toàn bộ danh sách"}

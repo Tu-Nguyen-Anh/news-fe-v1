@@ -2,6 +2,8 @@ import { useMemo, useState } from "react";
 import {
   Area,
   AreaChart,
+  Bar,
+  BarChart,
   CartesianGrid,
   Cell,
   Legend,
@@ -19,11 +21,12 @@ import { useArticleFilter } from "@/hooks/useArticles";
 import { useSourceFilter } from "@/hooks/useSources";
 import { useTopicFilter } from "@/hooks/useTopics";
 import { useUserFilter } from "@/hooks/useUsers";
-import { useArticleGrowth, useArticlesBySource } from "@/hooks/useDashboard";
+import { useArticleGrowth, useArticlesBySource, useArticleDaily } from "@/hooks/useDashboard";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const CURRENT_YEAR = new Date().getFullYear();
+const CURRENT_MONTH = new Date().getMonth() + 1;
 const YEAR_OPTIONS = Array.from({ length: 6 }, (_, i) => CURRENT_YEAR - i);
 const MONTH_SHORT = ["Th1","Th2","Th3","Th4","Th5","Th6","Th7","Th8","Th9","Th10","Th11","Th12"];
 const CHART_COLORS = [
@@ -229,6 +232,47 @@ function PieTooltip({ active, payload }: {
   );
 }
 
+function DailyTooltip({ active, payload, label }: {
+  active?: boolean;
+  payload?: Array<{ value: number }>;
+  label?: number;
+}) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="rounded-xl border border-gray-100 bg-white px-4 py-3 shadow-xl">
+      <p className="mb-1 text-xs font-semibold text-gray-500">Ngày {label}</p>
+      <p className="text-lg font-bold text-emerald-600">
+        {payload[0].value.toLocaleString("vi-VN")}
+        <span className="ml-1 text-xs font-normal text-gray-400">bài</span>
+      </p>
+    </div>
+  );
+}
+
+// ─── Month+Year Picker ────────────────────────────────────────────────────────
+
+function MonthYearPicker({ year, month, onChangeYear, onChangeMonth }: {
+  year: number;
+  month: number;
+  onChangeYear: (y: number) => void;
+  onChangeMonth: (m: number) => void;
+}) {
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      <select
+        value={month}
+        onChange={(e) => onChangeMonth(Number(e.target.value))}
+        className="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 text-xs font-semibold text-gray-700 focus:outline-none focus:ring-1 focus:ring-indigo-400"
+      >
+        {MONTH_SHORT.map((name, i) => (
+          <option key={i} value={i + 1}>{name}</option>
+        ))}
+      </select>
+      <YearPicker value={year} onChange={onChangeYear} />
+    </div>
+  );
+}
+
 // ─── Source Total Table ───────────────────────────────────────────────────────
 
 function SourceTotalsTable({ sources, colors }: {
@@ -275,6 +319,8 @@ function SourceTotalsTable({ sources, colors }: {
 export default function DashboardPage() {
   const { user } = useAuth();
   const [year, setYear] = useState(CURRENT_YEAR);
+  const [dailyYear, setDailyYear] = useState(CURRENT_YEAR);
+  const [dailyMonth, setDailyMonth] = useState(CURRENT_MONTH);
 
   // ── Stat counts ──────────────────────────────────────────────────────────
   const { data: users } = useUserFilter({ page: 0, size: 1 });
@@ -285,6 +331,7 @@ export default function DashboardPage() {
   // ── Dashboard API charts ─────────────────────────────────────────────────
   const { data: growthData, isPending: growthLoading } = useArticleGrowth(year);
   const { data: sourceData, isPending: sourceLoading } = useArticlesBySource(year);
+  const { data: dailyData, isPending: dailyLoading } = useArticleDaily(dailyYear, dailyMonth);
 
   // ── Topic pie (from light batch fetch) ───────────────────────────────────
   const { data: batchData, isPending: batchLoading } = useArticleFilter({ page: 0, size: 200 });
@@ -330,6 +377,12 @@ export default function DashboardPage() {
       return row;
     });
   }, [topSources]);
+
+  // ── Daily bar chart data ──────────────────────────────────────────────
+  const dailyChartData = useMemo(() => {
+    if (!dailyData) return [];
+    return dailyData.days.map((d) => ({ day: d.day, count: d.count }));
+  }, [dailyData]);
 
   // ── Greeting ─────────────────────────────────────────────────────────────
   const hour = new Date().getHours();
@@ -478,6 +531,58 @@ export default function DashboardPage() {
                 activeDot={{ r: 6, fill: "#6366F1", stroke: "#fff", strokeWidth: 2 }}
               />
             </AreaChart>
+          </ResponsiveContainer>
+        )}
+      </ChartCard>
+
+      {/* ── Daily articles bar chart ──────────────────────────────────────── */}
+      <ChartCard
+        title="Bài viết theo ngày"
+        subtitle={
+          dailyData
+            ? `Tháng ${dailyMonth}/${dailyYear} — tổng ${dailyData.total.toLocaleString("vi-VN")} bài`
+            : `Tháng ${dailyMonth}/${dailyYear}`
+        }
+        action={
+          <MonthYearPicker
+            year={dailyYear}
+            month={dailyMonth}
+            onChangeYear={setDailyYear}
+            onChangeMonth={setDailyMonth}
+          />
+        }
+        minH={260}
+      >
+        {dailyLoading ? (
+          <ChartSkeleton h={240} />
+        ) : !dailyData || dailyData.total === 0 ? (
+          <div className="flex h-60 flex-col items-center justify-center text-center">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="mb-3 h-10 w-10 text-gray-300">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <p className="text-sm font-medium text-gray-400">Không có dữ liệu tháng {dailyMonth}/{dailyYear}</p>
+          </div>
+        ) : (
+          <ResponsiveContainer width="100%" height={240}>
+            <BarChart data={dailyChartData} margin={{ top: 8, right: 8, left: -20, bottom: 0 }} barSize={dailyData.total_days > 28 ? 8 : 14}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" vertical={false} />
+              <XAxis
+                dataKey="day"
+                tick={{ fontSize: 10, fill: "#9CA3AF" }}
+                axisLine={false}
+                tickLine={false}
+                interval={dailyData.total_days > 28 ? 2 : 1}
+              />
+              <YAxis
+                tick={{ fontSize: 11, fill: "#9CA3AF" }}
+                axisLine={false}
+                tickLine={false}
+                allowDecimals={false}
+                width={40}
+              />
+              <Tooltip content={<DailyTooltip />} cursor={{ fill: "#F0FDF4" }} />
+              <Bar dataKey="count" fill="#10B981" radius={[4, 4, 0, 0]} />
+            </BarChart>
           </ResponsiveContainer>
         )}
       </ChartCard>

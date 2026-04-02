@@ -92,7 +92,110 @@ GET /api/v1/dashboard/articles/growth?year=2025
 
 ---
 
-## 2. Article Count by Source (per Month)
+## 2. Article Count by Day (in Month)
+
+Returns a bar/line chart dataset showing how many articles were created each day in a given month.
+
+### Endpoint
+
+```
+GET /api/v1/dashboard/articles/daily
+```
+
+### Query Parameters
+
+| Parameter | Type    | Required | Default       | Description                     |
+|-----------|---------|----------|---------------|---------------------------------|
+| `year`    | integer | No       | current year  | Year to query (e.g. `2026`)     |
+| `month`   | integer | No       | current month | Month to query, 1–12 (e.g. `4`) |
+
+### Request Headers
+
+| Header            | Value                  | Required |
+|-------------------|------------------------|----------|
+| `Authorization`   | `Bearer <jwt_token>`   | Yes      |
+| `Accept-Language` | `en` / `vi`            | No (default `en`) |
+
+### Response
+
+**HTTP 200 OK**
+
+```json
+{
+  "status": 200,
+  "message": "success",
+  "data": {
+    "year": 2026,
+    "month": 4,
+    "total_days": 30,
+    "days": [
+      { "day": 1,  "count": 5  },
+      { "day": 2,  "count": 12 },
+      { "day": 3,  "count": 0  },
+      { "day": 4,  "count": 8  },
+      "...",
+      { "day": 30, "count": 3  }
+    ],
+    "total": 185
+  },
+  "timestamp": "2026-04-02T10:00:00"
+}
+```
+
+### Response Fields
+
+| Field               | Type    | Description                                                        |
+|---------------------|---------|--------------------------------------------------------------------|
+| `data.year`         | integer | The queried year                                                   |
+| `data.month`        | integer | The queried month (1–12)                                           |
+| `data.total_days`   | integer | Total days in the month (28–31 depending on year/month)           |
+| `data.days`         | array   | One entry per day of the month, filled with 0 if no articles      |
+| `data.days[].day`   | integer | Day of month (1–`total_days`)                                      |
+| `data.days[].count` | long    | Number of articles created on that day                             |
+| `data.total`        | long    | Total articles in the queried month                                |
+
+### Frontend Chart Mapping
+
+```
+X-axis (categories): day values from data.days (e.g. 1, 2, 3, ..., 30)
+Y-axis (values):     count values from data.days
+Chart type:          Bar or Line
+Chart title:         "Articles per Day - {month}/{year}"
+```
+
+### Example Requests
+
+```bash
+# Current month/year
+GET /api/v1/dashboard/articles/daily
+
+# Specific month
+GET /api/v1/dashboard/articles/daily?year=2026&month=3
+
+# All days of January 2026
+GET /api/v1/dashboard/articles/daily?year=2026&month=1
+```
+
+### Frontend Integration
+
+```javascript
+const res = await fetch('/api/v1/dashboard/articles/daily?year=2026&month=4', {
+  headers: { Authorization: `Bearer ${token}` }
+});
+const { data } = await res.json();
+
+const chartData = {
+  labels: data.days.map(d => `Day ${d.day}`),  // ["Day 1", ..., "Day 30"]
+  datasets: [{
+    label: `Articles - ${data.month}/${data.year}`,
+    data: data.days.map(d => d.count),           // [5, 12, 0, 8, ...]
+  }]
+};
+```
+
+---
+
+## 3. Article Count by Source (per Month)
 
 Returns a multi-series line chart dataset showing how many articles each news source produced per month.
 
@@ -205,6 +308,8 @@ GET /api/v1/dashboard/articles/by-source?year=2025
 
 ---
 
+---
+
 ## Common Error Responses
 
 All endpoints follow the same error format:
@@ -234,6 +339,7 @@ Use **Chart.js**, **Recharts**, **ApexCharts**, or **ECharts** with `type: "line
 
 ### API 1 — Single-series line chart (`/articles/growth`)
 
+
 ```javascript
 // Pseudocode
 const res = await fetch('/api/v1/dashboard/articles/growth?year=2026', {
@@ -250,7 +356,7 @@ const chartData = {
 };
 ```
 
-### API 2 — Multi-series line chart (`/articles/by-source`)
+### API 3 — Multi-series line chart (`/articles/by-source`)
 
 ```javascript
 // Pseudocode
@@ -270,5 +376,22 @@ const chartData = {
 };
 ```
 
-### Year Picker
-Both endpoints accept an optional `year` query parameter. Provide a year-picker UI component that calls the API again when the year changes. If omitted, the server defaults to the current year.
+### API 2 — Daily bar chart (`/articles/daily`)
+
+```javascript
+const res = await fetch('/api/v1/dashboard/articles/daily?year=2026&month=4', {
+  headers: { Authorization: `Bearer ${token}` }
+});
+const { data } = await res.json();
+
+const chartData = {
+  labels: data.days.map(d => d.day),       // [1, 2, 3, ..., 30]
+  datasets: [{
+    label: `Articles - ${data.month}/${data.year}`,
+    data: data.days.map(d => d.count),      // [5, 12, 0, 8, ...]
+  }]
+};
+```
+
+### Year/Month Picker
+All endpoints accept optional `year` (and for daily: `month`) query parameters. Provide a year-picker UI component that calls the API again when the year changes. If omitted, the server defaults to the current year.

@@ -5,7 +5,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useUserStore } from "@/store/userStore";
 import { useChatStore } from "@/store/chatStore";
 import { storage } from "@/utils/storage";
-import type { ChatMessage, ChatGroup, PageResponse, Notification } from "@/types";
+import { useMyGroups } from "@/hooks/useChatGroups";
+import type { ChatMessage, PageResponse, Notification } from "@/types";
 import { chatKeys } from "@/hooks/useChatGroups";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "";
@@ -16,6 +17,7 @@ export function ChatNotificationProvider() {
   const qc = useQueryClient();
   const clientRef = useRef<Client | null>(null);
   const subscribedGroupsRef = useRef<Set<number>>(new Set());
+  const { data: groups } = useMyGroups({ enabled: isAuthenticated });
 
   // ── Helper: subscribe to notification topic for current user ──────────
   function subscribeToNotifications(client: Client) {
@@ -96,8 +98,8 @@ export function ChatNotificationProvider() {
       connectHeaders: { Authorization: `Bearer ${token}` },
       reconnectDelay: 5000,
       onConnect: () => {
-        const groups = qc.getQueryData<ChatGroup[]>(chatKeys.groups()) ?? [];
-        groups.forEach((g) => subscribeToGroup(client, g.id));
+        const currentGroups = qc.getQueryData(chatKeys.groups()) as Array<{ id: number }> ?? [];
+        currentGroups.forEach((g) => subscribeToGroup(client, g.id));
         subscribeToNotifications(client);
       },
       onStompError: () => {/* silent – auto-reconnect */},
@@ -113,16 +115,14 @@ export function ChatNotificationProvider() {
     };
   }, [isAuthenticated]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── Subscribe to newly created groups after group list changes ─────────
-  // We run this on every render but guard with the Set so it's idempotent
+  // ── Subscribe to newly joined groups when group list updates ──────────
   useEffect(() => {
     const client = clientRef.current;
-    if (!client?.connected) return;
-    const groups = qc.getQueryData<ChatGroup[]>(chatKeys.groups()) ?? [];
+    if (!client?.connected || !groups) return;
     groups.forEach((g) => {
       if (!subscribedGroupsRef.current.has(g.id)) subscribeToGroup(client, g.id);
     });
-  });
+  }, [groups]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return null;
 }
