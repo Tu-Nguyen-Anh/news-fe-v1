@@ -28,11 +28,11 @@ export default function ArticleDetailPage() {
           <button
             type="button"
             onClick={() => navigate({ to: "/articles" })}
-            className="shrink-0 text-sm text-gray-500 hover:text-gray-700"
+            className="shrink-0 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
           >
             ← Quay lại
           </button>
-          <h1 className="text-2xl font-bold text-gray-900">Chi tiết bài viết</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Chi tiết bài viết</h1>
         </div>
         <div className="flex items-center gap-2">
           <FavoriteButton
@@ -51,13 +51,13 @@ export default function ArticleDetailPage() {
         </div>
       </div>
 
-      <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
+      <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900">
         <ArticleDetailBody article={article} isLoading={isPending} />
       </div>
 
       {/* Comment section */}
       {Number.isFinite(articleId) && articleId > 0 && (
-        <div className="mt-4 rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
+        <div className="mt-4 rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900">
           <CommentSection articleId={articleId} />
         </div>
       )}

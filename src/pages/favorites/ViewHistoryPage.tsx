@@ -44,8 +44,8 @@ export default function ViewHistoryPage() {
           </svg>
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Lịch sử đã xem</h1>
-          <p className="text-sm text-gray-500">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Lịch sử đã xem</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
             {isPending ? "Đang tải..." : `${data?.amount ?? 0} lượt xem`}
           </p>
         </div>
@@ -57,8 +57,8 @@ export default function ViewHistoryPage() {
           <Spinner />
         </div>
       ) : isError ? (
-        <div className="rounded-xl border border-red-100 bg-red-50 p-10 text-center">
-          <p className="font-medium text-red-600">Không thể tải lịch sử xem</p>
+        <div className="rounded-xl border border-red-100 bg-red-50 p-10 text-center dark:border-red-900/30 dark:bg-red-900/20">
+          <p className="font-medium text-red-600 dark:text-red-200">Không thể tải lịch sử xem</p>
           <button
             onClick={() => refetch()}
             className="mt-3 rounded-lg bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600"
@@ -67,8 +67,8 @@ export default function ViewHistoryPage() {
           </button>
         </div>
       ) : !data?.content.length ? (
-        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-gray-200 bg-white py-20 text-center">
-          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-violet-50">
+        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-gray-200 bg-white py-20 text-center dark:border-gray-700 dark:bg-gray-900">
+          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-violet-50 dark:bg-violet-900/30">
             <svg
               viewBox="0 0 24 24"
               fill="none"
@@ -82,8 +82,8 @@ export default function ViewHistoryPage() {
               <polyline points="12 6 12 12 16 14" />
             </svg>
           </div>
-          <h3 className="text-lg font-semibold text-gray-700">Chưa có lịch sử xem</h3>
-          <p className="mt-1 max-w-xs text-sm text-gray-500">
+          <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-100">Chưa có lịch sử xem</h3>
+          <p className="mt-1 max-w-xs text-sm text-gray-500 dark:text-gray-400">
             Các bài viết bạn đã xem sẽ xuất hiện ở đây
           </p>
           <Link
@@ -95,11 +95,12 @@ export default function ViewHistoryPage() {
         </div>
       ) : (
         <>
-          <ul className="space-y-3">
+          <div className="rounded-2xl border border-gray-100 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-900">
+          <ul className="divide-y divide-gray-100 dark:divide-gray-800">
             {data.content.map((item, idx) => (
               <li
                 key={item.id}
-                className="group overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm transition-all hover:border-gray-200 hover:shadow-md"
+                className="group overflow-hidden bg-white transition-all hover:bg-gray-50 dark:bg-gray-900 dark:hover:bg-gray-800"
               >
                 <div className="flex gap-0">
                   {/* Accent bar with number */}
@@ -119,7 +120,7 @@ export default function ViewHistoryPage() {
                           className="h-20 w-28 rounded-lg object-cover"
                         />
                       ) : (
-                        <div className="h-20 w-28 rounded-lg bg-gradient-to-br from-gray-100 to-gray-200" />
+                        <div className="h-20 w-28 rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600" />
                       )}
                     </div>
 
@@ -131,25 +132,25 @@ export default function ViewHistoryPage() {
                         rel="noreferrer noopener"
                         className="block"
                       >
-                        <h3 className="line-clamp-2 text-sm font-semibold text-gray-900 transition-colors group-hover:text-violet-600">
+                        <h3 className="line-clamp-2 text-sm font-semibold text-gray-900 transition-colors group-hover:text-violet-600 dark:text-gray-100">
                           {item.title}
                         </h3>
                       </a>
 
-                      <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-gray-500">
+                      <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-gray-500 dark:text-gray-400">
                         <span className="inline-flex items-center gap-1.5">
                           <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-violet-400" />
                           {item.source_name}
                         </span>
-                        <span className="inline-flex items-center gap-1 rounded-full bg-violet-50 px-2 py-0.5 text-violet-700">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-violet-50 px-2 py-0.5 text-violet-700 dark:bg-violet-900/30 dark:text-violet-200">
                           {item.topic_name}
                         </span>
                       </div>
 
                       <div className="mt-2.5 flex items-end justify-between gap-2">
-                        <div className="space-y-0.5 text-xs text-gray-400">
+                        <div className="space-y-0.5 text-xs text-gray-400 dark:text-gray-500">
                           <p>
-                            <span className="font-medium text-gray-500">Đăng:</span>{" "}
+                            <span className="font-medium text-gray-500 dark:text-gray-400">Đăng:</span>{" "}
                             {formatDate(item.pub_date)}
                           </p>
                           <p className="flex items-center gap-1">
@@ -163,7 +164,7 @@ export default function ViewHistoryPage() {
                               <circle cx="12" cy="12" r="10" />
                               <polyline points="12 6 12 12 16 14" />
                             </svg>
-                            <span className="font-medium text-violet-500">Xem:</span>{" "}
+                            <span className="font-medium text-violet-500 dark:text-violet-300">Xem:</span>{" "}
                             {formatRelativeTime(item.viewed_at)}
                           </p>
                         </div>
@@ -172,7 +173,7 @@ export default function ViewHistoryPage() {
                           href={item.link}
                           target="_blank"
                           rel="noreferrer noopener"
-                          className="flex shrink-0 items-center gap-1.5 rounded-lg border border-violet-200 bg-violet-50 px-3 py-1.5 text-xs font-medium text-violet-600 transition-colors hover:border-violet-300 hover:bg-violet-100"
+                          className="flex shrink-0 items-center gap-1.5 rounded-lg border border-violet-200 bg-violet-50 px-3 py-1.5 text-xs font-medium text-violet-600 transition-colors hover:border-violet-300 hover:bg-violet-100 dark:border-violet-900/50 dark:bg-violet-900/20 dark:text-violet-200 dark:hover:bg-violet-900/30"
                         >
                           <svg
                             viewBox="0 0 24 24"
@@ -196,6 +197,7 @@ export default function ViewHistoryPage() {
               </li>
             ))}
           </ul>
+          </div>
 
           {/* Pagination */}
           {totalPages > 1 && (
@@ -203,7 +205,7 @@ export default function ViewHistoryPage() {
               <button
                 onClick={() => setPage((p) => p - 1)}
                 disabled={page === 0}
-                className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
               >
                 ← Trước
               </button>
@@ -224,7 +226,7 @@ export default function ViewHistoryPage() {
                       className={`h-9 w-9 rounded-lg text-sm font-medium transition-colors ${
                         pageNum === page
                           ? "bg-violet-500 text-white shadow-sm"
-                          : "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                          : "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
                       }`}
                     >
                       {pageNum + 1}
@@ -235,7 +237,7 @@ export default function ViewHistoryPage() {
               <button
                 onClick={() => setPage((p) => p + 1)}
                 disabled={page >= totalPages - 1}
-                className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
               >
                 Tiếp →
               </button>

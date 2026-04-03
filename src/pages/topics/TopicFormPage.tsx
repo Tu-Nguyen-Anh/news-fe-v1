@@ -16,8 +16,9 @@ export interface TopicFormPageProps {
 }
 
 const INPUT =
-  "w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 transition-colors focus:border-indigo-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-600 disabled:opacity-100";
-const LABEL = "mb-1.5 block text-[11px] font-bold uppercase tracking-wider text-gray-400";
+  "w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 transition-colors focus:border-indigo-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-600 disabled:opacity-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-indigo-500 dark:focus:bg-gray-800 dark:focus:ring-indigo-900/30 dark:disabled:bg-gray-800 dark:disabled:text-gray-500";
+const LABEL =
+  "mb-1.5 block text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-300";
 
 const TagIcon = () => (
   <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -138,10 +139,29 @@ function Fields({ form, setForm, readOnly, sources, error }: {
     <div className="space-y-4">
       <div>
         <label className={LABEL}>Nguồn tin *</label>
-        <select disabled={readOnly} value={form.source_id} onChange={(e) => setForm({ ...form, source_id: parseInt(e.target.value) })} className={INPUT}>
-          <option value={0}>-- Chọn nguồn tin --</option>
-          {sources?.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
-        </select>
+        <div className="relative">
+          <select
+            disabled={readOnly}
+            value={form.source_id}
+            onChange={(e) => setForm({ ...form, source_id: parseInt(e.target.value) })}
+            className={INPUT + " appearance-none pr-10"}
+          >
+            <option value={0}>-- Chọn nguồn tin --</option>
+            {sources?.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+          </select>
+          <svg
+            className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-gray-500"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2.5}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden
+          >
+            <path d="M6 9l6 6 6-6" />
+          </svg>
+        </div>
       </div>
       <div>
         <label className={LABEL}>Tên chủ đề *</label>

@@ -111,7 +111,7 @@ function StatCard({
 
 function YearPicker({ value, onChange }: { value: number; onChange: (y: number) => void }) {
   return (
-    <div className="flex items-center gap-1 rounded-xl border border-gray-200 bg-gray-50 p-1">
+    <div className="flex items-center gap-1 rounded-xl border border-gray-200 bg-gray-50 p-1 dark:border-gray-700 dark:bg-gray-800">
       {YEAR_OPTIONS.map((y) => (
         <button
           key={y}
@@ -119,8 +119,8 @@ function YearPicker({ value, onChange }: { value: number; onChange: (y: number) 
           onClick={() => onChange(y)}
           className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-all ${
             y === value
-              ? "bg-white text-indigo-600 shadow-sm"
-              : "text-gray-500 hover:text-gray-800"
+              ? "bg-white text-indigo-600 shadow-sm dark:bg-indigo-500/20 dark:text-indigo-300"
+              : "text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-100"
           }`}
         >
           {y}
@@ -142,11 +142,11 @@ function ChartCard({
   minH?: number;
 }) {
   return (
-    <div className="rounded-2xl border border-gray-100 bg-white shadow-sm">
-      <div className="flex flex-wrap items-start justify-between gap-3 border-b border-gray-50 px-5 py-4">
+    <div className="rounded-2xl border border-gray-100 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-900">
+      <div className="flex flex-wrap items-start justify-between gap-3 border-b border-gray-50 px-5 py-4 dark:border-gray-800">
         <div>
-          <h2 className="text-sm font-semibold text-gray-800">{title}</h2>
-          {subtitle && <p className="mt-0.5 text-xs text-gray-400">{subtitle}</p>}
+          <h2 className="text-sm font-semibold text-gray-800 dark:text-gray-100">{title}</h2>
+          {subtitle && <p className="mt-0.5 text-xs text-gray-400 dark:text-gray-500">{subtitle}</p>}
         </div>
         {action}
       </div>
@@ -164,7 +164,7 @@ function ChartSkeleton({ h = 280 }: { h?: number }) {
     <div className="flex items-center justify-center" style={{ height: h }}>
       <div className="flex flex-col items-center gap-3">
         <div className="h-10 w-10 animate-spin rounded-full border-4 border-indigo-100 border-t-indigo-500" />
-        <p className="text-xs text-gray-400">Đang tải dữ liệu...</p>
+        <p className="text-xs text-gray-400 dark:text-gray-500">Đang tải dữ liệu...</p>
       </div>
     </div>
   );
@@ -179,11 +179,11 @@ function GrowthTooltip({ active, payload, label }: {
 }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-xl border border-gray-100 bg-white px-4 py-3 shadow-xl">
-      <p className="mb-1 text-xs font-semibold text-gray-500">{label}</p>
-      <p className="text-lg font-bold text-indigo-600">
+    <div className="rounded-xl border border-gray-100 bg-white px-4 py-3 shadow-xl dark:border-gray-700 dark:bg-gray-900">
+      <p className="mb-1 text-xs font-semibold text-gray-500 dark:text-gray-400">{label}</p>
+      <p className="text-lg font-bold text-indigo-600 dark:text-indigo-300">
         {payload[0].value.toLocaleString("vi-VN")}
-        <span className="ml-1 text-xs font-normal text-gray-400">bài</span>
+        <span className="ml-1 text-xs font-normal text-gray-400 dark:text-gray-500">bài</span>
       </p>
     </div>
   );
@@ -197,13 +197,13 @@ function SourceTooltip({ active, payload, label }: {
   if (!active || !payload?.length) return null;
   const sorted = [...payload].sort((a, b) => b.value - a.value);
   return (
-    <div className="rounded-xl border border-gray-100 bg-white px-4 py-3 shadow-xl">
-      <p className="mb-2 text-xs font-semibold text-gray-500">{label}</p>
+    <div className="rounded-xl border border-gray-100 bg-white px-4 py-3 shadow-xl dark:border-gray-700 dark:bg-gray-900">
+      <p className="mb-2 text-xs font-semibold text-gray-500 dark:text-gray-400">{label}</p>
       <div className="space-y-1.5">
         {sorted.map((p) => (
           <div key={p.dataKey} className="flex items-center gap-2">
             <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: p.color }} />
-            <span className="max-w-[140px] truncate text-xs text-gray-700">{p.dataKey}</span>
+            <span className="max-w-[140px] truncate text-xs text-gray-700 dark:text-gray-200">{p.dataKey}</span>
             <span className="ml-auto text-xs font-bold" style={{ color: p.color }}>
               {p.value.toLocaleString("vi-VN")}
             </span>
@@ -239,11 +239,11 @@ function DailyTooltip({ active, payload, label }: {
 }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-xl border border-gray-100 bg-white px-4 py-3 shadow-xl">
-      <p className="mb-1 text-xs font-semibold text-gray-500">Ngày {label}</p>
-      <p className="text-lg font-bold text-emerald-600">
+    <div className="rounded-xl border border-gray-100 bg-white px-4 py-3 shadow-xl dark:border-gray-700 dark:bg-gray-900">
+      <p className="mb-1 text-xs font-semibold text-gray-500 dark:text-gray-400">Ngày {label}</p>
+      <p className="text-lg font-bold text-emerald-600 dark:text-emerald-300">
         {payload[0].value.toLocaleString("vi-VN")}
-        <span className="ml-1 text-xs font-normal text-gray-400">bài</span>
+        <span className="ml-1 text-xs font-normal text-gray-400 dark:text-gray-500">bài</span>
       </p>
     </div>
   );
@@ -262,7 +262,7 @@ function MonthYearPicker({ year, month, onChangeYear, onChangeMonth }: {
       <select
         value={month}
         onChange={(e) => onChangeMonth(Number(e.target.value))}
-        className="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 text-xs font-semibold text-gray-700 focus:outline-none focus:ring-1 focus:ring-indigo-400"
+        className="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 text-xs font-semibold text-gray-700 focus:outline-none focus:ring-1 focus:ring-indigo-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
       >
         {MONTH_SHORT.map((name, i) => (
           <option key={i} value={i + 1}>{name}</option>
@@ -288,11 +288,11 @@ function SourceTotalsTable({ sources, colors }: {
             className="h-2.5 w-2.5 shrink-0 rounded-full"
             style={{ background: colors[i % colors.length] }}
           />
-          <span className="w-28 truncate text-xs font-medium text-gray-700" title={s.source_name}>
+          <span className="w-28 truncate text-xs font-medium text-gray-700 dark:text-gray-200" title={s.source_name}>
             {s.source_name}
           </span>
           <div className="flex-1">
-            <div className="h-1.5 overflow-hidden rounded-full bg-gray-100">
+            <div className="h-1.5 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
               <div
                 className="h-full rounded-full transition-all duration-700"
                 style={{
@@ -495,7 +495,7 @@ export default function DashboardPage() {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="mb-3 h-10 w-10 text-gray-300">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
-            <p className="text-sm font-medium text-gray-400">Không có dữ liệu cho năm {year}</p>
+            <p className="text-sm font-medium text-gray-400 dark:text-gray-500">Không có dữ liệu cho năm {year}</p>
           </div>
         ) : (
           <ResponsiveContainer width="100%" height={240}>
@@ -560,7 +560,7 @@ export default function DashboardPage() {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="mb-3 h-10 w-10 text-gray-300">
               <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
-            <p className="text-sm font-medium text-gray-400">Không có dữ liệu tháng {dailyMonth}/{dailyYear}</p>
+            <p className="text-sm font-medium text-gray-400 dark:text-gray-500">Không có dữ liệu tháng {dailyMonth}/{dailyYear}</p>
           </div>
         ) : (
           <ResponsiveContainer width="100%" height={240}>
@@ -605,7 +605,7 @@ export default function DashboardPage() {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="mb-3 h-10 w-10 text-gray-300">
               <path strokeLinecap="round" strokeLinejoin="round" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
             </svg>
-            <p className="text-sm font-medium text-gray-400">Không có dữ liệu cho năm {year}</p>
+            <p className="text-sm font-medium text-gray-400 dark:text-gray-500">Không có dữ liệu cho năm {year}</p>
           </div>
         ) : (
           <>
@@ -669,7 +669,7 @@ export default function DashboardPage() {
           <ChartSkeleton h={280} />
         ) : topicPieData.length === 0 ? (
           <div className="flex h-72 flex-col items-center justify-center text-center">
-            <p className="text-sm text-gray-400">Chưa có dữ liệu</p>
+            <p className="text-sm text-gray-400 dark:text-gray-500">Chưa có dữ liệu</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -710,12 +710,12 @@ export default function DashboardPage() {
                       style={{ background: color }}
                     />
                     <span
-                      className="flex-1 truncate text-xs font-medium text-gray-700"
+                      className="flex-1 truncate text-xs font-medium text-gray-700 dark:text-gray-200"
                       title={item.name}
                     >
                       {item.name}
                     </span>
-                    <span className="text-xs tabular-nums text-gray-400">{pct}%</span>
+                    <span className="text-xs tabular-nums text-gray-400 dark:text-gray-500">{pct}%</span>
                     <span className="w-10 text-right text-xs font-bold" style={{ color }}>
                       {item.value.toLocaleString("vi-VN")}
                     </span>

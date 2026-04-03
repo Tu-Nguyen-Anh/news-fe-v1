@@ -70,11 +70,11 @@ export default function ChatPage() {
 
   return (
     // flex-1 min-h-0 fills the parent flex column (main), providing a definite height
-    <div className="flex flex-1 min-h-0 bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
+    <div className="flex flex-1 min-h-0 bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-700">
       {/* ── Sidebar ─────────────────────────────────────────────────────── */}
       <div
         className={cn(
-          "flex-shrink-0 w-full sm:w-72 md:w-64 lg:w-72 border-r border-gray-100 flex flex-col",
+          "flex-shrink-0 w-full sm:w-72 md:w-64 lg:w-72 border-r border-gray-100 dark:border-gray-700 flex flex-col",
           showMobileSidebar ? "flex" : "hidden sm:flex",
         )}
       >
@@ -107,7 +107,7 @@ export default function ChatPage() {
       ) : (
         <div
           className={cn(
-            "flex-1 flex-col items-center justify-center text-gray-400",
+            "flex-1 flex-col items-center justify-center text-gray-400 dark:text-gray-500",
             showMobileSidebar ? "hidden sm:flex" : "flex",
           )}
         >

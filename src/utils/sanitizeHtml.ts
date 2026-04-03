@@ -49,9 +49,14 @@ export function stripImagesMatchingSrcFromHtml(html: string, heroSrc: string | n
   return root.innerHTML;
 }
 
+/** Sửa HTML entity bị double-encode: &amp;aacute; → &aacute; */
+function fixDoubleEncodedEntities(html: string): string {
+  return html.replace(/&amp;([a-zA-Z0-9]+|#\d+|#x[\da-fA-F]+);/g, "&$1;");
+}
+
 /** Cho phép HTML phổ biến từ RSS (ảnh, liên kết, đoạn văn) và loại bỏ script/on* */
 export function sanitizeArticleHtml(html: string): string {
-  return DOMPurify.sanitize(html, {
+  const sanitized = DOMPurify.sanitize(html, {
     ALLOWED_TAGS: [
       "a",
       "p",
@@ -78,4 +83,5 @@ export function sanitizeArticleHtml(html: string): string {
     ],
     ALLOWED_ATTR: ["href", "src", "alt", "title", "target", "rel", "class", "width", "height"],
   });
+  return fixDoubleEncodedEntities(sanitized);
 }

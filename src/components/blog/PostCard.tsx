@@ -140,7 +140,7 @@ export function PostCard({
       <>
         <div
           onClick={goToDetail}
-          className="group cursor-pointer overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-all hover:border-indigo-200 hover:shadow-md"
+          className="group cursor-pointer overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-all hover:border-indigo-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:border-indigo-400"
         >
           {post.image_url && (
             <div className="aspect-video overflow-hidden bg-gray-100">
@@ -148,8 +148,8 @@ export function PostCard({
             </div>
           )}
           <div className="p-4">
-            <p className="line-clamp-2 text-sm font-semibold text-gray-900 group-hover:text-indigo-700">{post.title}</p>
-            <p className="mt-1 line-clamp-2 text-xs text-gray-500">{post.content}</p>
+            <p className="line-clamp-2 text-sm font-semibold text-gray-900 group-hover:text-indigo-700 dark:text-gray-100 dark:group-hover:text-indigo-300">{post.title}</p>
+            <p className="mt-1 line-clamp-2 text-xs text-gray-500 dark:text-gray-400">{post.content}</p>
             <div className="mt-3 flex items-center gap-3 text-xs text-gray-400">
               <span className="flex items-center gap-1">
                 <svg viewBox="0 0 24 24" fill={liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" className={cn("h-3.5 w-3.5", liked ? "text-red-500" : "")}>
@@ -173,7 +173,7 @@ export function PostCard({
 
   if (layout === "horizontal") {
     return (
-      <article className="flex overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-shadow hover:shadow-md flex-col sm:flex-row">
+      <article className="flex overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-shadow hover:shadow-md flex-col sm:flex-row dark:border-gray-700 dark:bg-gray-800">
         <div className="relative w-full sm:w-72 sm:shrink-0">
           {post.image_url ? (
             <button type="button" onClick={goToDetail} className="block h-full w-full">
@@ -208,14 +208,14 @@ export function PostCard({
                 </div>
               )}
               <div className="min-w-0">
-                <p className="flex items-center gap-1 text-base font-bold text-gray-900 transition-colors leading-tight">
+                <p className="flex items-center gap-1 text-base font-bold text-gray-900 transition-colors dark:text-gray-100 leading-tight">
                   {post.author_name ?? "Người dùng"}
                   {showAdminBadge && <AdminBadge size="lg" />}
                 </p>
                 <div className="mt-1 flex items-center gap-1.5 text-xs text-gray-400">
                   <span>{relativeTime(post.created_at)}</span>
                   <span>·</span>
-                  {post.visibility === 0 ? <span title="Công khai">🌐</span> : <span title="Riêng tư" className="text-gray-300">🔒</span>}
+                  {post.visibility === 0 ? <span title="Công khai">🌐</span> : <span title="Riêng tư" className="text-gray-300 dark:text-gray-400">🔒</span>}
                 </div>
               </div>
             </button>
@@ -226,7 +226,7 @@ export function PostCard({
                 <button
                   type="button"
                   onClick={() => setMenuOpen((o) => !o)}
-                  className="flex h-8 w-8 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+                  className="flex h-8 w-8 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-200"
                 >
                   <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
                     <circle cx="12" cy="5" r="1.5" />
@@ -235,14 +235,14 @@ export function PostCard({
                   </svg>
                 </button>
                 {menuOpen && (
-                  <div className="absolute right-0 top-9 z-30 w-44 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl">
+                  <div className="absolute right-0 top-9 z-30 w-44 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl dark:border-gray-700 dark:bg-gray-800">
                     <button
                       type="button"
                       onClick={() => {
                         setMenuOpen(false);
                         setEditOpen(true);
                       }}
-                      className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700"
+                      className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 dark:text-gray-200 dark:hover:bg-indigo-900/20 dark:hover:text-indigo-300"
                     >
                       <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -255,7 +255,7 @@ export function PostCard({
                         setMenuOpen(false);
                         setConfirmDelete(true);
                       }}
-                      className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50"
+                      className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
                     >
                       <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -272,11 +272,11 @@ export function PostCard({
           <div className="flex min-w-0 flex-1 flex-col px-4 pb-3 pt-2 sm:px-5">
             <h3
               onClick={goToDetail}
-              className="cursor-pointer text-base font-bold text-gray-900 hover:text-indigo-700 transition-colors"
+              className="cursor-pointer text-base font-bold text-gray-900 hover:text-indigo-700 dark:text-gray-100 dark:hover:text-indigo-300 transition-colors"
             >
               {post.title}
             </h3>
-            <p className="mt-2 text-sm leading-relaxed text-gray-700 whitespace-pre-wrap">
+            <p className="mt-2 text-sm leading-relaxed text-gray-700 whitespace-pre-wrap dark:text-gray-200">
               {displayContent}
               {isLong && (
                 <button
@@ -290,7 +290,7 @@ export function PostCard({
             </p>
 
             {/* ── Stats bar ─────────────────────────────────────────────── */}
-            <div className="mt-auto flex items-center gap-1 border-t border-gray-100 pt-3 pb-2 text-xs text-gray-400">
+            <div className="mt-auto flex items-center gap-1 border-t border-gray-100 pt-3 pb-2 text-xs text-gray-400 dark:border-gray-700 dark:text-gray-500">
               {likeCount > 0 && (
                 <span className="flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-red-500">
                   <svg viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5">
@@ -315,7 +315,9 @@ export function PostCard({
                 onClick={handleLike}
                 className={cn(
                   "flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors",
-                  liked ? "text-red-500 bg-red-50/60 hover:bg-red-50" : "text-gray-500 hover:bg-gray-50",
+                  liked
+                    ? "text-red-500 bg-red-50/60 hover:bg-red-50 dark:bg-red-900/30 dark:hover:bg-red-900/40"
+                    : "text-gray-500 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-700",
                 )}
               >
                 <svg
@@ -334,7 +336,7 @@ export function PostCard({
               <button
                 type="button"
                 onClick={goToDetail}
-                className="flex items-center justify-center gap-2 py-3 text-sm font-medium text-gray-500 transition-colors hover:bg-gray-50"
+                className="flex items-center justify-center gap-2 py-3 text-sm font-medium text-gray-500 transition-colors hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-700"
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
@@ -344,7 +346,7 @@ export function PostCard({
               <button
                 type="button"
                 onClick={() => setShareOpen(true)}
-                className="flex items-center justify-center gap-2 py-3 text-sm font-medium text-gray-500 transition-colors hover:bg-gray-50"
+                className="flex items-center justify-center gap-2 py-3 text-sm font-medium text-gray-500 transition-colors hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-700"
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
                   <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
@@ -364,16 +366,19 @@ export function PostCard({
         {/* Delete confirm */}
         {confirmDelete && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm">
-            <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl">
+            <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl dark:bg-gray-800">
               <div className="mb-1 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-600">
                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
               </div>
-              <h3 className="mt-3 text-base font-semibold text-gray-900">Xóa bài viết?</h3>
-              <p className="mt-1 text-sm text-gray-500">Hành động này không thể hoàn tác.</p>
+              <h3 className="mt-3 text-base font-semibold text-gray-900 dark:text-gray-100">Xóa bài viết?</h3>
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Hành động này không thể hoàn tác.</p>
               <div className="mt-5 flex gap-3">
-                <button onClick={() => setConfirmDelete(false)} className="flex-1 rounded-xl border border-gray-300 bg-white py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                <button
+                  onClick={() => setConfirmDelete(false)}
+                  className="flex-1 rounded-xl border border-gray-300 bg-white py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+                >
                   Hủy
                 </button>
                 <button onClick={handleDelete} disabled={deletePost.isPending} className="flex-1 rounded-xl bg-red-600 py-2.5 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60">
@@ -389,7 +394,7 @@ export function PostCard({
 
   return (
     <>
-      <article className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-shadow hover:shadow-md">
+      <article className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-shadow hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
         {/* ── Header ─────────────────────────────────────────────────────── */}
         <div className="flex items-start justify-between gap-3 px-4 pt-4 pb-3 sm:px-5">
           <button type="button" onClick={goToProfile} className="flex items-start gap-3 text-left">
@@ -401,7 +406,7 @@ export function PostCard({
               </div>
             )}
             <div>
-              <p className="flex items-center gap-1 text-base font-bold text-gray-900 hover:text-indigo-600 transition-colors leading-tight">
+              <p className="flex items-center gap-1 text-base font-bold text-gray-900 hover:text-indigo-600 transition-colors dark:text-gray-100 leading-tight">
                 {post.author_name ?? "Người dùng"}
                 {showAdminBadge && <AdminBadge size="lg" />}
               </p>
@@ -411,7 +416,7 @@ export function PostCard({
                 {post.visibility === 0 ? (
                   <span title="Công khai">🌐</span>
                 ) : (
-                  <span title="Riêng tư" className="text-gray-300">🔒</span>
+                  <span title="Riêng tư" className="text-gray-300 dark:text-gray-400">🔒</span>
                 )}
               </div>
             </div>
@@ -423,18 +428,18 @@ export function PostCard({
               <button
                 type="button"
                 onClick={() => setMenuOpen((o) => !o)}
-                className="flex h-8 w-8 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+                className="flex h-8 w-8 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-200"
               >
                 <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
                   <circle cx="12" cy="5" r="1.5" /><circle cx="12" cy="12" r="1.5" /><circle cx="12" cy="19" r="1.5" />
                 </svg>
               </button>
               {menuOpen && (
-                <div className="absolute right-0 top-9 z-30 w-44 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl">
+                <div className="absolute right-0 top-9 z-30 w-44 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl dark:border-gray-700 dark:bg-gray-800">
                   <button
                     type="button"
                     onClick={() => { setMenuOpen(false); setEditOpen(true); }}
-                    className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700"
+                    className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 dark:text-gray-200 dark:hover:bg-indigo-900/20 dark:hover:text-indigo-300"
                   >
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                     Chỉnh sửa
@@ -442,7 +447,7 @@ export function PostCard({
                   <button
                     type="button"
                     onClick={() => { setMenuOpen(false); setConfirmDelete(true); }}
-                    className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50"
+                    className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
                   >
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                     Xóa bài
@@ -457,11 +462,11 @@ export function PostCard({
         <div className="px-4 pb-3 sm:px-5">
           <h3
             onClick={goToDetail}
-            className="cursor-pointer text-base font-bold text-gray-900 hover:text-indigo-700 transition-colors"
+            className="cursor-pointer text-base font-bold text-gray-900 hover:text-indigo-700 dark:text-gray-100 dark:hover:text-indigo-300 transition-colors"
           >
             {post.title}
           </h3>
-          <p className="mt-2 text-sm leading-relaxed text-gray-700 whitespace-pre-wrap">
+          <p className="mt-2 text-sm leading-relaxed text-gray-700 whitespace-pre-wrap dark:text-gray-200">
             {displayContent}
             {isLong && (
               <button
@@ -477,7 +482,7 @@ export function PostCard({
 
         {/* ── Cover image ────────────────────────────────────────────────── */}
         {post.image_url && (
-          <div className="mx-4 mb-3 overflow-hidden rounded-xl bg-gray-100">
+          <div className="mx-4 mb-3 overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-700">
             <img
               src={post.image_url}
               alt=""
@@ -489,7 +494,7 @@ export function PostCard({
         )}
 
         {/* ── Stats bar ──────────────────────────────────────────────────── */}
-        <div className="mx-4 flex items-center gap-1 border-t border-gray-100 py-2.5 text-xs text-gray-400 sm:mx-5">
+        <div className="mx-4 flex items-center gap-1 border-t border-gray-100 py-2.5 text-xs text-gray-400 sm:mx-5 dark:border-gray-700 dark:text-gray-500">
           {likeCount > 0 && (
             <span className="flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-red-500">
               <svg viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5">
@@ -514,7 +519,7 @@ export function PostCard({
             onClick={handleLike}
             className={cn(
               "flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors",
-              liked ? "text-red-500 bg-red-50/60 hover:bg-red-50" : "text-gray-500 hover:bg-gray-50",
+              liked ? "text-red-500 bg-red-50/60 hover:bg-red-50 dark:bg-red-900/30 dark:hover:bg-red-900/40" : "text-gray-500 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-700",
             )}
           >
             <svg
@@ -534,7 +539,7 @@ export function PostCard({
           <button
             type="button"
             onClick={goToDetail}
-            className="flex items-center justify-center gap-2 py-3 text-sm font-medium text-gray-500 transition-colors hover:bg-gray-50"
+            className="flex items-center justify-center gap-2 py-3 text-sm font-medium text-gray-500 transition-colors hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-700"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
@@ -545,7 +550,7 @@ export function PostCard({
           <button
             type="button"
             onClick={() => setShareOpen(true)}
-            className="flex items-center justify-center gap-2 py-3 text-sm font-medium text-gray-500 transition-colors hover:bg-gray-50"
+            className="flex items-center justify-center gap-2 py-3 text-sm font-medium text-gray-500 transition-colors hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-700"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
               <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
@@ -564,16 +569,16 @@ export function PostCard({
       {/* Delete confirm */}
       {confirmDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl">
+          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl dark:bg-gray-800">
             <div className="mb-1 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-600">
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
             </div>
-            <h3 className="mt-3 text-base font-semibold text-gray-900">Xóa bài viết?</h3>
-            <p className="mt-1 text-sm text-gray-500">Hành động này không thể hoàn tác.</p>
+            <h3 className="mt-3 text-base font-semibold text-gray-900 dark:text-gray-100">Xóa bài viết?</h3>
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Hành động này không thể hoàn tác.</p>
             <div className="mt-5 flex gap-3">
-              <button onClick={() => setConfirmDelete(false)} className="flex-1 rounded-xl border border-gray-300 bg-white py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50">Hủy</button>
+              <button onClick={() => setConfirmDelete(false)} className="flex-1 rounded-xl border border-gray-300 bg-white py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700">Hủy</button>
               <button onClick={handleDelete} disabled={deletePost.isPending} className="flex-1 rounded-xl bg-red-600 py-2.5 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60">
                 {deletePost.isPending ? "Đang xóa..." : "Xóa"}
               </button>

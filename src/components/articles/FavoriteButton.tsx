@@ -75,7 +75,7 @@ export function FavoriteButton({
         "focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-1",
         isFavorited
           ? "bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-600"
-          : "bg-gray-100 text-gray-400 hover:bg-red-50 hover:text-red-400",
+          : "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-400",
         pulse && "scale-125",
         (isPending || isLoading) && "cursor-not-allowed opacity-50",
         sizeClasses,

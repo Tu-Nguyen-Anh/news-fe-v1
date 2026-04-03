@@ -7,6 +7,7 @@ import type { NavItem } from "./Navbar";
 import { ChatNotificationProvider } from "@/components/chat/ChatNotificationProvider";
 import { useUserStore } from "@/store/userStore";
 import { useMyGroups } from "@/hooks/useChatGroups";
+import { useThemeStore } from "@/store/themeStore";
 
 const navItems: NavItem[] = [
   { to: "/", label: "nav.dashboard" },
@@ -25,6 +26,11 @@ export function MainLayout() {
   const location = useRouterState({ select: (s) => s.location.pathname });
   const isChatPage = location === "/chat";
   const isAuthenticated = useUserStore((s) => s.isAuthenticated);
+  const theme = useThemeStore((s) => s.theme);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", theme === "dark");
+  }, [theme]);
   // Prefetch danh sách nhóm khi đã login để ChatNotificationProvider subscribe đủ /topic/chat/{groupId}
   // (xem docs/MESSAGE_UNREAD_BADGE_API.md — badge icon tin nhắn dựa vào state local + STOMP chat).
   useMyGroups({ enabled: isAuthenticated });
@@ -62,8 +68,8 @@ export function MainLayout() {
         <main
           className={
             isChatPage
-              ? "flex min-h-0 min-w-0 flex-1 overflow-hidden bg-gray-50 p-4 sm:p-6"
-              : "flex min-h-0 min-w-0 flex-1 flex-col overflow-x-hidden overflow-y-auto bg-gray-50 p-4 pb-6 sm:p-6 sm:pb-6"
+              ? "flex min-h-0 min-w-0 flex-1 overflow-hidden bg-gray-50 dark:bg-gray-950 p-4 sm:p-6"
+              : "flex min-h-0 min-w-0 flex-1 flex-col overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-950 p-4 pb-6 sm:p-6 sm:pb-6"
           }
         >
           <Outlet />

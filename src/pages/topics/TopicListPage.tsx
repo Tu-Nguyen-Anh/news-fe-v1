@@ -43,7 +43,7 @@ export default function TopicListPage() {
     <div className="space-y-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Chủ đề</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Chủ đề</h1>
           <p className="mt-0.5 text-sm text-gray-400">Quản lý phân loại bài viết theo chủ đề</p>
         </div>
         <button type="button" onClick={() => setModal({ kind: "create" })} className="inline-flex items-center gap-2 rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-violet-700 transition-colors">
@@ -59,13 +59,13 @@ export default function TopicListPage() {
             placeholder="Tìm chủ đề..."
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            className="w-full rounded-xl border border-gray-200 bg-white py-2.5 pl-9 pr-10 text-sm focus:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-50"
+            className="w-full rounded-xl border border-gray-200 bg-white py-2.5 pl-9 pr-10 text-sm focus:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500"
           />
           {searchInput.trim().length > 0 && (
             <button
               type="button"
               onClick={() => setSearchInput("")}
-              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
+              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors dark:hover:bg-gray-700 dark:hover:text-gray-300"
               aria-label="Xóa tìm kiếm"
             >
               <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
@@ -76,35 +76,35 @@ export default function TopicListPage() {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
         <div className="overflow-x-auto">
           <table className="min-w-[44rem] w-full">
             <thead>
-              <tr className="border-b border-gray-100 bg-gray-50/80">
+              <tr className="border-b border-gray-100 bg-gray-50/80 dark:border-gray-700 dark:bg-gray-800">
                 {["#", "Tên chủ đề", "Nguồn tin", "URL", "RSS", ""].map((h) => (
                   <th key={h} className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-gray-400">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-gray-50 dark:divide-gray-700">
               {isLoading ? (
-                [...Array(5)].map((_, i) => <tr key={i}><td colSpan={6} className="px-5 py-3.5"><div className="h-5 animate-pulse rounded-lg bg-gray-100" /></td></tr>)
+                [...Array(5)].map((_, i) => <tr key={i}><td colSpan={6} className="px-5 py-3.5"><div className="h-5 animate-pulse rounded-lg bg-gray-100 dark:bg-gray-700" /></td></tr>)
               ) : data?.content.length === 0 ? (
                 <tr><td colSpan={6} className="py-16 text-center text-sm text-gray-400">Không có dữ liệu</td></tr>
               ) : (
                 data?.content.map((topic, i) => (
                   <tr key={topic.id} className="group cursor-pointer transition-colors hover:bg-violet-50/40" onClick={() => setModal({ kind: "view", id: topic.id })}>
-                    <td className="px-5 py-3.5 text-sm text-gray-400">{page * PAGE_SIZE + i + 1}</td>
+                    <td className="px-5 py-3.5 text-sm text-gray-400 dark:text-gray-500">{page * PAGE_SIZE + i + 1}</td>
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-2">
-                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-violet-100 text-[10px] font-bold text-violet-600">
+                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-violet-100 text-[10px] font-bold text-violet-600 dark:bg-violet-900/30 dark:text-violet-400">
                           {topic.name.slice(0, 2).toUpperCase()}
                         </div>
-                        <span className="text-sm font-semibold text-gray-900">{topic.name}</span>
+                        <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">{topic.name}</span>
                       </div>
                     </td>
                     <td className="px-5 py-3.5">
-                      <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-600">{topic.source_name}</span>
+                      <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-400">{topic.source_name}</span>
                     </td>
                     <td className="max-w-[180px] px-5 py-3.5">
                       <a href={topic.url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} className="inline-flex items-center gap-1 truncate text-sm text-indigo-500 hover:text-indigo-700 hover:underline">

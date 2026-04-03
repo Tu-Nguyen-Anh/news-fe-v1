@@ -287,12 +287,12 @@ export function ChatWindow({ group, currentUserId, onOpenInfo, onBack, onOnlineU
   return (
     <div className="flex flex-col h-full min-h-0">
       {/* ── Header ──────────────────────────────────────────────────────── */}
-      <div className="flex items-center gap-2 px-3 py-2.5 border-b border-gray-100 bg-white shrink-0">
+      <div className="flex items-center gap-2 px-3 py-2.5 border-b border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 shrink-0">
         {/* Back button: mobile only */}
         {onBack && (
           <button
             onClick={onBack}
-            className="sm:hidden flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors -ml-1"
+            className="sm:hidden flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors -ml-1"
             aria-label="Quay lại"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -328,14 +328,14 @@ export function ChatWindow({ group, currentUserId, onOpenInfo, onBack, onOnlineU
 
           <div className="min-w-0">
             <div className="flex items-center gap-1.5">
-              <p className="text-sm font-semibold text-gray-900 group-hover:text-primary-600 transition-colors leading-tight truncate">
+              <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 group-hover:text-primary-600 transition-colors leading-tight truncate">
                 {displayName}
               </p>
               {group.is_direct && (
                 <span className="text-[9px] font-semibold px-1 py-0.5 rounded bg-indigo-50 text-indigo-500 shrink-0">DM</span>
               )}
             </div>
-            <p className="text-xs text-gray-400 leading-tight">
+            <p className="text-xs text-gray-400 dark:text-gray-500 leading-tight">
               {group.is_direct ? "Tin nhắn trực tiếp" : `${group.member_count} thành viên`}
               {onlineCount > 0 && (
                 <span className="text-emerald-500 ml-1">• đang online</span>
@@ -348,7 +348,7 @@ export function ChatWindow({ group, currentUserId, onOpenInfo, onBack, onOnlineU
         <button
           onClick={onOpenInfo}
           title="Thông tin nhóm"
-          className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:bg-gray-100 transition-colors"
+          className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -371,13 +371,13 @@ export function ChatWindow({ group, currentUserId, onOpenInfo, onBack, onOnlineU
           )}
 
           {!hasMore && !initialLoading && messages.length > 0 && (
-            <p className="text-center text-xs text-gray-300 py-2">Đã tải hết tin nhắn</p>
+            <p className="text-center text-xs text-gray-300 dark:text-gray-600 py-2">Đã tải hết tin nhắn</p>
           )}
 
           {initialLoading ? (
             <div className="flex justify-center items-center h-32"><Spinner /></div>
           ) : messages.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-40 text-gray-400 select-none">
+            <div className="flex flex-col items-center justify-center h-40 text-gray-400 dark:text-gray-500 select-none">
               <svg className="w-12 h-12 mb-2 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
               </svg>
@@ -410,7 +410,7 @@ export function ChatWindow({ group, currentUserId, onOpenInfo, onBack, onOnlineU
         {showScrollBtn && (
           <button
             onClick={() => { userScrolledUp.current = false; bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }}
-            className="absolute bottom-3 right-4 w-9 h-9 rounded-full bg-white border border-gray-200 shadow-md flex items-center justify-center text-gray-500 hover:bg-gray-50 transition-all z-10"
+            className="absolute bottom-3 right-4 w-9 h-9 rounded-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 shadow-md flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all z-10"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -420,32 +420,32 @@ export function ChatWindow({ group, currentUserId, onOpenInfo, onBack, onOnlineU
       </div>
 
       {/* ── Input area ──────────────────────────────────────────────────── */}
-      <div className="shrink-0 bg-white border-t border-gray-100">
+      <div className="shrink-0 bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700">
         {/* @mention dropdown */}
         {suggestions.length > 0 && (
-          <div className="mx-3 mb-1 border border-gray-100 rounded-xl bg-white shadow-lg overflow-hidden max-h-48 overflow-y-auto">
+          <div className="mx-3 mb-1 border border-gray-100 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 shadow-lg overflow-hidden max-h-48 overflow-y-auto">
             {suggestions.map((m, i) => (
               <button
                 key={m.member_id}
                 onMouseDown={(e) => { e.preventDefault(); insertMention(m.username); setMentionIndex(0); }}
                 className={cn(
                   "w-full flex items-center gap-2.5 px-3 py-2 text-left transition-colors",
-                  i === mentionIndex ? "bg-primary-50" : "hover:bg-gray-50",
+                  i === mentionIndex ? "bg-primary-50" : "hover:bg-gray-50 dark:hover:bg-gray-700",
                 )}
               >
                 {/* Online dot on mention suggestion */}
                 <div className="relative shrink-0">
                   {m.avatar
                     ? <img src={m.avatar} alt={m.full_name} className="w-7 h-7 rounded-full object-cover" />
-                    : <div className="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center text-xs font-semibold text-gray-600">{m.full_name[0]?.toUpperCase()}</div>
+                    : <div className="w-7 h-7 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-xs font-semibold text-gray-600 dark:text-gray-200">{m.full_name[0]?.toUpperCase()}</div>
                   }
                   {onlineUsers[m.user_id] && (
                     <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 rounded-full ring-1 ring-white" />
                   )}
                 </div>
                 <div className="min-w-0">
-                  <span className="text-sm font-medium text-gray-900">{m.full_name}</span>
-                  <span className="text-xs text-gray-400 ml-1.5">@{m.username}</span>
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{m.full_name}</span>
+                  <span className="text-xs text-gray-400 dark:text-gray-500 ml-1.5">@{m.username}</span>
                   {onlineUsers[m.user_id] && (
                     <span className="text-xs text-emerald-500 ml-1.5">● online</span>
                   )}
@@ -461,7 +461,7 @@ export function ChatWindow({ group, currentUserId, onOpenInfo, onBack, onOnlineU
             <button
               type="button"
               onClick={() => setShowEmojiPicker((v) => !v)}
-              className="w-9 h-9 rounded-full flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
+              className="w-9 h-9 rounded-full flex items-center justify-center text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
               title="Gửi emoji"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -483,7 +483,7 @@ export function ChatWindow({ group, currentUserId, onOpenInfo, onBack, onOnlineU
             onSelect={(e) => setCursorPos((e.target as HTMLTextAreaElement).selectionStart ?? 0)}
             placeholder="Nhập tin nhắn..."
             rows={1}
-            className="flex-1 resize-none rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-sm text-gray-800 placeholder-gray-400 outline-none focus:border-primary-300 focus:ring-2 focus:ring-primary-100 transition-all"
+            className="flex-1 resize-none rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 px-3.5 py-2.5 text-sm text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-primary-300 focus:ring-2 focus:ring-primary-100 dark:focus:ring-indigo-500/30 transition-all"
             style={{ lineHeight: "1.5", maxHeight: "128px", overflowY: "auto" }}
           />
           <button
@@ -513,28 +513,28 @@ export function ChatWindow({ group, currentUserId, onOpenInfo, onBack, onOnlineU
       {readDetailPopup && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setReadDetailPopup(null)} />
-          <div className="fixed bottom-24 right-6 z-50 bg-white rounded-2xl shadow-2xl border border-gray-100 p-4 w-72 max-h-80 overflow-y-auto">
+          <div className="fixed bottom-24 right-6 z-50 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700 p-4 w-72 max-h-80 overflow-y-auto">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-sm font-semibold text-gray-900">Đã đọc ({readDetailPopup.readers.length})</span>
-              <button onClick={() => setReadDetailPopup(null)} className="text-gray-400 hover:text-gray-600">
+              <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">Đã đọc ({readDetailPopup.readers.length})</span>
+              <button onClick={() => setReadDetailPopup(null)} className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
             {readDetailPopup.readers.length === 0 ? (
-              <p className="text-sm text-gray-400 text-center py-4">Chưa ai đọc</p>
+              <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-4">Chưa ai đọc</p>
             ) : (
               <div className="space-y-2">
                 {readDetailPopup.readers.map((r) => (
                   <div key={r.user_id} className="flex items-center gap-2.5">
                     {r.avatar
                       ? <img src={r.avatar} alt={r.full_name} className="w-8 h-8 rounded-full object-cover shrink-0" />
-                      : <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-semibold text-gray-600 shrink-0">{r.full_name[0]?.toUpperCase()}</div>
+                      : <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-xs font-semibold text-gray-600 dark:text-gray-200 shrink-0">{r.full_name[0]?.toUpperCase()}</div>
                     }
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate">{r.full_name}</p>
-                      <p className="text-xs text-gray-400">{new Date(r.read_at).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}</p>
+                      <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{r.full_name}</p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500">{new Date(r.read_at).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}</p>
                     </div>
                   </div>
                 ))}

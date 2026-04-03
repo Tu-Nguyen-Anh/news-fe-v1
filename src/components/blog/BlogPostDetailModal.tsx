@@ -91,14 +91,14 @@ export function BlogPostDetailModal({ post, onClose }: BlogPostDetailModalProps)
         onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
       >
         {/* Sheet */}
-        <div className="relative flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-t-3xl bg-white shadow-2xl sm:rounded-2xl">
+        <div className="relative flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-t-3xl bg-white shadow-2xl dark:bg-gray-800 sm:rounded-2xl">
           {/* Drag handle (mobile) */}
           <div className="flex shrink-0 items-center justify-between border-b border-gray-100 px-4 py-3 sm:px-5">
-            <h2 className="text-sm font-semibold text-gray-700">Bài viết</h2>
+            <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-200">Bài viết</h2>
             <button
               type="button"
               onClick={onClose}
-              className="flex h-8 w-8 items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
+              className="flex h-8 w-8 items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-200 transition-colors"
             >
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -127,7 +127,7 @@ export function BlogPostDetailModal({ post, onClose }: BlogPostDetailModalProps)
                     </div>
                   )}
                   <div>
-                    <p className="flex items-center gap-1 text-base font-bold text-gray-900 hover:text-indigo-600 sm:text-lg">
+                    <p className="flex items-center gap-1 text-base font-bold text-gray-900 hover:text-indigo-600 dark:text-gray-100 sm:text-lg">
                       {post.author_name ?? "Người dùng"}
                       {showAdminBadge && <AdminBadge />}
                     </p>
@@ -140,7 +140,7 @@ export function BlogPostDetailModal({ post, onClose }: BlogPostDetailModalProps)
                   <button
                     type="button"
                     onClick={() => setEditOpen(true)}
-                    className="flex shrink-0 items-center gap-1.5 rounded-xl border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50"
+                    className="flex shrink-0 items-center gap-1.5 rounded-xl border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
                   >
                     <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -152,13 +152,13 @@ export function BlogPostDetailModal({ post, onClose }: BlogPostDetailModalProps)
 
               {/* Title + Content */}
               <div className="px-4 pb-3 sm:px-5">
-                <h1 className="text-lg font-extrabold text-gray-900 sm:text-2xl">{post.title}</h1>
-                <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-gray-800 sm:text-base">{post.content}</p>
+                <h1 className="text-lg font-extrabold text-gray-900 dark:text-gray-100 sm:text-2xl">{post.title}</h1>
+                <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-gray-800 dark:text-gray-200 sm:text-base">{post.content}</p>
               </div>
 
               {/* Cover image */}
               {post.image_url && (
-                <div className="mx-4 mb-3 overflow-hidden rounded-xl bg-gray-100">
+                <div className="mx-4 mb-3 overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-700">
                   <img
                     src={post.image_url}
                     alt=""
@@ -169,7 +169,7 @@ export function BlogPostDetailModal({ post, onClose }: BlogPostDetailModalProps)
               )}
 
               {/* Stats */}
-              <div className="mx-4 flex items-center gap-3 border-t border-gray-100 py-2.5 text-xs text-gray-400 sm:mx-5">
+              <div className="mx-4 flex items-center gap-3 border-t border-gray-100 py-2.5 text-xs text-gray-400 sm:mx-5 dark:border-gray-700 dark:text-gray-500">
                 {likeCount > 0 && (
                   <span className="flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-red-500">
                     <svg viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5">
@@ -190,7 +190,9 @@ export function BlogPostDetailModal({ post, onClose }: BlogPostDetailModalProps)
                   onClick={handleLike}
                   className={cn(
                     "flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors",
-                    liked ? "bg-red-50/60 text-red-500 hover:bg-red-50" : "text-gray-500 hover:bg-gray-50",
+                    liked
+                      ? "bg-red-50/60 text-red-500 hover:bg-red-50 dark:bg-red-900/30 dark:hover:bg-red-900/40"
+                      : "text-gray-500 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-700",
                   )}
                 >
                   <svg
@@ -209,7 +211,7 @@ export function BlogPostDetailModal({ post, onClose }: BlogPostDetailModalProps)
                 <button
                   type="button"
                   onClick={() => setShareOpen(true)}
-                  className="flex items-center justify-center gap-2 py-3 text-sm font-medium text-gray-500 transition-colors hover:bg-gray-50"
+                  className="flex items-center justify-center gap-2 py-3 text-sm font-medium text-gray-500 transition-colors hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-700"
                 >
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
                     <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
@@ -222,7 +224,7 @@ export function BlogPostDetailModal({ post, onClose }: BlogPostDetailModalProps)
             </article>
 
             {/* Comments section */}
-            <div className="border-t border-gray-100 px-4 py-5 sm:px-5">
+            <div className="border-t border-gray-100 px-4 py-5 sm:px-5 dark:border-gray-700">
               <BlogPostComments postId={post.id} currentUserId={user?.id} />
             </div>
           </div>

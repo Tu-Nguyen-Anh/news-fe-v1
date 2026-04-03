@@ -33,7 +33,7 @@ export function Modal({ open, onClose, children, className }: ModalProps) {
     >
       <div
         className={cn(
-          "w-full max-w-lg overflow-y-auto rounded-t-2xl bg-white shadow-2xl sm:rounded-2xl",
+          "w-full max-w-lg overflow-y-auto rounded-t-2xl bg-white dark:bg-gray-800 shadow-2xl sm:rounded-2xl",
           "max-h-[92dvh] sm:max-h-[min(90dvh,56rem)]",
           className,
         )}
@@ -66,20 +66,20 @@ export function ModalHeader({
     violet: "bg-violet-100 text-violet-600",
   };
   return (
-    <div className="flex items-center gap-3 border-b border-gray-100 px-6 py-4">
+    <div className="flex items-center gap-3 border-b border-gray-100 dark:border-gray-700 px-6 py-4">
       {icon && (
         <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-xl", accents[accent])}>
           {icon}
         </div>
       )}
       <div className="min-w-0 flex-1">
-        <h2 className="text-base font-semibold text-gray-900 truncate">{title}</h2>
+        <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100 truncate">{title}</h2>
         {subtitle && <p className="mt-0.5 text-xs text-gray-400 truncate">{subtitle}</p>}
       </div>
       <button
         type="button"
         onClick={onClose}
-        className="ml-1 shrink-0 rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+        className="ml-1 shrink-0 rounded-lg p-1.5 text-gray-400 dark:text-gray-500 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300"
         aria-label="Đóng"
       >
         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -96,7 +96,7 @@ export function ModalBody({ children, className }: { children: ReactNode; classN
 
 export function ModalFooter({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <div className={cn("flex justify-end gap-2 border-t border-gray-100 bg-gray-50/60 px-6 py-4 rounded-b-2xl", className)}>
+    <div className={cn("flex justify-end gap-2 border-t border-gray-100 dark:border-gray-700 bg-gray-50/60 dark:bg-gray-800/40 px-6 py-4 rounded-b-2xl", className)}>
       {children}
     </div>
   );
@@ -104,5 +104,5 @@ export function ModalFooter({ children, className }: { children: ReactNode; clas
 
 // Legacy ModalTitle — kept for backward compat
 export function ModalTitle({ children, className }: { children: ReactNode; className?: string }) {
-  return <h2 className={cn("mb-4 text-lg font-semibold text-gray-900", className)}>{children}</h2>;
+  return <h2 className={cn("mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100", className)}>{children}</h2>;
 }

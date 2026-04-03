@@ -60,7 +60,7 @@ function CommentInput({
   }
 
   if (!user) return (
-    <p className="rounded-xl bg-gray-50 px-4 py-3 text-sm text-gray-500 text-center border border-dashed border-gray-200">
+    <p className="rounded-xl bg-gray-50 dark:bg-gray-800 px-4 py-3 text-sm text-gray-500 dark:text-gray-400 text-center border border-dashed border-gray-200 dark:border-gray-700">
       Đăng nhập để bình luận
     </p>
   );
@@ -70,7 +70,7 @@ function CommentInput({
       <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br text-xs font-bold text-white", gradient(user.id))}>
         {user.avatar ? <img src={user.avatar} alt="" className="h-9 w-9 rounded-full object-cover" /> : getInitials(user.full_name)}
       </div>
-      <div className="flex flex-1 items-end gap-2 rounded-2xl border border-gray-200 bg-gray-50 px-3 py-2 transition-all focus-within:border-indigo-300 focus-within:bg-white focus-within:shadow-sm">
+      <div className="flex flex-1 items-end gap-2 rounded-2xl border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-700 px-3 py-2 transition-all focus-within:border-indigo-300 focus-within:bg-white dark:focus-within:bg-gray-600 focus-within:shadow-sm">
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
@@ -78,7 +78,7 @@ function CommentInput({
           placeholder={placeholder}
           rows={1}
           maxLength={2000}
-          className="flex-1 resize-none bg-transparent text-sm text-gray-800 placeholder-gray-400 outline-none"
+          className="flex-1 resize-none bg-transparent text-sm text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 outline-none"
           style={{ minHeight: "32px", maxHeight: "120px" }}
         />
         <button
@@ -131,21 +131,21 @@ function ReplyThread({ postId, comment, currentUserId }: {
 
       <div className="flex-1 min-w-0">
         {/* Comment bubble */}
-        <div className="w-full rounded-2xl rounded-tl-sm bg-gray-100 px-4 py-2.5">
+        <div className="w-full rounded-2xl rounded-tl-sm bg-gray-100 dark:bg-gray-700 px-4 py-2.5">
           <button
             type="button"
             onClick={() => navigate({ to: "/blog/profile/$userId", params: { userId: String(comment.user_id) } })}
-            className="flex items-center gap-1 text-sm font-semibold text-gray-900 hover:text-indigo-600"
+            className="flex items-center gap-1 text-sm font-semibold text-gray-900 dark:text-gray-100 hover:text-indigo-600"
           >
             {comment.author_name ?? "Người dùng"}
             {(isAdmin(comment.author_username) || isAdmin(comment.author_name)) && <AdminBadge />}
           </button>
-          <p className="mt-0.5 text-sm text-gray-800 whitespace-pre-wrap">{comment.content}</p>
+          <p className="mt-0.5 text-sm text-gray-800 dark:text-gray-200 whitespace-pre-wrap">{comment.content}</p>
         </div>
 
         {/* Meta row */}
-        <div className="mt-1 flex w-full items-center gap-3 text-xs text-gray-400">
-          <button type="button" onClick={() => setReplying((r) => !r)} className="font-semibold text-gray-600 hover:text-indigo-600">
+        <div className="mt-1 flex w-full items-center gap-3 text-xs text-gray-400 dark:text-gray-500">
+          <button type="button" onClick={() => setReplying((r) => !r)} className="font-semibold text-gray-600 dark:text-gray-300 hover:text-indigo-600">
             Phản hồi
           </button>
           {currentUserId === comment.user_id && (
@@ -201,7 +201,7 @@ function ReplyThread({ postId, comment, currentUserId }: {
 
         {/* Replies list */}
         {showReplies && replyData?.content.length ? (
-          <ul className="mt-2 space-y-3 border-l-2 border-indigo-100 pl-4">
+          <ul className="mt-2 space-y-3 border-l-2 border-indigo-100 dark:border-indigo-800 pl-4">
             {replyData.content.map((reply) => (
               <li key={reply.id} className="flex gap-2">
                 <button type="button" onClick={() => navigate({ to: "/blog/profile/$userId", params: { userId: String(reply.user_id) } })} className="shrink-0 pt-0.5">
@@ -214,11 +214,11 @@ function ReplyThread({ postId, comment, currentUserId }: {
                   )}
                 </button>
                 <div className="flex-1 min-w-0">
-                  <div className="w-full rounded-2xl rounded-tl-sm bg-indigo-50 px-3 py-2">
+                  <div className="w-full rounded-2xl rounded-tl-sm bg-indigo-50 dark:bg-indigo-900/30 px-3 py-2">
                     <button
                       type="button"
                       onClick={() => navigate({ to: "/blog/profile/$userId", params: { userId: String(reply.user_id) } })}
-                      className="flex items-center gap-1 text-xs font-semibold text-gray-900 hover:text-indigo-600"
+                      className="flex items-center gap-1 text-xs font-semibold text-gray-900 dark:text-gray-100 hover:text-indigo-600"
                     >
                       {reply.author_name ?? "Người dùng"}
                       {(isAdmin(reply.author_username) || isAdmin(reply.author_name)) && <AdminBadge />}
@@ -270,7 +270,7 @@ export function BlogPostComments({ postId, currentUserId }: BlogPostCommentsProp
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
           </svg>
         </div>
-        <h2 className="text-base font-semibold text-gray-900">Bình luận</h2>
+        <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">Bình luận</h2>
         {data && <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-600">{data.amount}</span>}
       </div>
 
@@ -307,9 +307,21 @@ export function BlogPostComments({ postId, currentUserId }: BlogPostCommentsProp
 
             {totalPages > 1 && (
               <div className="mt-5 flex items-center justify-center gap-2">
-                <button onClick={() => setPage((p) => p - 1)} disabled={page === 0} className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-40">← Trước</button>
+                <button
+                  onClick={() => setPage((p) => p - 1)}
+                  disabled={page === 0}
+                  className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-40 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+                >
+                  ← Trước
+                </button>
                 <span className="text-xs text-gray-500">{page + 1}/{totalPages}</span>
-                <button onClick={() => setPage((p) => p + 1)} disabled={page >= totalPages - 1} className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-40">Tiếp →</button>
+                <button
+                  onClick={() => setPage((p) => p + 1)}
+                  disabled={page >= totalPages - 1}
+                  className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-40 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+                >
+                  Tiếp →
+                </button>
               </div>
             )}
           </>

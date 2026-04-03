@@ -6,6 +6,7 @@ import { SafeImage } from "@/components/ui/SafeImage";
 import { NotificationBell } from "@/components/layout/NotificationBell";
 import { Link } from "@tanstack/react-router";
 import { useChatStore } from "@/store/chatStore";
+import { useThemeStore } from "@/store/themeStore";
 
 function ChatIconButton() {
   const totalUnread = useChatStore((s) => s.totalUnread);
@@ -53,6 +54,36 @@ export type HeaderProps = {
   onMenuClick?: () => void;
 };
 
+function ThemeToggle() {
+  const { theme, toggle } = useThemeStore();
+  return (
+    <button
+      type="button"
+      onClick={toggle}
+      title={theme === "dark" ? "Chuyển sang sáng" : "Chuyển sang tối"}
+      className="inline-flex h-9 w-9 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+    >
+      {theme === "dark" ? (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+          <circle cx="12" cy="12" r="5" />
+          <line x1="12" y1="1" x2="12" y2="3" />
+          <line x1="12" y1="21" x2="12" y2="23" />
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+          <line x1="1" y1="12" x2="3" y2="12" />
+          <line x1="21" y1="12" x2="23" y2="12" />
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+        </svg>
+      ) : (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+      )}
+    </button>
+  );
+}
+
 export function Header({ onMenuClick }: HeaderProps = {}) {
   const { user, logout, isLoggingOut } = useAuth();
   const [profileOpen, setProfileOpen] = useState(false);
@@ -61,43 +92,45 @@ export function Header({ onMenuClick }: HeaderProps = {}) {
     user?.full_name?.trim()?.[0]?.toUpperCase() ?? user?.username?.trim()?.[0]?.toUpperCase() ?? "U";
 
   return (
-    <header className="sticky top-0 z-30 border-b border-gray-200 bg-white">
+    <header className="sticky top-0 z-30 border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900">
       <div className="flex h-14 items-center justify-between gap-2 px-4 sm:h-16 sm:px-6">
         <div className="flex min-w-0 items-center gap-1 sm:gap-2">
           {onMenuClick ? (
             <button
               type="button"
-              className="rounded-lg p-2 text-gray-600 hover:bg-gray-100 md:hidden"
+              className="rounded-lg p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 md:hidden"
               aria-label="Mở menu điều hướng"
               onClick={onMenuClick}
             >
               <MenuIcon className="h-6 w-6" />
             </button>
           ) : null}
-          <h1 className="truncate text-lg font-bold text-gray-900 sm:text-xl">news</h1>
+          <h1 className="truncate text-lg font-bold text-gray-900 dark:text-white sm:text-xl">news</h1>
         </div>
 
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           {user && (
             <>
-              <span className="hidden max-w-[min(12rem,40vw)] truncate text-sm font-medium text-gray-700 sm:block sm:max-w-[14rem] md:max-w-none">
+              <span className="hidden max-w-[min(12rem,40vw)] truncate text-sm font-medium text-gray-700 dark:text-gray-300 sm:block sm:max-w-[14rem] md:max-w-none">
                 {user.full_name}
               </span>
               {/* Chat icon */}
               <ChatIconButton />
               {/* Notification bell */}
               <NotificationBell />
+              {/* Dark/Light toggle */}
+              <ThemeToggle />
               <button
                 type="button"
                 onClick={() => setProfileOpen(true)}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white shadow-sm transition-colors hover:bg-gray-50 hover:border-indigo-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white shadow-sm transition-colors hover:bg-gray-50 hover:border-indigo-200 dark:border-gray-600 dark:bg-gray-800 dark:hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
                 aria-label="Xem hồ sơ"
                 title="Xem hồ sơ"
               >
                 {user.avatar ? (
                   <SafeImage src={user.avatar} alt={user.full_name} className="h-9 w-9 rounded-full object-cover" />
                 ) : (
-                  <span className="text-sm font-bold text-gray-700">{initial}</span>
+                  <span className="text-sm font-bold text-gray-700 dark:text-gray-200">{initial}</span>
                 )}
               </button>
             </>

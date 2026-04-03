@@ -180,14 +180,14 @@ export function CommentSection({ articleId }: CommentSectionProps) {
     <section className="mt-6">
       {/* Section header */}
       <div className="mb-4 flex items-center gap-2">
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-100">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-100 dark:bg-indigo-900/40">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-indigo-600">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
           </svg>
         </div>
-        <h2 className="text-base font-semibold text-gray-900">Bình luận</h2>
+        <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">Bình luận</h2>
         {data && (
-          <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-600">
+          <span className="rounded-full bg-gray-100 dark:bg-gray-700 px-2 py-0.5 text-xs font-semibold text-gray-600 dark:text-gray-400">
             {data.amount}
           </span>
         )}
@@ -207,8 +207,8 @@ export function CommentSection({ articleId }: CommentSectionProps) {
             <div className="relative min-w-0 flex-1">
               <div
                 className={cn(
-                  "overflow-hidden rounded-2xl border bg-white shadow-sm transition-shadow focus-within:shadow-md",
-                  error ? "border-red-300 focus-within:border-red-400" : "border-gray-200 focus-within:border-indigo-300",
+                  "overflow-hidden rounded-2xl border bg-white dark:bg-gray-800 shadow-sm transition-shadow focus-within:shadow-md",
+                  error ? "border-red-300 focus-within:border-red-400" : "border-gray-200 dark:border-gray-700 focus-within:border-indigo-300",
                 )}
               >
                 <textarea
@@ -222,14 +222,14 @@ export function CommentSection({ articleId }: CommentSectionProps) {
                     }
                     if (e.key === "Escape") setMentionQuery(null);
                   }}
-                  placeholder="Viết bình luận... Gõ @ để tag người dùng"
+                  placeholder="Viết bình luận..."
                   rows={1}
-                  className="w-full resize-none bg-transparent px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none"
+                  className="w-full resize-none bg-transparent px-4 py-3 text-sm text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none"
                   style={{ minHeight: "44px", maxHeight: "160px" }}
                 />
 
                 {/* Bottom row: char count + submit */}
-                <div className="flex items-center justify-between border-t border-gray-100 bg-gray-50/60 px-3 py-2">
+                <div className="flex items-center justify-between border-t border-gray-100 dark:border-gray-700 bg-gray-50/60 dark:bg-gray-800/40 px-3 py-2">
                   <span className={cn("text-xs", content.length > MAX_CHARS * 0.9 ? "text-amber-500" : "text-gray-400")}>
                     {content.length}/{MAX_CHARS}
                   </span>
@@ -257,7 +257,7 @@ export function CommentSection({ articleId }: CommentSectionProps) {
               {showSuggestions && (
                 <ul
                   ref={dropdownRef}
-                  className="absolute bottom-full left-0 z-40 mb-1.5 w-64 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl"
+                  className="absolute bottom-full left-0 z-40 mb-1.5 w-64 overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-xl"
                 >
                   {mentionResults!.content.map((user) => (
                     <li key={user.id}>
@@ -277,8 +277,8 @@ export function CommentSection({ articleId }: CommentSectionProps) {
                           )}
                         </div>
                         <div className="min-w-0 flex-1">
-                          <p className="truncate text-sm font-semibold text-gray-900">@{user.username}</p>
-                          <p className="truncate text-xs text-gray-500">{user.full_name}</p>
+                          <p className="truncate text-sm font-semibold text-gray-900 dark:text-gray-100">@{user.username}</p>
+                          <p className="truncate text-xs text-gray-500 dark:text-gray-400">{user.full_name}</p>
                         </div>
                       </button>
                     </li>
@@ -287,16 +287,16 @@ export function CommentSection({ articleId }: CommentSectionProps) {
               )}
 
               {/* Hint */}
-              <p className="mt-1.5 text-[11px] text-gray-400">
-                Nhấn <kbd className="rounded bg-gray-100 px-1 font-mono text-[10px]">Enter</kbd> để gửi,{" "}
-                <kbd className="rounded bg-gray-100 px-1 font-mono text-[10px]">Shift+Enter</kbd> xuống dòng
+              <p className="mt-1.5 text-[11px] text-gray-400 dark:text-gray-500">
+                Nhấn <kbd className="rounded bg-gray-100 dark:bg-gray-700 px-1 font-mono text-[10px]">Enter</kbd> để gửi,{" "}
+                <kbd className="rounded bg-gray-100 dark:bg-gray-700 px-1 font-mono text-[10px]">Shift+Enter</kbd> xuống dòng
               </p>
             </div>
           </div>
           {error && <p className="mt-2 text-xs text-red-500">{error}</p>}
         </form>
       ) : (
-        <div className="mb-5 rounded-xl border border-dashed border-gray-200 bg-gray-50 px-4 py-3 text-center text-sm text-gray-500">
+        <div className="mb-5 rounded-xl border border-dashed border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-3 text-center text-sm text-gray-500 dark:text-gray-400">
           Đăng nhập để bình luận
         </div>
       )}
@@ -319,11 +319,11 @@ export function CommentSection({ articleId }: CommentSectionProps) {
           Không thể tải bình luận.
         </div>
       ) : !data?.content.length ? (
-        <div className="rounded-xl border border-dashed border-gray-200 bg-white py-8 text-center">
+        <div className="rounded-xl border border-dashed border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 py-8 text-center">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-2 h-8 w-8 text-gray-300">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
           </svg>
-          <p className="text-sm font-medium text-gray-500">Chưa có bình luận nào</p>
+          <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Chưa có bình luận nào</p>
           <p className="mt-0.5 text-xs text-gray-400">Hãy là người đầu tiên bình luận!</p>
         </div>
       ) : (
@@ -346,17 +346,17 @@ export function CommentSection({ articleId }: CommentSectionProps) {
           <button
             onClick={() => setPage((p) => p - 1)}
             disabled={page === 0}
-            className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-40"
+            className="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40"
           >
             ← Trước
           </button>
-          <span className="text-xs text-gray-500">
+          <span className="text-xs text-gray-500 dark:text-gray-400">
             {page + 1} / {totalPages}
           </span>
           <button
             onClick={() => setPage((p) => p + 1)}
             disabled={page >= totalPages - 1}
-            className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-40"
+            className="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40"
           >
             Tiếp →
           </button>
@@ -382,7 +382,7 @@ function CommentItem({
   const isOwn = currentUserId === comment.user_id;
 
   return (
-    <li className="group flex gap-3 rounded-xl px-3 py-3 transition-colors hover:bg-gray-50">
+    <li className="group flex gap-3 rounded-xl px-3 py-3 transition-colors hover:bg-gray-50 dark:hover:bg-gray-700">
       {/* Avatar */}
       <div className="shrink-0 pt-0.5">
         {comment.avatar ? (
@@ -398,14 +398,14 @@ function CommentItem({
       <div className="min-w-0 flex-1">
         <div className="grid grid-cols-[1fr_auto] items-start gap-x-2">
           <div className="min-w-0 flex flex-wrap items-baseline gap-2">
-            <span className="text-sm font-semibold text-gray-900">{comment.full_name}</span>
-            <span className="text-xs text-gray-400">@{comment.username}</span>
+            <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">{comment.full_name}</span>
+            <span className="text-xs text-gray-400 dark:text-gray-500">@{comment.username}</span>
           </div>
-          <span className="text-right text-xs text-gray-400 tabular-nums whitespace-nowrap">
+          <span className="text-right text-xs text-gray-400 dark:text-gray-500 tabular-nums whitespace-nowrap">
             {formatRelativeTime(comment.created_at)}
           </span>
         </div>
-        <p className="mt-1 text-sm leading-relaxed text-gray-700">
+        <p className="mt-1 text-sm leading-relaxed text-gray-700 dark:text-gray-200">
           {renderContent(comment.content, comment.mentioned_users)}
         </p>
       </div>

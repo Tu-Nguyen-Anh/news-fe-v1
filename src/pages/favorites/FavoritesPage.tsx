@@ -48,7 +48,7 @@ export default function FavoritesPage() {
   return (
     <div className="mx-auto max-w-3xl">
       {/* Header */}
-      <div className="mb-6 flex items-center gap-3">
+        <div className="mb-6 flex items-center gap-3">
         <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-400 to-rose-500 shadow-sm">
           <svg viewBox="0 0 24 24" fill="white" className="h-6 w-6">
             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
@@ -78,8 +78,8 @@ export default function FavoritesPage() {
           </button>
         </div>
       ) : !data?.content.length ? (
-        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-gray-200 bg-white py-20 text-center">
-          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
+        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-gray-200 bg-white py-20 text-center dark:border-gray-700 dark:bg-gray-900">
+          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-50 dark:bg-red-900/30">
             <svg
               viewBox="0 0 24 24"
               fill="none"
@@ -92,8 +92,8 @@ export default function FavoritesPage() {
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
             </svg>
           </div>
-          <h3 className="text-lg font-semibold text-gray-700">Chưa có bài viết yêu thích</h3>
-          <p className="mt-1 max-w-xs text-sm text-gray-500">
+          <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-100">Chưa có bài viết yêu thích</h3>
+          <p className="mt-1 max-w-xs text-sm text-gray-500 dark:text-gray-400">
             Nhấn vào biểu tượng ♡ trên các bài viết để lưu vào đây
           </p>
           <Link
@@ -105,13 +105,14 @@ export default function FavoritesPage() {
         </div>
       ) : (
         <>
-          <ul className="space-y-3">
+          <div className="rounded-2xl border border-gray-100 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-900">
+          <ul className="divide-y divide-gray-100 dark:divide-gray-800">
             {data.content.map((item) => (
               <li
                 key={item.id}
-                className="group overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm transition-all hover:border-gray-200 hover:shadow-md"
+                className="group overflow-hidden bg-white transition-all hover:bg-gray-50 dark:bg-gray-900 dark:hover:bg-gray-800"
               >
-                <div className="flex gap-0">
+              <div className="flex gap-0">
                   {/* Accent bar */}
                   <div className="w-1 shrink-0 rounded-l-xl bg-gradient-to-b from-red-400 to-rose-300" />
 
@@ -125,7 +126,7 @@ export default function FavoritesPage() {
                           className="h-20 w-28 rounded-lg object-cover"
                         />
                       ) : (
-                        <div className="h-20 w-28 rounded-lg bg-gradient-to-br from-gray-100 to-gray-200" />
+                        <div className="h-20 w-28 rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600" />
                       )}
                     </div>
 
@@ -137,29 +138,29 @@ export default function FavoritesPage() {
                         rel="noreferrer noopener"
                         className="block"
                       >
-                        <h3 className="line-clamp-2 text-sm font-semibold text-gray-900 transition-colors group-hover:text-blue-600">
+                        <h3 className="line-clamp-2 text-sm font-semibold text-gray-900 transition-colors group-hover:text-blue-600 dark:text-gray-100">
                           {item.title}
                         </h3>
                       </a>
 
-                      <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-gray-500">
+                      <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-gray-500 dark:text-gray-400">
                         <span className="inline-flex items-center gap-1.5">
                           <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-blue-400" />
                           {item.source_name}
                         </span>
-                        <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-blue-700">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200">
                           {item.topic_name}
                         </span>
                       </div>
 
                       <div className="mt-2.5 flex items-end justify-between gap-2">
-                        <div className="space-y-0.5 text-xs text-gray-400">
+                        <div className="space-y-0.5 text-xs text-gray-400 dark:text-gray-500">
                           <p>
-                            <span className="font-medium text-gray-500">Đăng:</span>{" "}
+                            <span className="font-medium text-gray-500 dark:text-gray-400">Đăng:</span>{" "}
                             {formatDate(item.pub_date)}
                           </p>
                           <p>
-                            <span className="font-medium text-gray-500">Thêm:</span>{" "}
+                            <span className="font-medium text-gray-500 dark:text-gray-400">Thêm:</span>{" "}
                             {formatRelativeTime(item.created_at)}
                           </p>
                         </div>
@@ -168,7 +169,7 @@ export default function FavoritesPage() {
                           type="button"
                           onClick={() => handleRemove(item.article_id)}
                           disabled={removingId === item.article_id}
-                          className="flex shrink-0 items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:border-red-300 hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50"
+                          className="flex shrink-0 items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:border-red-300 hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-300 dark:hover:bg-red-900/30"
                           title="Bỏ yêu thích"
                         >
                           {removingId === item.article_id ? (
@@ -189,6 +190,7 @@ export default function FavoritesPage() {
               </li>
             ))}
           </ul>
+          </div>
 
           {/* Pagination */}
           {totalPages > 1 && (
@@ -196,7 +198,7 @@ export default function FavoritesPage() {
               <button
                 onClick={() => setPage((p) => p - 1)}
                 disabled={page === 0}
-                className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
               >
                 ← Trước
               </button>
@@ -217,7 +219,7 @@ export default function FavoritesPage() {
                       className={`h-9 w-9 rounded-lg text-sm font-medium transition-colors ${
                         pageNum === page
                           ? "bg-red-500 text-white shadow-sm"
-                          : "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                          : "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
                       }`}
                     >
                       {pageNum + 1}
@@ -228,7 +230,7 @@ export default function FavoritesPage() {
               <button
                 onClick={() => setPage((p) => p + 1)}
                 disabled={page >= totalPages - 1}
-                className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
               >
                 Tiếp →
               </button>

@@ -41,7 +41,7 @@ function NavbarLinkList({ items, onNavigate }: NavbarLinkListProps) {
               className: "bg-primary-50 text-primary-700",
             }}
             inactiveProps={{
-              className: "text-gray-600 hover:bg-gray-100 hover:text-gray-900",
+              className: "text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100",
             }}
           >
             {item.icon && <span className="h-5 w-5 shrink-0">{item.icon}</span>}
@@ -78,7 +78,7 @@ export function Navbar({ items, mobileOpen = false, onMobileClose }: NavbarProps
 
       <nav
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-[min(18rem,88vw)] flex-col border-r border-gray-200 bg-gray-50 p-4 shadow-xl transition-transform duration-200 ease-out md:hidden",
+          "fixed inset-y-0 left-0 z-50 flex w-[min(18rem,88vw)] flex-col border-r border-gray-200 bg-gray-50 p-4 shadow-xl transition-transform duration-200 ease-out md:hidden dark:border-gray-700 dark:bg-gray-900",
           mobileOpen ? "translate-x-0" : "pointer-events-none -translate-x-full",
         )}
         aria-label="Điều hướng"
@@ -88,7 +88,7 @@ export function Navbar({ items, mobileOpen = false, onMobileClose }: NavbarProps
       </nav>
 
       <nav
-        className="hidden w-52 shrink-0 flex-col border-r border-gray-200 bg-gray-50 p-4 md:flex lg:w-56 sticky top-14 self-start h-[calc(100vh-3.5rem)] overflow-y-auto sm:top-16 sm:h-[calc(100vh-4rem)]"
+        className="hidden w-52 shrink-0 flex-col border-r border-gray-200 bg-gray-50 p-4 md:flex lg:w-56 sticky top-14 self-start h-[calc(100vh-3.5rem)] overflow-y-auto sm:top-16 sm:h-[calc(100vh-4rem)] dark:border-gray-700 dark:bg-gray-900"
         aria-label="Điều hướng chính"
       >
         <NavbarLinkList items={items} />

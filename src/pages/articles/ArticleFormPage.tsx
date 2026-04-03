@@ -17,8 +17,9 @@ export interface ArticleFormPageProps {
 }
 
 const INPUT =
-  "w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 transition-colors focus:border-indigo-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-50";
-const LABEL = "mb-1.5 block text-[11px] font-bold uppercase tracking-wider text-gray-400";
+  "w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 transition-colors focus:border-indigo-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-indigo-500 dark:focus:bg-gray-800 dark:focus:ring-indigo-900/30 dark:disabled:bg-gray-800 dark:disabled:text-gray-500";
+const LABEL =
+  "mb-1.5 block text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-300";
 
 const NewsIcon = () => (
   <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -79,15 +80,15 @@ export default function ArticleFormPage({ mode, recordId, embedded = false, onCl
   if (!canManageArticles) {
     return (
       <div className={embedded ? "space-y-4 p-2" : "mx-auto max-w-lg p-6"}>
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 text-center shadow-sm">
-          <div className="text-base font-bold text-gray-900">Không đủ quyền</div>
-          <div className="mt-1 text-sm text-gray-500">Chỉ admin mới có thể {mode === "create" ? "thêm" : "sửa"} bài viết.</div>
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 text-center shadow-sm dark:border-gray-700 dark:bg-gray-900">
+          <div className="text-base font-bold text-gray-900 dark:text-gray-100">Không đủ quyền</div>
+          <div className="mt-1 text-sm text-gray-500 dark:text-gray-400">Chỉ admin mới có thể {mode === "create" ? "thêm" : "sửa"} bài viết.</div>
           <div className="mt-5 flex items-center justify-center gap-3">
             {embedded ? (
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-xl border border-gray-200 bg-white px-5 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                className="rounded-xl border border-gray-200 bg-white px-5 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
               >
                 Đóng
               </button>
@@ -114,7 +115,7 @@ export default function ArticleFormPage({ mode, recordId, embedded = false, onCl
           <FormFields form={form} setForm={setForm} pubDateStr={pubDateStr} setPubDateStr={setPubDateStr} topics={topicsPage?.content} error={error} />
         </ModalBody>
         <ModalFooter>
-          <button type="button" onClick={onClose} className="rounded-xl border border-gray-200 px-5 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">Hủy</button>
+          <button type="button" onClick={onClose} className="rounded-xl border border-gray-200 px-5 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800">Hủy</button>
           <button type="button" disabled={isPending} onClick={() => void handleSubmit()} className="rounded-xl bg-indigo-600 px-5 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50 transition-colors">
             {isPending ? "Đang lưu..." : "Lưu"}
           </button>
@@ -126,17 +127,17 @@ export default function ArticleFormPage({ mode, recordId, embedded = false, onCl
   return (
     <div className="mx-auto max-w-lg">
       <div className="mb-6 flex items-center gap-3">
-        <button type="button" onClick={() => navigate({ to: "/articles" })} className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 transition-colors">
+        <button type="button" onClick={() => navigate({ to: "/articles" })} className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 transition-colors dark:text-gray-400 dark:hover:text-gray-200">
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
           Quay lại
         </button>
-        <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{title}</h1>
       </div>
-      <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+      <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900">
         <form onSubmit={handleSubmit} className="space-y-4">
           <FormFields form={form} setForm={setForm} pubDateStr={pubDateStr} setPubDateStr={setPubDateStr} topics={topicsPage?.content} error={error} />
           <div className="flex gap-3 pt-2">
-            <button type="button" onClick={() => navigate({ to: "/articles" })} className="flex-1 rounded-xl border border-gray-200 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">Hủy</button>
+            <button type="button" onClick={() => navigate({ to: "/articles" })} className="flex-1 rounded-xl border border-gray-200 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800">Hủy</button>
             <button type="submit" disabled={isPending} className="flex-1 rounded-xl bg-indigo-600 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50 transition-colors">
               {isPending ? "Đang lưu..." : "Lưu"}
             </button>
@@ -159,10 +160,29 @@ function FormFields({ form, setForm, pubDateStr, setPubDateStr, topics, error }:
     <>
       <div>
         <label className={LABEL}>Chủ đề *</label>
-        <select required value={form.topic_id} onChange={(e) => setForm({ ...form, topic_id: parseInt(e.target.value) })} className={INPUT}>
-          <option value={0}>-- Chọn chủ đề --</option>
-          {topics?.map((t) => <option key={t.id} value={t.id}>{t.source_name} — {t.name}</option>)}
-        </select>
+        <div className="relative">
+          <select
+            required
+            value={form.topic_id}
+            onChange={(e) => setForm({ ...form, topic_id: parseInt(e.target.value) })}
+            className={INPUT + " appearance-none pr-10"}
+          >
+            <option value={0}>-- Chọn chủ đề --</option>
+            {topics?.map((t) => <option key={t.id} value={t.id}>{t.source_name} — {t.name}</option>)}
+          </select>
+          <svg
+            className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-gray-500"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2.5}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden
+          >
+            <path d="M6 9l6 6 6-6" />
+          </svg>
+        </div>
       </div>
       <div>
         <label className={LABEL}>Tiêu đề *</label>

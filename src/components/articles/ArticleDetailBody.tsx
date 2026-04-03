@@ -18,7 +18,7 @@ function formatDate(ts: number | null) {
 }
 
 const descriptionClassName =
-  "article-description max-w-none border-t border-gray-100 pt-4 text-sm leading-relaxed text-gray-700 [&_a]:break-all [&_a]:text-blue-600 hover:[&_a]:underline [&_img]:my-2 [&_img]:max-h-72 [&_img]:max-w-full [&_img]:rounded-md [&_p]:my-2";
+  "article-description max-w-none border-t border-gray-100 dark:border-gray-700 pt-4 text-sm leading-relaxed text-gray-700 dark:text-gray-200 [&_a]:break-all [&_a]:text-blue-600 hover:[&_a]:underline [&_img]:my-2 [&_img]:max-h-72 [&_img]:max-w-full [&_img]:rounded-md [&_p]:my-2";
 
 type Props = {
   article?: Article;
@@ -51,16 +51,16 @@ export function ArticleDetailBody({ article, isLoading, editArticleId, className
   }, [descriptionHtml]);
 
   if (isLoading) {
-    return <div className="py-8 text-center text-gray-500">Đang tải...</div>;
+    return <div className="py-8 text-center text-gray-500 dark:text-gray-400">Đang tải...</div>;
   }
   if (!article) {
-    return <div className="py-8 text-center text-gray-500">Không tìm thấy bài viết.</div>;
+    return <div className="py-8 text-center text-gray-500 dark:text-gray-400">Không tìm thấy bài viết.</div>;
   }
 
   return (
     <div className={cn("space-y-4", className)}>
       {article.image_link ? (
-        <figure className="overflow-hidden rounded-lg border border-gray-100 bg-gray-50">
+        <figure className="overflow-hidden rounded-lg border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
           <SafeImage
             src={article.image_link}
             alt=""
@@ -68,19 +68,19 @@ export function ArticleDetailBody({ article, isLoading, editArticleId, className
           />
         </figure>
       ) : null}
-      <h3 className="text-xl font-bold text-gray-900">{article.title}</h3>
-      <div className="grid gap-3 rounded-lg border border-gray-100 bg-gray-50/80 px-4 py-3 text-sm sm:grid-cols-2">
+      <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">{article.title}</h3>
+      <div className="grid gap-3 rounded-lg border border-gray-100 dark:border-gray-700 bg-gray-50/80 dark:bg-gray-800/40 px-4 py-3 text-sm sm:grid-cols-2">
         <div>
-          <p className="text-xs font-medium tracking-wide text-gray-500 uppercase">Nguồn báo</p>
-          <p className="mt-1 font-semibold text-gray-900">{getArticleSourceLabel(article)}</p>
+          <p className="text-xs font-medium tracking-wide text-gray-500 dark:text-gray-400 uppercase">Nguồn báo</p>
+          <p className="mt-1 font-semibold text-gray-900 dark:text-gray-100">{getArticleSourceLabel(article)}</p>
         </div>
         <div>
-          <p className="text-xs font-medium tracking-wide text-gray-500 uppercase">Chủ đề (topic)</p>
-          <p className="mt-1 font-semibold text-gray-900">{article.topic_name}</p>
+          <p className="text-xs font-medium tracking-wide text-gray-500 dark:text-gray-400 uppercase">Chủ đề (topic)</p>
+          <p className="mt-1 font-semibold text-gray-900 dark:text-gray-100">{article.topic_name}</p>
         </div>
         <div className="sm:col-span-2">
-          <p className="text-xs font-medium tracking-wide text-gray-500 uppercase">Ngày đăng</p>
-          <p className="mt-1 font-medium text-gray-800">{formatDate(article.pub_date)}</p>
+          <p className="text-xs font-medium tracking-wide text-gray-500 dark:text-gray-400 uppercase">Ngày đăng</p>
+          <p className="mt-1 font-medium text-gray-800 dark:text-gray-100">{formatDate(article.pub_date)}</p>
         </div>
       </div>
       {descriptionHtml ? (
@@ -90,7 +90,7 @@ export function ArticleDetailBody({ article, isLoading, editArticleId, className
           dangerouslySetInnerHTML={{ __html: descriptionHtml }}
         />
       ) : null}
-      <div className="flex flex-wrap gap-2 border-t border-gray-100 pt-4">
+      <div className="flex flex-wrap gap-2 border-t border-gray-100 dark:border-gray-700 pt-4">
         <a
           href={article.link}
           target="_blank"
@@ -103,7 +103,7 @@ export function ArticleDetailBody({ article, isLoading, editArticleId, className
           <Link
             to="/articles/$id/edit"
             params={{ id: editArticleId }}
-            className="inline-flex items-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-800 hover:bg-gray-50"
+            className="inline-flex items-center rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-2 text-sm font-medium text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700"
           >
             Sửa
           </Link>

@@ -57,7 +57,7 @@ export default function BlogFeedPage() {
             <button
               type="button"
               onClick={() => setCreateOpen(true)}
-              className="mt-4 inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-indigo-700 shadow-sm transition-all hover:bg-indigo-50"
+              className="mt-4 inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-indigo-700 shadow-sm transition-all hover:bg-indigo-50 dark:bg-gray-800 dark:text-indigo-200 dark:hover:bg-indigo-900/20"
             >
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -74,12 +74,12 @@ export default function BlogFeedPage() {
       {user && (
         <div
           onClick={() => setCreateOpen(true)}
-          className="mb-5 flex cursor-pointer items-center gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-3.5 shadow-sm transition-all hover:border-indigo-300 hover:shadow-md"
+          className="mb-5 flex cursor-pointer items-center gap-3 rounded-2xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800 px-4 py-3.5 shadow-sm transition-all hover:border-indigo-300 hover:shadow-md"
         >
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-400 to-violet-500 text-sm font-bold text-white">
             {user.full_name.split(" ").map((p) => p[0]).slice(-2).join("").toUpperCase()}
           </div>
-          <span className="flex-1 rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-400 hover:bg-white">
+          <span className="flex-1 rounded-xl border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-400 px-4 py-2.5 text-sm text-gray-400 hover:bg-white dark:hover:bg-gray-600">
             {user.full_name.split(" ").pop()} ơi, bạn đang nghĩ gì vậy? ✍️
           </span>
         </div>
@@ -95,13 +95,13 @@ export default function BlogFeedPage() {
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
           placeholder="Tìm kiếm bài viết..."
-          className="w-full rounded-xl border border-gray-200 bg-white py-3 pl-11 pr-4 text-sm text-gray-900 placeholder-gray-400 outline-none transition-all focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+          className="w-full rounded-xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 py-3 pl-11 pr-4 text-sm text-gray-900 placeholder-gray-400 outline-none transition-all focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-700"
         />
         {keyword && (
           <button
             type="button"
             onClick={() => setKeyword("")}
-            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300"
           >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
@@ -112,7 +112,7 @@ export default function BlogFeedPage() {
       {isPending ? (
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="animate-pulse rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+            <div key={i} className="animate-pulse rounded-2xl border border-gray-100 bg-white dark:border-gray-700 dark:bg-gray-800 p-5 shadow-sm">
               <div className="flex gap-3">
                 <div className="h-10 w-10 shrink-0 rounded-full bg-gray-200" />
                 <div className="flex-1 space-y-2">
@@ -134,11 +134,11 @@ export default function BlogFeedPage() {
           <p className="font-medium text-red-600">Không thể tải bài viết.</p>
         </div>
       ) : allPosts.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 bg-white py-20 text-center">
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800 py-20 text-center">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mb-3 h-12 w-12 text-gray-300">
             <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
           </svg>
-          <p className="text-base font-semibold text-gray-600">
+          <p className="text-base font-semibold text-gray-600 dark:text-gray-400">
             {debouncedKeyword ? `Không tìm thấy bài viết nào cho "${debouncedKeyword}"` : "Chưa có bài viết nào"}
           </p>
           {!debouncedKeyword && user && (
@@ -163,13 +163,13 @@ export default function BlogFeedPage() {
       {/* Load more trigger */}
       <div ref={loadMoreRef} className="py-4 text-center">
         {isFetchingNextPage && (
-          <div className="inline-flex items-center gap-2 text-sm text-gray-500">
+          <div className="inline-flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
             <div className="h-4 w-4 animate-spin rounded-full border-2 border-indigo-200 border-t-indigo-600" />
             Đang tải thêm...
           </div>
         )}
         {!hasNextPage && allPosts.length > 0 && (
-          <p className="text-xs text-gray-400">Đã hiển thị tất cả {allPosts.length} bài viết</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500">Đã hiển thị tất cả {allPosts.length} bài viết</p>
         )}
       </div>
 

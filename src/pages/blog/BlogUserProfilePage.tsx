@@ -63,7 +63,7 @@ export default function BlogUserProfilePage() {
       <button
         type="button"
         onClick={() => navigate({ to: "/blog" })}
-        className="mb-6 inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-50 hover:text-indigo-700 transition-colors"
+        className="mb-6 inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-indigo-700 transition-colors"
       >
         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -72,7 +72,7 @@ export default function BlogUserProfilePage() {
       </button>
 
       {/* Profile header */}
-      <div className="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-sm">
+      <div className="overflow-hidden rounded-3xl border border-gray-100 bg-white dark:border-gray-700 dark:bg-gray-800 shadow-sm">
         {/* Cover */}
         <div className={cn("relative h-44 w-full bg-gradient-to-r", coverGradient(uid))}>
           <div className="pointer-events-none absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNCI+PHBhdGggZD0iTTM2IDM0djZoNnYtNmgtNnptNi02aDZ2LTZoLTZ2NnptLTEyIDBoNnYtNmgtNnY2em0tMTIgMGg2di02aC02djZ6TTI0IDM0aDZ2LTZoLTZ2NnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-40" />
@@ -86,12 +86,12 @@ export default function BlogUserProfilePage() {
               <img
                 src={profile.avatar}
                 alt=""
-                className="h-28 w-28 rounded-3xl border-4 border-white object-cover shadow-xl"
+                className="h-28 w-28 rounded-3xl border-4 border-white dark:border-gray-800 object-cover shadow-xl"
               />
             ) : (
               <div
                 className={cn(
-                  "flex h-28 w-28 items-center justify-center rounded-3xl border-4 border-white bg-gradient-to-br text-3xl font-extrabold text-white shadow-xl",
+                  "flex h-28 w-28 items-center justify-center rounded-3xl border-4 border-white dark:border-gray-800 bg-gradient-to-br text-3xl font-extrabold text-white shadow-xl",
                   avatarGradient(uid),
                 )}
               >
@@ -104,9 +104,9 @@ export default function BlogUserProfilePage() {
           <div className="pt-14">
             <div className="flex items-start justify-between gap-4 flex-wrap">
               <div className="min-w-[16rem]">
-                <h1 className="text-2xl font-extrabold text-gray-900">{profile.full_name}</h1>
+                <h1 className="text-2xl font-extrabold text-gray-900 dark:text-gray-100">{profile.full_name}</h1>
                 <div className="mt-1 flex items-center gap-2">
-                  <p className="text-sm font-semibold text-gray-700">@{profile.username}</p>
+                  <p className="text-sm font-semibold text-gray-700 dark:text-gray-200">@{profile.username}</p>
                   {isAdmin(profile.username) && <AdminBadge size="lg" />}
                   {isOwn && (
                     <span className="rounded-xl bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-600">
@@ -114,12 +114,12 @@ export default function BlogUserProfilePage() {
                     </span>
                   )}
                 </div>
-                <p className="mt-1 text-sm text-gray-500">{profile.email}</p>
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{profile.email}</p>
               </div>
               <div className="flex items-center gap-3">
-                <div className="rounded-2xl border border-gray-200 bg-gradient-to-b from-indigo-50 to-white px-5 py-3 text-center shadow-sm">
+                <div className="rounded-2xl border border-gray-200 bg-gradient-to-b from-indigo-50 to-white dark:border-gray-700 dark:from-indigo-900/30 dark:to-gray-800 px-5 py-3 text-center shadow-sm">
                   <p className="text-2xl font-extrabold text-indigo-700">{profile.total_posts}</p>
-                  <p className="text-xs text-gray-500">Bài viết</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Bài viết</p>
                 </div>
               </div>
             </div>
@@ -131,17 +131,17 @@ export default function BlogUserProfilePage() {
       <div className="mt-5">
         <div className="mb-4 flex items-center gap-2">
           <div className="h-1 w-6 rounded-full bg-gradient-to-r from-indigo-600 to-rose-600" />
-          <h2 className="text-base font-extrabold text-gray-900">
+          <h2 className="text-base font-extrabold text-gray-900 dark:text-gray-100">
             {isOwn ? "Bài viết của bạn" : `Bài viết của ${profile.full_name}`}
           </h2>
         </div>
 
         {posts.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 bg-white py-16 text-center">
+          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800 py-16 text-center">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mb-3 h-12 w-12 text-gray-300">
               <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
             </svg>
-            <p className="text-sm font-medium text-gray-500">
+            <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
               {isOwn ? "Bạn chưa có bài viết nào" : "Người dùng này chưa đăng bài"}
             </p>
           </div>

@@ -130,7 +130,7 @@ export function MessageBubble({
         {!isMine && showAvatar && (
           <button
             onClick={handleAvatarClick}
-            className="text-xs text-gray-500 mb-1 ml-1 hover:text-primary-600 transition-colors focus:outline-none"
+            className="text-xs text-gray-500 dark:text-gray-400 mb-1 ml-1 hover:text-primary-600 transition-colors focus:outline-none"
           >
             {message.sender_full_name}
           </button>
@@ -142,7 +142,7 @@ export function MessageBubble({
           {isMine && !message.recalled && onRecall && (
             <button
               onClick={() => { if (confirm("Thu hồi tin nhắn này?")) onRecall(message.id); }}
-              className="opacity-0 group-hover/msg:opacity-100 transition-opacity w-6 h-6 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 shrink-0"
+              className="opacity-0 group-hover/msg:opacity-100 transition-opacity w-6 h-6 rounded-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 shadow-sm flex items-center justify-center text-gray-400 dark:text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 shrink-0"
               title="Thu hồi tin nhắn"
             >
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -155,7 +155,7 @@ export function MessageBubble({
           {isMine && (
             <button
               onClick={() => setShowPicker((p) => !p)}
-              className="opacity-0 group-hover/msg:opacity-100 transition-opacity w-6 h-6 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-50 shrink-0"
+              className="opacity-0 group-hover/msg:opacity-100 transition-opacity w-6 h-6 rounded-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 shadow-sm flex items-center justify-center text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 shrink-0"
               title="Thả cảm xúc"
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -183,10 +183,10 @@ export function MessageBubble({
               className={cn(
                 "px-3.5 py-2 rounded-2xl text-sm leading-relaxed break-words whitespace-pre-wrap",
                 message.recalled
-                  ? "bg-gray-50 border border-gray-200 text-gray-400"
+                  ? "bg-gray-50 border border-gray-200 text-gray-400 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-500"
                   : isMine
                     ? "bg-primary-500 text-white rounded-br-sm shadow-sm"
-                    : "bg-white text-gray-800 shadow-sm border border-gray-100 rounded-bl-sm",
+                    : "bg-white text-gray-800 shadow-sm border border-gray-100 rounded-bl-sm dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700",
               )}
             >
               {message.recalled ? (
@@ -203,7 +203,7 @@ export function MessageBubble({
           {!isMine && (
             <button
               onClick={() => setShowPicker((p) => !p)}
-              className="opacity-0 group-hover/msg:opacity-100 transition-opacity w-6 h-6 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-50 shrink-0"
+              className="opacity-0 group-hover/msg:opacity-100 transition-opacity w-6 h-6 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-50 shrink-0 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-500 dark:hover:text-gray-300 dark:hover:bg-gray-600"
               title="Thả cảm xúc"
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -225,7 +225,7 @@ export function MessageBubble({
                   "flex items-center gap-1 rounded-full px-1.5 py-0.5 text-xs border transition-colors select-none",
                   r.reacted_by_me
                     ? "bg-primary-50 border-primary-300 text-primary-700 hover:bg-primary-100"
-                    : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50",
+                    : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600",
                 )}
               >
                 <span className="text-sm leading-none">{r.emoji}</span>

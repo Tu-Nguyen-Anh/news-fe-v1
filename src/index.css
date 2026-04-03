@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   --color-primary-50: #fff0f2;
@@ -34,6 +35,16 @@ html {
   height: 100%;
   overflow: hidden;           /* block iOS from rubber-band scrolling */
   overscroll-behavior: none;
+  /* Default light theme colors (override in dark mode below) */
+  background-color: #f9fafb; /* Tailwind gray-50 */
+  color: #111827; /* Tailwind gray-900 */
+  color-scheme: light;
+}
+
+.dark html {
+  background-color: #020617; /* Tailwind gray-950-ish */
+  color: #e5e7eb; /* Tailwind gray-200 */
+  color-scheme: dark;
 }
 
 body {
@@ -44,6 +55,13 @@ body {
   font-family: system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #f9fafb; /* Tailwind gray-50 */
+  color: #111827; /* Tailwind gray-900 */
+}
+
+.dark body {
+  background-color: #020617; /* Tailwind gray-950-ish */
+  color: #e5e7eb; /* Tailwind gray-200 */
 }
 
 #root {

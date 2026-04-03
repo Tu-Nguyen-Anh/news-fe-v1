@@ -90,8 +90,12 @@ function formatDate(ts: number | null) {
   });
 }
 
+function fixDoubleEncodedEntities(html: string) {
+  return html.replace(/&amp;([a-zA-Z0-9]+|#\d+|#x[\da-fA-F]+);/g, "&$1;");
+}
+
 function htmlToPlainText(html: string) {
-  const safe = html ?? "";
+  const safe = fixDoubleEncodedEntities(html ?? "");
   if (!safe.trim()) return "";
 
   // Khi chạy trong trình duyệt: dùng DOMParser để lấy textContent.
@@ -103,6 +107,30 @@ function htmlToPlainText(html: string) {
   const el = document.createElement("div");
   el.innerHTML = safe;
   return (el.textContent ?? "").replace(/\s+/g, " ").trim();
+}
+
+function FilterSelect({ className, children, ...props }: React.SelectHTMLAttributes<HTMLSelectElement>) {
+  return (
+    <div className="relative">
+      <select
+        {...props}
+        className={[
+          "w-full appearance-none rounded-xl border border-gray-200 bg-white py-2 pl-3 pr-9 text-sm text-gray-700 shadow-sm",
+          "transition-all hover:border-gray-300 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-300/40",
+          "disabled:cursor-not-allowed disabled:opacity-50",
+          "dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:border-gray-500 dark:focus:border-indigo-500 dark:focus:ring-indigo-500/20",
+          className ?? "",
+        ].join(" ")}
+      >
+        {children}
+      </select>
+      <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5 text-gray-400 dark:text-gray-500">
+        <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+          <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+        </svg>
+      </span>
+    </div>
+  );
 }
 
 const VIEW_OPTIONS: { id: ArticleViewMode; label: string }[] = [
@@ -362,10 +390,10 @@ export default function ArticleListPage() {
     <div className="space-y-5">
       {/* Header */}
       <div className="rounded-2xl bg-gradient-to-r from-indigo-600 via-fuchsia-600 to-rose-600 p-[1px]">
-        <div className="flex flex-col gap-3 rounded-2xl bg-white p-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:p-5">
+        <div className="flex flex-col gap-3 rounded-2xl bg-white p-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:p-5 dark:bg-gray-800">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Bài viết</h1>
-            <p className="mt-0.5 text-sm text-gray-500">Quản lý toàn bộ bài viết thu thập</p>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Bài viết</h1>
+            <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400">Quản lý toàn bộ bài viết thu thập</p>
           </div>
           <button
             type="button"
@@ -384,76 +412,74 @@ export default function ArticleListPage() {
       </div>
 
       {/* Filter panel */}
-      <div className="rounded-2xl border border-gray-200 bg-gradient-to-b from-white to-slate-50 shadow-sm">
+      <div className="rounded-2xl border border-gray-200 bg-gradient-to-b from-white to-slate-50 shadow-sm dark:border-gray-700 dark:from-gray-800 dark:to-gray-900">
         {/* Mobile toggle */}
         <div className="flex items-center justify-between px-4 py-3 sm:hidden">
           <button
             type="button"
             onClick={() => setFilterOpen((v) => !v)}
-            className="flex items-center gap-1.5 text-sm font-medium text-gray-700"
+            className="flex items-center gap-1.5 text-sm font-medium text-gray-700 dark:text-gray-200"
           >
-            <svg className="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="h-4 w-4 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 4h18M7 8h10M11 12h2" />
             </svg>
             Bộ lọc
-            {hasActiveFilter && <span className="ml-1 inline-flex h-2 w-2 rounded-full bg-blue-500" />}
+            {hasActiveFilter && <span className="ml-1 inline-flex h-2 w-2 rounded-full bg-indigo-500" />}
             <svg
-              className={`h-4 w-4 text-gray-400 transition-transform ${filterOpen ? "rotate-180" : ""}`}
+              className={`h-4 w-4 text-gray-400 dark:text-gray-500 transition-transform ${filterOpen ? "rotate-180" : ""}`}
               fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
             >
               <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
           {hasActiveFilter && (
-            <button type="button" onClick={handleReset} className="text-xs text-gray-500 hover:text-red-500">
+            <button type="button" onClick={handleReset} className="text-xs text-gray-500 hover:text-red-500 dark:text-gray-400">
               Xóa lọc
             </button>
           )}
         </div>
 
         {/* Filter fields */}
-        <div className={`${filterOpen ? "block" : "hidden"} border-t border-gray-100 p-4 sm:block sm:border-t-0`}>
+        <div className={`${filterOpen ? "block" : "hidden"} border-t border-gray-100 p-4 sm:block sm:border-t-0 dark:border-gray-700`}>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {/* Keyword */}
-            <div className="flex flex-col gap-1 sm:col-span-2 lg:col-span-2">
-              <label className="text-xs font-medium text-gray-600">Từ khóa</label>
+            <div className="flex flex-col gap-1.5 sm:col-span-2 lg:col-span-2">
+              <label className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Từ khóa</label>
               <input
                 type="text"
                 placeholder="Tìm theo tiêu đề, mô tả..."
                 value={filters.keyword}
                 onChange={(e) => setFilters((f) => ({ ...f, keyword: e.target.value }))}
-                className="rounded-md border border-gray-300 px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 shadow-sm transition-all placeholder:text-gray-400 hover:border-gray-300 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-300/40 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder:text-gray-500 dark:focus:border-indigo-500"
               />
             </div>
 
             {/* Source */}
-            <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium text-gray-600">Nguồn tin</label>
-              <select
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Nguồn tin</label>
+              <FilterSelect
                 value={filters.sourceId}
                 onChange={(e) =>
                   setFilters((f) => ({ ...f, sourceId: e.target.value, topicId: "" }))
                 }
                 disabled={sourcesLoading}
-                className="rounded-md border border-gray-300 px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:cursor-wait disabled:bg-gray-50 disabled:text-gray-400"
               >
                 <option value="">{sourcesLoading ? "Đang tải..." : "Tất cả nguồn"}</option>
                 {sources.map((s) => (
                   <option key={s.id} value={s.id}>{s.name}</option>
                 ))}
-              </select>
+              </FilterSelect>
             </div>
 
             {/* Topic — filtered by selected source */}
-            <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium text-gray-600">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
                 Chủ đề{filters.sourceId ? ` (${sources.find((s) => s.id === Number(filters.sourceId))?.name ?? ""})` : ""}
               </label>
-              <select
+              <FilterSelect
                 value={filters.topicId}
                 onChange={(e) => setFilters((f) => ({ ...f, topicId: e.target.value }))}
                 disabled={sourcesLoading || topics.length === 0}
-                className="rounded-md border border-gray-300 px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:cursor-wait disabled:bg-gray-50 disabled:text-gray-400"
               >
                 <option value="">
                   {sourcesLoading ? "Đang tải..." : topics.length === 0 && filters.sourceId ? "Không có chủ đề" : "Tất cả chủ đề"}
@@ -461,22 +487,22 @@ export default function ArticleListPage() {
                 {topics.map((t) => (
                   <option key={t.id} value={t.id}>{t.name}</option>
                 ))}
-              </select>
+              </FilterSelect>
             </div>
 
             {/* Date preset */}
-            <div className="flex flex-col gap-1 sm:col-span-2 lg:col-span-4">
-              <label className="text-xs font-medium text-gray-600">Thời gian</label>
+            <div className="flex flex-col gap-1.5 sm:col-span-2 lg:col-span-4">
+              <label className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Thời gian</label>
               <div className="flex flex-wrap gap-1.5">
                 {DATE_PRESETS.map((p) => (
                   <button
                     key={p.id}
                     type="button"
                     onClick={() => setFilters((f) => ({ ...f, datePreset: p.id }))}
-                    className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                    className={`rounded-full border px-3 py-1 text-xs font-medium shadow-sm transition-all ${
                       filters.datePreset === p.id
-                        ? "border-blue-600 bg-blue-600 text-white"
-                        : "border-gray-300 bg-white text-gray-600 hover:border-blue-400 hover:text-blue-600"
+                        ? "border-indigo-600 bg-indigo-600 text-white shadow-indigo-200 dark:shadow-indigo-900"
+                        : "border-gray-200 bg-white text-gray-600 hover:border-indigo-400 hover:text-indigo-600 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-indigo-500 dark:hover:text-indigo-400"
                     }`}
                   >
                     {p.label}
@@ -491,7 +517,7 @@ export default function ArticleListPage() {
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="w-full rounded-md border border-gray-300 px-4 py-1.5 text-sm text-gray-600 hover:bg-gray-50"
+                  className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm text-gray-600 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-800"
                 >
                   Xóa lọc
                 </button>
@@ -531,7 +557,7 @@ export default function ArticleListPage() {
         </div>
 
         <div
-          className="inline-flex rounded-lg border border-gray-200 bg-white/80 p-0.5 shadow-sm backdrop-blur"
+          className="inline-flex rounded-xl border border-gray-200 bg-white/80 p-0.5 shadow-sm backdrop-blur dark:border-gray-700 dark:bg-gray-900/80"
           role="group"
           aria-label="Kiểu hiển thị"
         >
@@ -541,10 +567,10 @@ export default function ArticleListPage() {
               type="button"
               onClick={() => setViewMode(opt.id)}
               aria-pressed={viewMode === opt.id}
-              className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+              className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-all ${
                 viewMode === opt.id
                   ? "bg-gradient-to-r from-indigo-600 to-rose-600 text-white shadow-sm"
-                  : "text-gray-700 hover:bg-indigo-50/70"
+                  : "text-gray-600 hover:bg-indigo-50/70 dark:text-gray-300 dark:hover:bg-indigo-900/20"
               }`}
             >
               {opt.label}
@@ -554,7 +580,7 @@ export default function ArticleListPage() {
       </div>
 
       {/* Article list */}
-      <div className="relative overflow-x-auto overflow-y-visible rounded-2xl border border-gray-200 bg-white shadow-sm">
+      <div className="relative overflow-x-auto overflow-y-visible rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-900">
         {/* Thin top bar: visible only when filter changes while old data is still showing */}
         {isFilterFetching && (
           <div className="absolute inset-x-0 top-0 z-10 h-0.5 rounded-t-2xl bg-gradient-to-r from-indigo-500 via-fuchsia-400 to-rose-500 animate-pulse" />
@@ -593,7 +619,7 @@ export default function ArticleListPage() {
               </div>
               <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {[...Array(6)].map((_, idx) => (
-                  <div key={idx} className="space-y-3 rounded-2xl border border-gray-100 bg-white/60 p-4">
+                  <div key={idx} className="space-y-3 rounded-2xl border border-gray-100 bg-white/60 p-4 dark:border-gray-700 dark:bg-gray-700/30">
                     <div className="h-28 animate-pulse rounded-xl bg-gray-100" />
                     <div className="h-3 animate-pulse rounded bg-gray-100" />
                     <div className="h-3 animate-pulse rounded bg-gray-100 w-11/12" />
@@ -606,16 +632,16 @@ export default function ArticleListPage() {
         ) : viewMode === "list" ? (
           <div className="min-w-0 overflow-x-auto">
             <table className="min-w-[52rem] w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+              <thead className="bg-gray-50 dark:bg-gray-800">
                 <tr>
                   {["STT", "Thumbnail", "Tiêu đề", "Nguồn", "Chủ đề", "Ngày đăng", "Thao tác"].map((h) => (
-                    <th key={h} className="px-4 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+                    <th key={h} className="px-4 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-400">
                       {h}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                 {articles.length === 0 && (
                   <tr>
                     <td colSpan={7} className="p-8">
@@ -630,21 +656,21 @@ export default function ArticleListPage() {
                 {articles.map((article, i) => (
                   <tr
                     key={article.id}
-                    className="group cursor-pointer hover:bg-indigo-50/40"
+                    className="group cursor-pointer hover:bg-indigo-50/40 dark:hover:bg-indigo-900/20"
                     onClick={() => openDetail(article)}
                   >
-                    <td className="px-4 py-3 text-sm text-gray-500">{i + 1}</td>
+                    <td className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{i + 1}</td>
                     <td className="px-4 py-3">{thumb(article, "h-12 w-16")}</td>
-                    <td className="max-w-[240px] px-4 py-3 text-sm font-medium text-gray-900">
+                    <td className="max-w-[240px] px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100">
                       <span className="line-clamp-2">{article.title || "—"}</span>
                     </td>
-                    <td className="max-w-[140px] px-4 py-3 text-sm text-gray-600">
+                    <td className="max-w-[140px] px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
                       <span className="line-clamp-2" title={getArticleSourceLabel(article)}>{getArticleSourceLabel(article)}</span>
                     </td>
-                    <td className="max-w-[140px] px-4 py-3 text-sm text-gray-600">
+                    <td className="max-w-[140px] px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
                       <span className="line-clamp-2" title={article.topic_name || ""}>{article.topic_name || "—"}</span>
                     </td>
-                    <td className="px-4 py-3 text-sm whitespace-nowrap text-gray-500">{formatDate(article.pub_date)}</td>
+                    <td className="px-4 py-3 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">{formatDate(article.pub_date)}</td>
                     <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center justify-end gap-2">
                         <FavoriteButton
@@ -679,9 +705,9 @@ export default function ArticleListPage() {
                   tabIndex={0}
                   onClick={() => openDetail(article)}
                   onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openDetail(article); } }}
-                  className="group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-transform hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
+                  className="group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-transform hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:border-gray-700 dark:bg-gray-800"
                 >
-                  <div className="relative w-full overflow-hidden bg-gradient-to-br from-indigo-100 via-fuchsia-100 to-rose-100/50">
+                  <div className="relative w-full overflow-hidden bg-gradient-to-br from-indigo-100 via-fuchsia-100 to-rose-100/50 dark:from-indigo-900/30 dark:via-fuchsia-900/20 dark:to-rose-900/20">
                     {thumb(article, "h-40 w-full")}
                     <div className="absolute right-3 top-3 z-10">
                       <FavoriteButton
@@ -691,29 +717,29 @@ export default function ArticleListPage() {
                         size="sm"
                       />
                     </div>
-                    <span className="absolute left-3 top-3 inline-flex items-center rounded-full bg-white/80 px-2.5 py-1 text-[11px] font-semibold text-gray-700 ring-1 ring-white">
+                    <span className="absolute left-3 top-3 inline-flex items-center rounded-full bg-white/80 px-2.5 py-1 text-[11px] font-semibold text-gray-700 ring-1 ring-white dark:bg-gray-900/80 dark:text-gray-200">
                       #{i + 1}
                     </span>
                   </div>
                   <div className="flex flex-1 flex-col gap-2 p-4">
-                    <h2 className="line-clamp-2 text-sm leading-snug font-semibold text-gray-900">{article.title || "—"}</h2>
+                    <h2 className="line-clamp-2 text-sm leading-snug font-semibold text-gray-900 dark:text-gray-100">{article.title || "—"}</h2>
                     <div className="flex flex-wrap items-center gap-1.5">
-                      <span className="inline-flex items-center rounded-full bg-indigo-50 px-2 py-1 text-[11px] font-semibold text-indigo-700 ring-1 ring-inset ring-indigo-500/10">
+                      <span className="inline-flex items-center rounded-full bg-indigo-50 px-2 py-1 text-[11px] font-semibold text-indigo-700 ring-1 ring-inset ring-indigo-500/10 dark:bg-indigo-900/40 dark:text-indigo-300 dark:ring-indigo-400/20">
                         Nguồn: {getArticleSourceLabel(article)}
                       </span>
                       {article.topic_name && (
-                        <span className="inline-flex items-center rounded-full bg-fuchsia-50 px-2 py-1 text-[11px] font-semibold text-fuchsia-700 ring-1 ring-inset ring-fuchsia-500/10">
+                        <span className="inline-flex items-center rounded-full bg-fuchsia-50 px-2 py-1 text-[11px] font-semibold text-fuchsia-700 ring-1 ring-inset ring-fuchsia-500/10 dark:bg-fuchsia-900/40 dark:text-fuchsia-300 dark:ring-fuchsia-400/20">
                           Chủ đề: {article.topic_name}
                         </span>
                       )}
                     </div>
                     {article.description ? (
-                      <p className="line-clamp-3 text-xs leading-relaxed text-gray-600">
+                      <p className="line-clamp-3 text-xs leading-relaxed text-gray-600 dark:text-gray-400">
                         {htmlToPlainText(article.description)}
                       </p>
                     ) : null}
-                    <p className="text-xs text-gray-500">{formatDate(article.pub_date)}</p>
-                    <div className="mt-auto border-t border-gray-100 pt-3 opacity-90 transition-opacity group-hover:opacity-100" onClick={(e) => e.stopPropagation()}>
+                    <p className="text-xs text-gray-500 dark:text-gray-500">{formatDate(article.pub_date)}</p>
+                    <div className="mt-auto border-t border-gray-100 pt-3 opacity-90 transition-opacity group-hover:opacity-100 dark:border-gray-700" onClick={(e) => e.stopPropagation()}>
                       {renderActions(article)}
                     </div>
                   </div>
@@ -722,7 +748,7 @@ export default function ArticleListPage() {
             </div>
           )
         ) : (
-          <ul className="divide-y divide-gray-100">
+          <ul className="divide-y divide-gray-100 dark:divide-gray-700">
             {articles.length === 0 && (
               <li>
                 <ArticlesEmptyState
@@ -737,7 +763,7 @@ export default function ArticleListPage() {
                 <div
                   role="button"
                   tabIndex={0}
-                  className="flex min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-md py-0.5 hover:bg-gray-50 sm:gap-3"
+                  className="flex min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-md py-0.5 hover:bg-gray-50 dark:hover:bg-gray-800 sm:gap-3"
                   onClick={() => openDetail(article)}
                   onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openDetail(article); } }}
                 >
@@ -746,10 +772,10 @@ export default function ArticleListPage() {
                   </span>
                   {thumb(article, "h-8 w-11 flex-shrink-0 sm:h-9 sm:w-12")}
                   <div className="min-w-0 flex-1">
-                    <span className="block truncate text-xs font-medium text-gray-900 sm:text-sm" title={article.title || ""}>
+                    <span className="block truncate text-xs font-medium text-gray-900 sm:text-sm dark:text-gray-100" title={article.title || ""}>
                       {article.title || "—"}
                     </span>
-                    <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-gray-500 sm:text-xs">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-gray-500 sm:text-xs dark:text-gray-400">
                       <span className="max-w-[42%] truncate" title={getArticleSourceLabel(article)}>{getArticleSourceLabel(article)}</span>
                       <span className="text-gray-300">·</span>
                       <span className="max-w-[42%] truncate" title={article.topic_name || ""}>{article.topic_name || "—"}</span>
@@ -783,7 +809,7 @@ export default function ArticleListPage() {
       </div>
 
       {!isPending && (
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-2 text-sm text-gray-600">
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-2 text-sm text-gray-600 dark:text-gray-300">
           <span className="flex items-center gap-2">
             Tổng: {totalAmount} bản ghi
             {isFilterFetching && (
@@ -797,7 +823,7 @@ export default function ArticleListPage() {
             )}
           </span>
           {articles.length > 0 && (
-            <span className="text-gray-400">
+            <span className="text-gray-400 dark:text-gray-500">
               {hasNextPage ? "Cuộn xuống để tải thêm" : "Đã hiển thị toàn bộ danh sách"}
             </span>
           )}
@@ -830,8 +856,8 @@ export default function ArticleListPage() {
 
         {modal.kind === "detail" && (
           <>
-            <div className="mb-4 flex items-center justify-between gap-2 border-b border-gray-100 pb-3">
-              <h2 className="text-lg font-semibold text-gray-900">Chi tiết bài viết</h2>
+            <div className="mb-4 flex items-center justify-between gap-2 border-b border-gray-100 pb-3 dark:border-gray-700">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Chi tiết bài viết</h2>
               <div className="flex items-center gap-2">
                 <FavoriteButton
                   articleId={modal.id}
@@ -842,7 +868,7 @@ export default function ArticleListPage() {
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="rounded-lg px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100"
+                  className="rounded-lg px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
                 >
                   Đóng
                 </button>
@@ -853,7 +879,7 @@ export default function ArticleListPage() {
               isLoading={detailLoading}
               editArticleId={canManageArticles ? String(modal.id) : undefined}
             />
-            <div className="mt-2 border-t border-gray-100 pt-4">
+            <div className="mt-2 border-t border-gray-100 pt-4 dark:border-gray-700">
               <CommentSection articleId={modal.id} />
             </div>
           </>
@@ -865,12 +891,12 @@ export default function ArticleListPage() {
 
 function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }) {
   return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-indigo-600/10 via-fuchsia-600/10 to-rose-600/10 px-2.5 py-1 text-xs font-semibold text-gray-800 ring-1 ring-inset ring-indigo-500/10">
+    <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-indigo-600/10 via-fuchsia-600/10 to-rose-600/10 px-2.5 py-1 text-xs font-semibold text-gray-800 ring-1 ring-inset ring-indigo-500/10 dark:from-indigo-400/20 dark:via-fuchsia-400/20 dark:to-rose-400/20 dark:text-gray-200 dark:ring-indigo-400/20">
       {label}
       <button
         type="button"
         onClick={onRemove}
-        className="ml-0.5 rounded-full p-0.5 hover:bg-indigo-100/70"
+        className="ml-0.5 rounded-full p-0.5 hover:bg-indigo-100/70 dark:hover:bg-indigo-800/50"
         aria-label="Xóa bộ lọc"
       >
         <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -898,8 +924,8 @@ function ArticlesEmptyState({
         </svg>
       </div>
       <div>
-        <p className="text-sm font-semibold text-gray-900">Không có bài viết phù hợp</p>
-        <p className="mt-1 text-sm text-gray-500">Thử thay đổi bộ lọc hoặc tạo bài viết mới.</p>
+        <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">Không có bài viết phù hợp</p>
+        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Thử thay đổi bộ lọc hoặc tạo bài viết mới.</p>
       </div>
       <div className="flex flex-wrap items-center justify-center gap-2">
         <button
@@ -913,7 +939,7 @@ function ArticlesEmptyState({
           <button
             type="button"
             onClick={onReset}
-            className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+                className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
           >
             Xóa bộ lọc
           </button>

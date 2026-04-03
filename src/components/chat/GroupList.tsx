@@ -83,14 +83,14 @@ function DmGroupItem({
       onClick={onSelect}
       className={cn(
         "w-full flex items-center gap-3 px-4 py-3 text-left transition-colors",
-        isActive ? "bg-primary-50 border-r-2 border-primary-500" : "hover:bg-gray-50",
+        isActive ? "bg-primary-50 border-r-2 border-primary-500" : "hover:bg-gray-50 dark:hover:bg-gray-700",
       )}
     >
       <GroupAvatar group={group} dmAvatar={displayAvatar} dmName={displayName} />
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-1">
           <div className="flex items-center gap-1 min-w-0">
-            <span className={cn("text-sm font-medium truncate", isActive ? "text-primary-700" : "text-gray-900")}>
+            <span className={cn("text-sm font-medium truncate", isActive ? "text-primary-700" : "text-gray-900 dark:text-gray-100")}>
               {displayName}
             </span>
             <span className="text-[9px] font-semibold px-1 py-0.5 rounded bg-indigo-50 text-indigo-500 shrink-0">DM</span>
@@ -125,13 +125,13 @@ function GroupItem({
       onClick={onSelect}
       className={cn(
         "w-full flex items-center gap-3 px-4 py-3 text-left transition-colors",
-        isActive ? "bg-primary-50 border-r-2 border-primary-500" : "hover:bg-gray-50",
+        isActive ? "bg-primary-50 border-r-2 border-primary-500" : "hover:bg-gray-50 dark:hover:bg-gray-700",
       )}
     >
       <GroupAvatar group={group} />
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-1">
-          <span className={cn("text-sm font-medium truncate", isActive ? "text-primary-700" : "text-gray-900")}>
+          <span className={cn("text-sm font-medium truncate", isActive ? "text-primary-700" : "text-gray-900 dark:text-gray-100")}>
             {group.name ?? "Nhóm chat"}
           </span>
           {unread > 0 && (
@@ -166,9 +166,9 @@ export function GroupList({ selectedGroupId, currentUserId, onSelect, onCreateGr
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="px-4 pt-4 pb-3 border-b border-gray-100">
+      <div className="px-4 pt-4 pb-3 border-b border-gray-100 dark:border-gray-700">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-base font-semibold text-gray-900">Tin nhắn</h2>
+          <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">Tin nhắn</h2>
           <div className="flex items-center gap-1">
             <button
               onClick={onNewDm}
@@ -208,7 +208,7 @@ export function GroupList({ selectedGroupId, currentUserId, onSelect, onCreateGr
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Tìm nhóm..."
-            className="w-full pl-9 pr-3 py-2 text-sm bg-gray-100 rounded-lg border-0 outline-none focus:ring-2 focus:ring-primary-300 placeholder-gray-400"
+            className="w-full pl-9 pr-3 py-2 text-sm bg-gray-100 dark:bg-gray-700 dark:text-gray-100 rounded-lg border-0 outline-none focus:ring-2 focus:ring-primary-300 dark:focus:ring-indigo-500/30 placeholder-gray-400 dark:placeholder-gray-500"
           />
         </div>
       </div>
@@ -220,7 +220,7 @@ export function GroupList({ selectedGroupId, currentUserId, onSelect, onCreateGr
             <Spinner />
           </div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-12 text-gray-400 text-sm px-4">
+          <div className="text-center py-12 text-gray-400 dark:text-gray-500 text-sm px-4">
             {search ? "Không tìm thấy nhóm" : "Chưa có nhóm nào"}
           </div>
         ) : (

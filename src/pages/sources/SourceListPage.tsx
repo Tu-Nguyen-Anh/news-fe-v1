@@ -16,10 +16,10 @@ const PlusIcon = () => <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" 
 const LinkIcon = () => <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>;
 
 const TYPE_COLORS: Record<number, string> = {
-  0: "bg-blue-50 text-blue-700",
-  1: "bg-purple-50 text-purple-700",
-  2: "bg-amber-50 text-amber-700",
-  3: "bg-gray-100 text-gray-600",
+  0: "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
+  1: "bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300",
+  2: "bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
+  3: "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400",
 };
 
 export default function SourceListPage() {
@@ -52,7 +52,7 @@ export default function SourceListPage() {
     <div className="space-y-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Nguồn tin</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Nguồn tin</h1>
           <p className="mt-0.5 text-sm text-gray-400">Quản lý các nguồn RSS đang theo dõi</p>
         </div>
         <button type="button" onClick={() => setModal({ kind: "create" })} className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-700 transition-colors">
@@ -68,13 +68,13 @@ export default function SourceListPage() {
             placeholder="Tìm nguồn tin..."
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            className="w-full rounded-xl border border-gray-200 bg-white py-2.5 pl-9 pr-10 text-sm focus:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-50"
+            className="w-full rounded-xl border border-gray-200 bg-white py-2.5 pl-9 pr-10 text-sm focus:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-indigo-500 dark:focus:ring-indigo-900/30"
           />
           {searchInput.trim().length > 0 && (
             <button
               type="button"
               onClick={() => setSearchInput("")}
-              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
+              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors dark:hover:bg-gray-700 dark:hover:text-gray-300"
               aria-label="Xóa tìm kiếm"
             >
               <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
@@ -85,31 +85,31 @@ export default function SourceListPage() {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
         <div className="overflow-x-auto">
           <table className="min-w-[48rem] w-full">
             <thead>
-              <tr className="border-b border-gray-100 bg-gray-50/80">
+              <tr className="border-b border-gray-100 bg-gray-50/80 dark:border-gray-700 dark:bg-gray-800">
                 {["#", "Nguồn tin", "URL", "Loại", "Mô tả", ""].map((h) => (
                   <th key={h} className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-gray-400">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-gray-50 dark:divide-gray-700">
               {isLoading ? (
-                [...Array(5)].map((_, i) => <tr key={i}><td colSpan={6} className="px-5 py-3.5"><div className="h-5 animate-pulse rounded-lg bg-gray-100" /></td></tr>)
+                [...Array(5)].map((_, i) => <tr key={i}><td colSpan={6} className="px-5 py-3.5"><div className="h-5 animate-pulse rounded-lg bg-gray-100 dark:bg-gray-700" /></td></tr>)
               ) : data?.content.length === 0 ? (
                 <tr><td colSpan={6} className="py-16 text-center text-sm text-gray-400">Không có dữ liệu</td></tr>
               ) : (
                 data?.content.map((source, i) => (
                   <tr key={source.id} className="group cursor-pointer transition-colors hover:bg-emerald-50/30" onClick={() => setModal({ kind: "view", id: source.id })}>
-                    <td className="px-5 py-3.5 text-sm text-gray-400">{page * PAGE_SIZE + i + 1}</td>
+                    <td className="px-5 py-3.5 text-sm text-gray-400 dark:text-gray-500">{page * PAGE_SIZE + i + 1}</td>
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-3">
-                        <div className="h-9 w-9 shrink-0 overflow-hidden rounded-xl border border-gray-100 bg-gray-50">
+                        <div className="h-9 w-9 shrink-0 overflow-hidden rounded-xl border border-gray-100 bg-gray-50 dark:border-gray-700 dark:bg-gray-700">
                           <SafeImage src={source.avatar} alt="" className="h-full w-full object-cover" />
                         </div>
-                        <span className="text-sm font-semibold text-gray-900">{source.name}</span>
+                        <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">{source.name}</span>
                       </div>
                     </td>
                     <td className="max-w-[200px] px-5 py-3.5">
@@ -124,7 +124,7 @@ export default function SourceListPage() {
                         </span>
                       ) : <span className="text-gray-300">—</span>}
                     </td>
-                    <td className="max-w-[180px] px-5 py-3.5 text-sm text-gray-500">
+                    <td className="max-w-[180px] px-5 py-3.5 text-sm text-gray-500 dark:text-gray-400">
                       <span className="line-clamp-1">{source.description ?? "—"}</span>
                     </td>
                     <td className="px-5 py-3.5" onClick={(e) => e.stopPropagation()}>
@@ -142,8 +142,8 @@ export default function SourceListPage() {
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-2 text-sm text-gray-500">
-        <span>Tổng <strong className="text-gray-800">{data?.amount ?? 0}</strong> nguồn tin</span>
+      <div className="flex flex-wrap items-center justify-between gap-2 text-sm text-gray-500 dark:text-gray-400">
+        <span>Tổng <strong className="text-gray-800 dark:text-gray-200">{data?.amount ?? 0}</strong> nguồn tin</span>
         {totalPages > 1 && (
           <div className="flex items-center gap-1">
             <PageBtn disabled={page === 0} onClick={() => setPage(0)}>«</PageBtn>
@@ -173,5 +173,5 @@ function ActionBtn({ title, color, icon, onClick }: { title: string; color: stri
 }
 
 function PageBtn({ disabled, onClick, children }: { disabled: boolean; onClick: () => void; children: React.ReactNode }) {
-  return <button type="button" disabled={disabled} onClick={onClick} className="rounded-xl border border-gray-200 px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-40 transition-colors">{children}</button>;
+  return <button type="button" disabled={disabled} onClick={onClick} className="rounded-xl border border-gray-200 px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-40 transition-colors dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700">{children}</button>;
 }

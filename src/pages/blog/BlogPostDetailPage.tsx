@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import { useBlogPost, useLikePost } from "@/hooks/useBlog";
+import { useBlogComments, useBlogPost, useLikePost } from "@/hooks/useBlog";
 import { BlogPostComments } from "@/components/blog/BlogPostComments";
 import { PostFormModal } from "@/components/blog/PostFormModal";
 import { ShareModal } from "@/components/blog/ShareModal";
@@ -25,6 +25,7 @@ export default function BlogPostDetailPage() {
   const user = useUserStore((s) => s.user);
 
   const { data: post, isPending, isError } = useBlogPost(id);
+  const { isPending: commentsPending } = useBlogComments(id);
   const likeMutation = useLikePost();
 
 
@@ -53,10 +54,10 @@ export default function BlogPostDetailPage() {
     }
   }
 
-  if (isPending) return (
+  if (isPending || commentsPending) return (
     <div className="mx-auto max-w-2xl animate-pulse space-y-4">
       <div className="h-8 w-1/2 rounded-xl bg-gray-200" />
-      <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm space-y-3">
+      <div className="rounded-2xl border border-gray-100 bg-white dark:border-gray-700 dark:bg-gray-800 p-6 shadow-sm space-y-3">
         <div className="flex gap-3"><div className="h-10 w-10 rounded-full bg-gray-200" /><div className="flex-1 space-y-2"><div className="h-3 w-1/3 rounded bg-gray-200" /><div className="h-2.5 w-1/4 rounded bg-gray-200" /></div></div>
         <div className="h-6 w-3/4 rounded bg-gray-200" />
         <div className="space-y-2">{[1,2,3,4,5].map(i => <div key={i} className="h-3 rounded bg-gray-200" />)}</div>
@@ -80,7 +81,7 @@ export default function BlogPostDetailPage() {
       <button
         type="button"
         onClick={() => navigate({ to: "/blog" })}
-        className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-indigo-600"
+        className="flex items-center gap-2 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-indigo-600"
       >
         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -89,7 +90,7 @@ export default function BlogPostDetailPage() {
       </button>
 
       {/* Post card */}
-      <article className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
+      <article className="overflow-hidden rounded-2xl border border-gray-100 bg-white dark:border-gray-700 dark:bg-gray-800 shadow-sm">
         {/* Header */}
         <div className="flex items-start justify-between gap-3 px-6 pt-5 pb-4">
           <button
@@ -105,18 +106,18 @@ export default function BlogPostDetailPage() {
               </div>
             )}
             <div className="text-left">
-              <p className="flex items-center gap-1 text-base font-bold text-gray-900 hover:text-indigo-600">
+              <p className="flex items-center gap-1 text-base font-bold text-gray-900 dark:text-gray-100 hover:text-indigo-600">
                 {post.author_name ?? "Người dùng"}
                 {showAdminBadge && <AdminBadge />}
               </p>
-              <p className="text-xs text-gray-400">{formatDate(post.created_at)} · {post.visibility === 0 ? "🌐 Công khai" : "🔒 Riêng tư"}</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500">{formatDate(post.created_at)} · {post.visibility === 0 ? "🌐 Công khai" : "🔒 Riêng tư"}</p>
             </div>
           </button>
           {isOwn && (
             <button
               type="button"
               onClick={() => setEditOpen(true)}
-              className="flex items-center gap-1.5 rounded-xl border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50"
+              className="flex items-center gap-1.5 rounded-xl border border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
             >
               <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
               Chỉnh sửa
@@ -126,21 +127,21 @@ export default function BlogPostDetailPage() {
 
         {/* Title + Content */}
         <div className="px-6 pb-4">
-          <h1 className="text-2xl font-extrabold text-gray-900">{post.title}</h1>
-          <p className="mt-4 whitespace-pre-wrap text-base leading-relaxed text-gray-800">{post.content}</p>
+          <h1 className="text-2xl font-extrabold text-gray-900 dark:text-gray-100">{post.title}</h1>
+          <p className="mt-4 whitespace-pre-wrap text-base leading-relaxed text-gray-800 dark:text-gray-200">{post.content}</p>
         </div>
 
         {/* Cover image */}
         {post.image_url && (
-          <div className="mx-4 mb-4 overflow-hidden rounded-2xl bg-gray-100">
+          <div className="mx-4 mb-4 overflow-hidden rounded-2xl bg-gray-100 dark:bg-gray-700">
             <img src={post.image_url} alt="" className="max-h-96 w-full object-cover" onError={(e) => ((e.target as HTMLImageElement).parentElement!.style.display = "none")} />
           </div>
         )}
 
         {/* Stats */}
-        <div className="mx-6 flex items-center gap-3 border-t border-gray-100 py-3 text-xs text-gray-400">
+        <div className="mx-6 flex items-center gap-3 border-t border-gray-100 dark:border-gray-700 py-3 text-xs text-gray-400 dark:text-gray-500">
           {likeCount > 0 && (
-            <span className="flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-red-500">
+            <span className="flex items-center gap-1 rounded-full bg-red-50 dark:bg-red-900/20 px-2 py-0.5 text-red-500">
               <svg viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" /></svg>
               {likeCount.toLocaleString("vi-VN")}
             </span>
@@ -151,12 +152,12 @@ export default function BlogPostDetailPage() {
         </div>
 
         {/* Action buttons */}
-        <div className="grid grid-cols-2 divide-x divide-gray-100 border-t border-gray-100">
+        <div className="grid grid-cols-2 divide-x divide-gray-100 dark:divide-gray-700 border-t border-gray-100 dark:border-gray-700">
           <button
             type="button"
             onClick={handleLike}
             className={cn("flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors",
-              liked ? "text-red-500 bg-red-50/60 hover:bg-red-50" : "text-gray-500 hover:bg-gray-50")}
+              liked ? "text-red-500 bg-red-50/60 dark:bg-red-900/20 hover:bg-red-50 dark:hover:bg-red-900/30" : "text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700")}
           >
             <svg viewBox="0 0 24 24" fill={liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
               className={cn("h-5 w-5 transition-transform", likeAnim && "scale-125")}>
@@ -167,7 +168,7 @@ export default function BlogPostDetailPage() {
           <button
             type="button"
             onClick={() => setShareOpen(true)}
-            className="flex items-center justify-center gap-2 py-3 text-sm font-medium text-gray-500 transition-colors hover:bg-gray-50"
+            className="flex items-center justify-center gap-2 py-3 text-sm font-medium text-gray-500 dark:text-gray-400 transition-colors hover:bg-gray-50 dark:hover:bg-gray-700"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
               <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
@@ -179,7 +180,7 @@ export default function BlogPostDetailPage() {
       </article>
 
       {/* Comments */}
-      <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+      <div className="rounded-2xl border border-gray-100 bg-white dark:border-gray-700 dark:bg-gray-800 p-6 shadow-sm">
         <BlogPostComments postId={post.id} currentUserId={user?.id} />
       </div>
 

@@ -156,7 +156,7 @@ export function NotificationBell() {
     <div ref={wrapperRef} className="relative">
       {/* Compact toast (top-right) */}
       {toast ? (
-        <div className="fixed right-3 top-[3.8rem] sm:top-20 z-[60] w-[calc(100vw-1.5rem)] max-w-sm sm:max-w-xs rounded-2xl border border-gray-200 bg-white shadow-2xl">
+        <div className="fixed right-3 top-[3.8rem] sm:top-20 z-[60] w-[calc(100vw-1.5rem)] max-w-sm sm:max-w-xs rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-2xl">
           <div className="flex items-start gap-3 p-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
@@ -165,13 +165,13 @@ export function NotificationBell() {
               </svg>
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold text-gray-900">Thông báo</p>
-              <p className="mt-0.5 line-clamp-2 text-xs text-gray-600">{toast}</p>
+              <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">Thông báo</p>
+              <p className="mt-0.5 line-clamp-2 text-xs text-gray-600 dark:text-gray-400">{toast}</p>
             </div>
             <button
               type="button"
               onClick={() => setToast(null)}
-              className="rounded-lg p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
+              className="rounded-lg p-1 text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
               aria-label="Đóng thông báo"
               title="Đóng"
             >
@@ -189,7 +189,7 @@ export function NotificationBell() {
         onClick={handleBellClick}
         className={cn(
           "relative inline-flex h-9 w-9 items-center justify-center rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500",
-          open ? "bg-indigo-50 text-indigo-600" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700",
+          open ? "bg-indigo-50 text-indigo-600" : "text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-200",
         )}
         aria-label="Thông báo"
         title="Thông báo"
@@ -218,11 +218,11 @@ export function NotificationBell() {
 
       {/* Dropdown panel */}
       {open && (
-        <div className="fixed right-2 top-[3.6rem] z-50 w-[calc(100vw-1rem)] max-w-sm rounded-2xl border border-gray-200 bg-white shadow-2xl sm:absolute sm:right-0 sm:top-11 sm:w-80 sm:max-w-none md:w-96">
+        <div className="fixed right-2 top-[3.6rem] z-50 w-[calc(100vw-1rem)] max-w-sm rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-2xl sm:absolute sm:right-0 sm:top-11 sm:w-80 sm:max-w-none md:w-96">
           {/* Header */}
-          <div className="flex items-center justify-between rounded-t-2xl border-b border-gray-100 bg-gradient-to-r from-indigo-50 to-white px-4 py-3">
+          <div className="flex items-center justify-between rounded-t-2xl border-b border-gray-100 dark:border-gray-700 bg-gradient-to-r from-indigo-50 to-white dark:from-indigo-900/20 dark:to-gray-800 px-4 py-3">
             <div className="flex items-center gap-2">
-              <h3 className="font-semibold text-gray-900">Thông báo</h3>
+              <h3 className="font-semibold text-gray-900 dark:text-gray-100">Thông báo</h3>
               {unreadCount > 0 && (
                 <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-bold text-red-600">
                   {unreadCount} mới
@@ -257,25 +257,25 @@ export function NotificationBell() {
               </div>
             ) : !data?.content.length ? (
               <div className="flex flex-col items-center justify-center py-12 text-center">
-                <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
+                <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-700">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-gray-400">
                     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
                     <path d="M13.73 21a2 2 0 0 1-3.46 0" />
                   </svg>
                 </div>
-                <p className="text-sm font-medium text-gray-500">Không có thông báo</p>
+                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Không có thông báo</p>
                 <p className="mt-0.5 text-xs text-gray-400">Bạn sẽ được thông báo khi có @mention</p>
               </div>
             ) : (
-              <ul className="divide-y divide-gray-50">
+              <ul className="divide-y divide-gray-50 dark:divide-gray-700">
                 {data.content.map((notif) => (
                   <li key={notif.id}>
                     <button
                       type="button"
                       onClick={() => handleNotificationClick(notif)}
                       className={cn(
-                        "group flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-gray-50",
-                        !notif.is_read && "bg-indigo-50/50 hover:bg-indigo-50",
+                        "group flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-gray-50 dark:hover:bg-gray-700",
+                        !notif.is_read && "bg-indigo-50/50 dark:bg-indigo-900/20 hover:bg-indigo-50 dark:hover:bg-indigo-900/30",
                       )}
                     >
                       {/* Sender avatar */}
@@ -296,7 +296,7 @@ export function NotificationBell() {
                         <p
                           className={cn(
                             "text-sm leading-snug",
-                            !notif.is_read ? "font-semibold text-gray-900" : "font-medium text-gray-700",
+                            !notif.is_read ? "font-semibold text-gray-900 dark:text-gray-100" : "font-medium text-gray-700 dark:text-gray-200",
                           )}
                         >
                           {notif.message}
@@ -317,21 +317,21 @@ export function NotificationBell() {
 
           {/* Pagination footer */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-between rounded-b-2xl border-t border-gray-100 bg-gray-50/60 px-4 py-2">
+            <div className="flex items-center justify-between rounded-b-2xl border-t border-gray-100 dark:border-gray-700 bg-gray-50/60 dark:bg-gray-800/40 px-4 py-2">
               <button
                 onClick={() => setPage((p) => p - 1)}
                 disabled={page === 0}
-                className="text-xs font-medium text-gray-500 hover:text-gray-800 disabled:opacity-40"
+                className="text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-100 disabled:opacity-40"
               >
                 ← Trước
               </button>
-              <span className="text-xs text-gray-400">
+              <span className="text-xs text-gray-400 dark:text-gray-500">
                 {page + 1} / {totalPages}
               </span>
               <button
                 onClick={() => setPage((p) => p + 1)}
                 disabled={page >= totalPages - 1}
-                className="text-xs font-medium text-gray-500 hover:text-gray-800 disabled:opacity-40"
+                className="text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-100 disabled:opacity-40"
               >
                 Tiếp →
               </button>
