@@ -12,7 +12,8 @@ document.title = "News";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
+      staleTime: 0,
+      refetchOnMount: true,
       retry: 1,
       refetchOnWindowFocus: false,
     },

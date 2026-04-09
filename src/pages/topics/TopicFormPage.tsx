@@ -76,7 +76,7 @@ export default function TopicFormPage({ mode, recordId, embedded = false, onClos
         <ModalHeader title={titleMap[mode]} subtitle={existing?.name} onClose={onClose ?? (() => {})} icon={<TagIcon />} accent={accentMap[mode]} />
         <ModalBody>
           {readOnly && loadPending ? (
-            <div className="space-y-3">{[1, 2, 3, 4, 5].map((i) => <div key={i} className="h-10 animate-pulse rounded-xl bg-gray-100" />)}</div>
+            <div className="space-y-3">{[1, 2, 3, 4, 5].map((i) => <div key={i} className="h-10 animate-pulse rounded-xl bg-gray-100 dark:bg-gray-700" />)}</div>
           ) : (
             <Fields form={form} setForm={setForm} readOnly={readOnly} sources={sources} error={error} />
           )}
@@ -85,12 +85,12 @@ export default function TopicFormPage({ mode, recordId, embedded = false, onClos
           <ModalFooter>
             {readOnly ? (
               <>
-                <button type="button" onClick={onClose} className="rounded-xl border border-gray-200 px-5 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">Đóng</button>
+                <button type="button" onClick={onClose} className="rounded-xl border border-gray-200 px-5 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">Đóng</button>
                 <button type="button" onClick={onEdit} className="rounded-xl bg-amber-500 px-5 py-2 text-sm font-semibold text-white hover:bg-amber-600 transition-colors">Chỉnh sửa</button>
               </>
             ) : (
               <>
-                <button type="button" onClick={onClose} className="rounded-xl border border-gray-200 px-5 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">Hủy</button>
+                <button type="button" onClick={onClose} className="rounded-xl border border-gray-200 px-5 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">Hủy</button>
                 <button type="button" disabled={isPending} onClick={() => void handleSubmit()} className="rounded-xl bg-indigo-600 px-5 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50 transition-colors">
                   {isPending ? "Đang lưu..." : "Lưu thay đổi"}
                 </button>
@@ -105,17 +105,17 @@ export default function TopicFormPage({ mode, recordId, embedded = false, onClos
   return (
     <div className="mx-auto max-w-lg">
       <div className="mb-6 flex items-center gap-3">
-        <button type="button" onClick={() => navigate({ to: "/topics" })} className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 transition-colors">
+        <button type="button" onClick={() => navigate({ to: "/topics" })} className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 transition-colors dark:text-gray-400 dark:hover:text-gray-200">
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
           Quay lại
         </button>
-        <h1 className="text-2xl font-bold text-gray-900">{titleMap[mode]}</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{titleMap[mode]}</h1>
       </div>
-      <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+      <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
         <form onSubmit={handleSubmit} className="space-y-4">
           <Fields form={form} setForm={setForm} readOnly={readOnly} sources={sources} error={error} />
           <div className="flex gap-3 pt-2">
-            <button type="button" onClick={() => navigate({ to: "/topics" })} className="flex-1 rounded-xl border border-gray-200 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">Hủy</button>
+            <button type="button" onClick={() => navigate({ to: "/topics" })} className="flex-1 rounded-xl border border-gray-200 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">Hủy</button>
             {!readOnly && (
               <button type="submit" disabled={isPending} className="flex-1 rounded-xl bg-indigo-600 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50 transition-colors">
                 {isPending ? "Đang lưu..." : "Lưu"}

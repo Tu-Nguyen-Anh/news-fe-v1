@@ -82,7 +82,7 @@ export default function TopicListPage() {
             <thead>
               <tr className="border-b border-gray-100 bg-gray-50/80 dark:border-gray-700 dark:bg-gray-800">
                 {["#", "Tên chủ đề", "Nguồn tin", "URL", "RSS", ""].map((h) => (
-                  <th key={h} className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-gray-400">{h}</th>
+                  <th key={h} className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">{h}</th>
                 ))}
               </tr>
             </thead>
@@ -133,14 +133,14 @@ export default function TopicListPage() {
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-2 text-sm text-gray-500">
-        <span>Tổng <strong className="text-gray-800">{data?.amount ?? 0}</strong> chủ đề</span>
+      <div className="flex flex-wrap items-center justify-between gap-2 text-sm text-gray-500 dark:text-gray-400">
+        <span>Tổng <strong className="text-gray-800 dark:text-gray-200">{data?.amount ?? 0}</strong> chủ đề</span>
         {totalPages > 1 && (
           <div className="flex items-center gap-1">
             <PageBtn disabled={page === 0} onClick={() => setPage(0)}>«</PageBtn>
             <PageBtn disabled={page === 0} onClick={() => setPage((p) => p - 1)}>‹</PageBtn>
             <span className="rounded-xl bg-violet-600 px-3.5 py-1.5 text-sm font-semibold text-white">{page + 1}</span>
-            <span className="px-1 text-gray-400">/ {totalPages}</span>
+            <span className="px-1 text-gray-400 dark:text-gray-500">/ {totalPages}</span>
             <PageBtn disabled={page >= totalPages - 1} onClick={() => setPage((p) => p + 1)}>›</PageBtn>
             <PageBtn disabled={page >= totalPages - 1} onClick={() => setPage(totalPages - 1)}>»</PageBtn>
           </div>
@@ -164,5 +164,5 @@ function ActionBtn({ title, color, icon, onClick }: { title: string; color: stri
 }
 
 function PageBtn({ disabled, onClick, children }: { disabled: boolean; onClick: () => void; children: React.ReactNode }) {
-  return <button type="button" disabled={disabled} onClick={onClick} className="rounded-xl border border-gray-200 px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-40 transition-colors">{children}</button>;
+  return <button type="button" disabled={disabled} onClick={onClick} className="rounded-xl border border-gray-200 px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-40 transition-colors dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800">{children}</button>;
 }

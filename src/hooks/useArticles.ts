@@ -26,8 +26,6 @@ export function useArticleFilterInfinite(
     },
     // Keep old results visible while new filter query is fetching → no skeleton flash
     placeholderData: keepPreviousData,
-    // Don't refetch for 2 minutes (navigating away + back won't re-fetch)
-    staleTime: 2 * 60 * 1000,
   });
 }
 

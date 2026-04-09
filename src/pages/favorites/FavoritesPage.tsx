@@ -55,8 +55,8 @@ export default function FavoritesPage() {
           </svg>
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Bài viết yêu thích</h1>
-          <p className="text-sm text-gray-500">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Bài viết yêu thích</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
             {isPending ? "Đang tải..." : `${data?.amount ?? 0} bài viết`}
           </p>
         </div>
@@ -68,8 +68,8 @@ export default function FavoritesPage() {
           <Spinner />
         </div>
       ) : isError ? (
-        <div className="rounded-xl border border-red-100 bg-red-50 p-10 text-center">
-          <p className="font-medium text-red-600">Không thể tải danh sách yêu thích</p>
+        <div className="rounded-xl border border-red-100 bg-red-50 p-10 text-center dark:border-red-900/30 dark:bg-red-900/20">
+          <p className="font-medium text-red-600 dark:text-red-300">Không thể tải danh sách yêu thích</p>
           <button
             onClick={() => refetch()}
             className="mt-3 rounded-lg bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600"

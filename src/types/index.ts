@@ -86,6 +86,25 @@ export interface SourceWithTopics {
   topics: Array<{ id: number; name: string }>;
 }
 
+export interface TopicWithFollowed {
+  id: number;
+  name: string;
+  url: string;
+  rss_url: string | null;
+  description: string | null;
+  followed: boolean;
+}
+
+export interface SourceWithFollowTopics {
+  id: number;
+  name: string;
+  url: string;
+  avatar: string | null;
+  type: number | null;
+  description: string | null;
+  topics: TopicWithFollowed[];
+}
+
 // ─── Topic ────────────────────────────────────────────────────────────────────
 
 export interface Topic {
@@ -146,6 +165,7 @@ export interface ArticleFilterRequest {
   source_id?: number;
   from_pub_date?: string;
   to_pub_date?: string;
+  followed_only?: boolean;
 }
 
 // ─── Common API ───────────────────────────────────────────────────────────────

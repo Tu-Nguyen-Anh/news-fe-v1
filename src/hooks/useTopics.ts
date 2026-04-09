@@ -42,3 +42,19 @@ export function useDeleteTopic() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["topics"] }),
   });
 }
+
+export function useFollowTopic() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (topicId: number) => topicService.follow(topicId),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["sources", "all-with-follow-topics"] }),
+  });
+}
+
+export function useUnfollowTopic() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (topicId: number) => topicService.unfollow(topicId),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["sources", "all-with-follow-topics"] }),
+  });
+}

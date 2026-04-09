@@ -148,7 +148,7 @@ export default function UserListPage() {
         <div className="overflow-x-auto">
           <table className="min-w-[44rem] w-full">
             <thead>
-              <tr className="border-b border-gray-100 bg-gray-50/80">
+              <tr className="border-b border-gray-100 bg-gray-50/80 dark:border-gray-700 dark:bg-gray-800">
                 {["#", "Tài khoản", "Họ tên", "Email", "SĐT", "Trạng thái", ""].map((h) => (
                   <th key={h} className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">{h}</th>
                 ))}

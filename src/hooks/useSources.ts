@@ -27,6 +27,14 @@ export function useSourcesWithTopics() {
   });
 }
 
+export function useSourcesWithFollowTopics() {
+  return useQuery({
+    queryKey: ["sources", "all-with-follow-topics"],
+    queryFn: sourceService.getAllWithFollowTopics,
+    refetchOnMount: "always",
+  });
+}
+
 export function useCreateSource() {
   const qc = useQueryClient();
   return useMutation({

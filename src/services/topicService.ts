@@ -1,6 +1,17 @@
 import type { Topic, TopicRequest, TopicFilterRequest, PageResponse } from "@/types";
 import { apiClient } from "./apiClient";
 
+export interface FollowingTopicItem {
+  id: number;
+  topic_id: number;
+  topic_name: string;
+  topic_url: string;
+  rss_url: string | null;
+  source_id: number;
+  source_name: string;
+  followed_at: number;
+}
+
 export const topicService = {
   filter: async (req: TopicFilterRequest): Promise<PageResponse<Topic>> => {
     const { data } = await apiClient.post<{ data: PageResponse<Topic> }>("/topics/filter", req);
@@ -42,5 +53,21 @@ export const topicService = {
     } catch {
       return true;
     }
+  },
+
+  follow: async (topicId: number): Promise<void> => {
+    await apiClient.post(`/topics/${topicId}/follow`);
+  },
+
+  unfollow: async (topicId: number): Promise<void> => {
+    await apiClient.delete(`/topics/${topicId}/follow`);
+  },
+
+  getFollowing: async (page = 0, size = 100): Promise<{ data: FollowingTopicItem[]; total: number }> => {
+    const { data } = await apiClient.get<{ data: { data: FollowingTopicItem[]; total: number } }>(
+      "/topics/following",
+      { params: { page, size } },
+    );
+    return data.data;
   },
 };

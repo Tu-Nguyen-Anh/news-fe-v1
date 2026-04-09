@@ -7,6 +7,9 @@ import { NotificationBell } from "@/components/layout/NotificationBell";
 import { Link } from "@tanstack/react-router";
 import { useChatStore } from "@/store/chatStore";
 import { useThemeStore } from "@/store/themeStore";
+import { useMutation } from "@tanstack/react-query";
+import { userService } from "@/services/userService";
+import { TextField } from "@/components/ui/TextField";
 
 function ChatIconButton() {
   const totalUnread = useChatStore((s) => s.totalUnread);
@@ -84,9 +87,157 @@ function ThemeToggle() {
   );
 }
 
+function ChangePasswordModal({ open, onClose, userId }: { open: boolean; onClose: () => void; userId: number }) {
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errors, setErrors] = useState<{ old?: string; new?: string; confirm?: string; api?: string }>({});
+  const [success, setSuccess] = useState(false);
+
+  const mutation = useMutation({
+    mutationFn: () =>
+      userService.changePassword(userId, {
+        old_password: oldPassword,
+        new_password: newPassword,
+        confirm_password: confirmPassword,
+      }),
+    onSuccess: () => {
+      setSuccess(true);
+      setOldPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setErrors({});
+    },
+    onError: (err: unknown) => {
+      const msg =
+        err && typeof err === "object" && "response" in err
+          ? ((err as { response?: { data?: { message?: string } } }).response?.data?.message ?? "Đổi mật khẩu thất bại")
+          : "Đổi mật khẩu thất bại";
+      setErrors((e) => ({ ...e, api: msg }));
+    },
+  });
+
+  function validate() {
+    const e: typeof errors = {};
+    if (!oldPassword) e.old = "Vui lòng nhập mật khẩu cũ";
+    if (!newPassword) e.new = "Vui lòng nhập mật khẩu mới";
+    else if (newPassword.length < 8) e.new = "Mật khẩu mới ít nhất 8 ký tự";
+    if (!confirmPassword) e.confirm = "Vui lòng xác nhận mật khẩu";
+    else if (confirmPassword !== newPassword) e.confirm = "Xác nhận mật khẩu không khớp";
+    return e;
+  }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const errs = validate();
+    if (Object.keys(errs).length > 0) { setErrors(errs); return; }
+    setErrors({});
+    mutation.mutate();
+  }
+
+  function handleClose() {
+    setOldPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+    setErrors({});
+    setSuccess(false);
+    onClose();
+  }
+
+  return (
+    <Modal open={open} onClose={handleClose} className="max-w-md">
+      <ModalHeader
+        title="Đổi mật khẩu"
+        onClose={handleClose}
+        icon={
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
+        }
+        accent="indigo"
+      />
+      <ModalBody>
+        {success ? (
+          <div className="flex flex-col items-center gap-3 py-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-emerald-600">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            </div>
+            <p className="text-sm font-medium text-gray-900">Đổi mật khẩu thành công!</p>
+          </div>
+        ) : (
+          <form id="change-password-form" onSubmit={handleSubmit} className="space-y-4" noValidate>
+            {errors.api && (
+              <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{errors.api}</div>
+            )}
+            <TextField
+              id="old-password"
+              label="Mật khẩu cũ"
+              type="password"
+              fullWidth
+              value={oldPassword}
+              onChange={(e) => setOldPassword(e.target.value)}
+              error={errors.old}
+              autoComplete="current-password"
+            />
+            <TextField
+              id="new-password"
+              label="Mật khẩu mới"
+              type="password"
+              fullWidth
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              error={errors.new}
+              autoComplete="new-password"
+              helperText="Ít nhất 8 ký tự, có chữ hoa, số và ký tự đặc biệt"
+            />
+            <TextField
+              id="confirm-password"
+              label="Xác nhận mật khẩu mới"
+              type="password"
+              fullWidth
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              error={errors.confirm}
+              autoComplete="new-password"
+            />
+          </form>
+        )}
+      </ModalBody>
+      <ModalFooter>
+        {success ? (
+          <Button variant="primary" size="sm" onClick={handleClose}>Đóng</Button>
+        ) : (
+          <>
+            <button
+              type="button"
+              onClick={handleClose}
+              className="rounded-xl border border-gray-200 bg-white px-5 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+            >
+              Hủy
+            </button>
+            <Button
+              variant="primary"
+              size="sm"
+              type="submit"
+              form="change-password-form"
+              isLoading={mutation.isPending}
+            >
+              Xác nhận
+            </Button>
+          </>
+        )}
+      </ModalFooter>
+    </Modal>
+  );
+}
+
 export function Header({ onMenuClick }: HeaderProps = {}) {
   const { user, logout, isLoggingOut } = useAuth();
   const [profileOpen, setProfileOpen] = useState(false);
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
 
   const initial =
     user?.full_name?.trim()?.[0]?.toUpperCase() ?? user?.username?.trim()?.[0]?.toUpperCase() ?? "U";
@@ -196,12 +347,27 @@ export function Header({ onMenuClick }: HeaderProps = {}) {
           <button
             type="button"
             onClick={() => setProfileOpen(false)}
-            className="rounded-xl border border-gray-200 bg-white px-5 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+            className="rounded-xl border border-gray-200 bg-white px-5 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
           >
             Đóng
           </button>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => { setProfileOpen(false); setChangePasswordOpen(true); }}
+          >
+            Đổi mật khẩu
+          </Button>
         </ModalFooter>
       </Modal>
+
+      {user && (
+        <ChangePasswordModal
+          open={changePasswordOpen}
+          onClose={() => setChangePasswordOpen(false)}
+          userId={user.id}
+        />
+      )}
     </header>
   );
 }

@@ -1,4 +1,4 @@
-import type { Source, SourceRequest, SourceFilterRequest, PageResponse, SourceWithTopics } from "@/types";
+import type { Source, SourceRequest, SourceFilterRequest, PageResponse, SourceWithTopics, SourceWithFollowTopics } from "@/types";
 import { apiClient } from "./apiClient";
 
 export const sourceService = {
@@ -28,6 +28,11 @@ export const sourceService = {
 
   getAllWithTopics: async (): Promise<SourceWithTopics[]> => {
     const { data } = await apiClient.get<{ data: SourceWithTopics[] }>("/sources/all-with-topics");
+    return data.data;
+  },
+
+  getAllWithFollowTopics: async (): Promise<SourceWithFollowTopics[]> => {
+    const { data } = await apiClient.get<{ data: SourceWithFollowTopics[] }>("/sources/all-with-topics");
     return data.data;
   },
 

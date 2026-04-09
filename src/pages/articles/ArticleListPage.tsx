@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { ArticleDetailBody } from "@/components/articles/ArticleDetailBody";
 import { Modal } from "@/components/ui/Modal";
 import { SafeImage } from "@/components/ui/SafeImage";
@@ -31,9 +32,10 @@ type FilterState = {
   topicId: string;
   sourceId: string;
   datePreset: DatePreset;
+  followedOnly: boolean;
 };
 
-const EMPTY_FILTER: FilterState = { keyword: "", topicId: "", sourceId: "", datePreset: "all" };
+const EMPTY_FILTER: FilterState = { keyword: "", topicId: "", sourceId: "", datePreset: "all", followedOnly: true };
 
 const DATE_PRESETS: { id: DatePreset; label: string }[] = [
   { id: "all", label: "Tất cả" },
@@ -162,19 +164,24 @@ export default function ArticleListPage() {
   const apiFilters = useMemo<Omit<ArticleFilterRequest, "page" | "size">>(() => {
     const req: Omit<ArticleFilterRequest, "page" | "size"> = {};
     if (debouncedKeyword) req.keyword = debouncedKeyword;
-    if (filters.topicId) req.topic_id = Number(filters.topicId);
-    if (filters.sourceId) req.source_id = Number(filters.sourceId);
+    if (filters.followedOnly) {
+      req.followed_only = true;
+    } else {
+      if (filters.topicId) req.topic_id = Number(filters.topicId);
+      if (filters.sourceId) req.source_id = Number(filters.sourceId);
+    }
     const { from, to } = getDateRange(filters.datePreset);
     if (from) req.from_pub_date = from;
     if (to) req.to_pub_date = to;
     return req;
-  }, [debouncedKeyword, filters.topicId, filters.sourceId, filters.datePreset]);
+  }, [debouncedKeyword, filters.topicId, filters.sourceId, filters.datePreset, filters.followedOnly]);
 
   const hasActiveFilter =
     !!debouncedKeyword ||
     !!filters.topicId ||
     !!filters.sourceId ||
-    filters.datePreset !== "all";
+    filters.datePreset !== "all" ||
+    filters.followedOnly;
 
   const { data: sourcesWithTopics, isPending: sourcesLoading } = useSourcesWithTopics();
   const sources = sourcesWithTopics ?? [];
@@ -462,7 +469,7 @@ export default function ArticleListPage() {
                 onChange={(e) =>
                   setFilters((f) => ({ ...f, sourceId: e.target.value, topicId: "" }))
                 }
-                disabled={sourcesLoading}
+                disabled={sourcesLoading || filters.followedOnly}
               >
                 <option value="">{sourcesLoading ? "Đang tải..." : "Tất cả nguồn"}</option>
                 {sources.map((s) => (
@@ -479,7 +486,7 @@ export default function ArticleListPage() {
               <FilterSelect
                 value={filters.topicId}
                 onChange={(e) => setFilters((f) => ({ ...f, topicId: e.target.value }))}
-                disabled={sourcesLoading || topics.length === 0}
+                disabled={sourcesLoading || topics.length === 0 || filters.followedOnly}
               >
                 <option value="">
                   {sourcesLoading ? "Đang tải..." : topics.length === 0 && filters.sourceId ? "Không có chủ đề" : "Tất cả chủ đề"}
@@ -488,6 +495,32 @@ export default function ArticleListPage() {
                   <option key={t.id} value={t.id}>{t.name}</option>
                 ))}
               </FilterSelect>
+            </div>
+
+            {/* Followed only toggle */}
+            <div className="flex flex-col gap-1.5 sm:col-span-2 lg:col-span-4">
+              <label className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Chế độ xem</label>
+              <button
+                type="button"
+                onClick={() =>
+                  setFilters((f) => ({
+                    ...f,
+                    followedOnly: !f.followedOnly,
+                    topicId: !f.followedOnly ? "" : f.topicId,
+                    sourceId: !f.followedOnly ? "" : f.sourceId,
+                  }))
+                }
+                className={`inline-flex w-fit items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-semibold shadow-sm transition-all ${
+                  filters.followedOnly
+                    ? "border-indigo-600 bg-indigo-600 text-white shadow-indigo-200 dark:shadow-indigo-900"
+                    : "border-gray-200 bg-white text-gray-600 hover:border-indigo-400 hover:text-indigo-600 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-indigo-500 dark:hover:text-indigo-400"
+                }`}
+              >
+                <svg className="h-3.5 w-3.5" fill={filters.followedOnly ? "currentColor" : "none"} stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+                Chỉ xem chủ đề đang theo dõi
+              </button>
             </div>
 
             {/* Date preset */}
@@ -552,6 +585,12 @@ export default function ArticleListPage() {
             <FilterChip
               label={DATE_PRESETS.find((p) => p.id === filters.datePreset)?.label ?? ""}
               onRemove={() => setFilters((f) => ({ ...f, datePreset: "all" }))}
+            />
+          )}
+          {filters.followedOnly && (
+            <FilterChip
+              label="Đang theo dõi"
+              onRemove={() => setFilters((f) => ({ ...f, followedOnly: false }))}
             />
           )}
         </div>
@@ -647,6 +686,7 @@ export default function ArticleListPage() {
                     <td colSpan={7} className="p-8">
                       <ArticlesEmptyState
                         hasActiveFilter={hasActiveFilter}
+                        followedOnly={filters.followedOnly}
                         onCreate={() => setModal({ kind: "create" })}
                         onReset={handleReset}
                       />
@@ -693,6 +733,7 @@ export default function ArticleListPage() {
           articles.length === 0 ? (
             <ArticlesEmptyState
               hasActiveFilter={hasActiveFilter}
+              followedOnly={filters.followedOnly}
               onCreate={() => setModal({ kind: "create" })}
               onReset={handleReset}
             />
@@ -753,6 +794,7 @@ export default function ArticleListPage() {
               <li>
                 <ArticlesEmptyState
                   hasActiveFilter={hasActiveFilter}
+                  followedOnly={filters.followedOnly}
                   onCreate={() => setModal({ kind: "create" })}
                   onReset={handleReset}
                 />
@@ -909,13 +951,53 @@ function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }
 
 function ArticlesEmptyState({
   hasActiveFilter,
+  followedOnly,
   onCreate,
   onReset,
 }: {
   hasActiveFilter: boolean;
+  followedOnly: boolean;
   onCreate: () => void;
   onReset: () => void;
 }) {
+  if (followedOnly) {
+    return (
+      <div className="mx-auto flex max-w-md flex-col items-center justify-center gap-4 p-8 text-center">
+        <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-100 to-violet-100 dark:from-indigo-900/40 dark:to-violet-900/40">
+          <svg className="h-8 w-8 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+          </svg>
+        </div>
+        <div>
+          <p className="text-base font-semibold text-gray-900 dark:text-gray-100">
+            Bạn chưa theo dõi chủ đề nào
+          </p>
+          <p className="mt-1.5 text-sm text-gray-500 dark:text-gray-400">
+            Hãy theo dõi ít nhất một chủ đề để xem bài viết tại đây.
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          <Link
+            to="/follow"
+            className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 transition-colors"
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+            Chọn chủ đề theo dõi
+          </Link>
+          <button
+            type="button"
+            onClick={onReset}
+            className="rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+          >
+            Xem tất cả bài viết
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto flex max-w-md flex-col items-center justify-center gap-3 p-6 text-center">
       <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-600 via-fuchsia-600 to-rose-600 text-white shadow-sm">
@@ -939,7 +1021,7 @@ function ArticlesEmptyState({
           <button
             type="button"
             onClick={onReset}
-                className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+            className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
           >
             Xóa bộ lọc
           </button>

@@ -17,6 +17,7 @@ const navItems: NavItem[] = [
   { to: "/users", label: "nav.users" },
   { to: "/sources", label: "nav.sources" },
   { to: "/topics", label: "nav.topics" },
+  { to: "/follow", label: "nav.follow" },
   { to: "/favorites", label: "nav.favorites" },
   { to: "/view-history", label: "nav.viewHistory" },
 ];

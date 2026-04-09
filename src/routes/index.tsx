@@ -222,6 +222,14 @@ const chatRoute = createRoute({
   component: lazyRouteComponent(() => import("@/pages/chat/ChatPage")),
 });
 
+// ─── Follow Topics ────────────────────────────────────────────────────────────
+
+const followTopicsRoute = createRoute({
+  getParentRoute: () => mainLayoutRoute,
+  path: "/follow",
+  component: lazyRouteComponent(() => import("@/pages/follow/FollowTopicPage")),
+});
+
 // ─── Favorites & View History ─────────────────────────────────────────────────
 
 const favoritesRoute = createRoute({
@@ -261,6 +269,7 @@ const routeTree = rootRoute.addChildren([
       articleEditRoute,
       profileRoute,
       chatRoute,
+      followTopicsRoute,
       favoritesRoute,
       viewHistoryRoute,
       blogFeedRoute,
