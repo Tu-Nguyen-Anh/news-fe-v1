@@ -1,0 +1,54 @@
+spring:
+  datasource:
+    #    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/postgres?currentSchema=news_db}
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/news_db}
+  application:
+    name: soar
+  profiles:
+    active: ${PROFILE_ACTIVE:dev}
+  liquibase:
+    change-log: classpath:db/master.xml
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 50MB
+      max-request-size: 500MB
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ncshoadondientu@gmail.com
+    password: nbdl rklu scba ztzo
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          ssl:
+            trust: smtp.gmail.com
+server:
+  port: ${PORT_INTERNAL:8188}
+
+logging:
+  level:
+    sql: debug
+
+jwt:
+  access-token:
+    secret-key: b3NpbnRfYXBpX2F1dGhvcml6YXRpb25AMjAyM19hY2Nlc3NfdG9rZW4=
+    ttl: 2592000000
+  refresh-token:
+    secret-key: b3NpbnRfYXBpX2F1dGhvcml6YXRpb25AMjAyM19yZWZyZXNoX3Rva2Vu
+    ttl: 3592000000
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:localhost:8888}
+
+storage:
+  rustfs:
+    endpoint: ${RUSTFS_ENDPOINT:http://localhost:9008}
+    access-key: ${RUSTFS_ACCESS_KEY:minioadmin}
+    secret-key: ${RUSTFS_SECRET_KEY:minioadmin}
+    bucket: ${RUSTFS_BUCKET:news}
+    region: ${RUSTFS_REGION:us-east-1}
+    public-url: ${RUSTFS_PUBLIC_URL:http://localhost:9008}

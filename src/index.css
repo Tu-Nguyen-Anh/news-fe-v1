@@ -65,6 +65,18 @@ body {
 }
 
 #root {
+  /*
+   * position: fixed + top/left/right anchors the app to the visual viewport.
+   * On iOS Safari, focusing an input causes the browser to scroll the layout
+   * viewport to bring the element into view. With position:static that scroll
+   * pushes content behind the keyboard. position:fixed ignores that scroll and
+   * stays locked to the visual viewport, so --app-height (set by
+   * useVisualViewport) correctly shrinks the layout above the keyboard.
+   */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   height: var(--app-height);  /* tracks visual viewport, shrinks when keyboard opens */
   display: flex;
   flex-direction: column;

@@ -11,10 +11,19 @@ import { useEffect } from "react";
 export function useVisualViewport() {
   useEffect(() => {
     const update = () => {
+      const vv = window.visualViewport;
       // visualViewport.height is the visible area above the keyboard.
       // Fall back to window.innerHeight on browsers that don't support it.
-      const h = window.visualViewport?.height ?? window.innerHeight;
+      const h = vv?.height ?? window.innerHeight;
       document.documentElement.style.setProperty("--app-height", `${h}px`);
+
+      // iOS Safari scrolls the layout viewport when an input is focused to
+      // bring it into view (visualViewport.offsetTop > 0). Since #root is
+      // position:fixed this visual scroll is harmless, but resetting it
+      // prevents Safari from accumulating offset across multiple focus events.
+      if (vv && vv.offsetTop > 0) {
+        window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+      }
     };
 
     update(); // set immediately

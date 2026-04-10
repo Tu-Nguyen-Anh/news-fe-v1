@@ -70,7 +70,7 @@ export default function ChatPage() {
 
   return (
     // flex-1 min-h-0 fills the parent flex column (main), providing a definite height
-    <div className="flex flex-1 min-h-0 bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-700">
+    <div className="flex flex-1 min-h-0 bg-white dark:bg-gray-800 overflow-hidden sm:rounded-xl sm:shadow-sm sm:border border-gray-100 dark:border-gray-700">
       {/* ── Sidebar ─────────────────────────────────────────────────────── */}
       <div
         className={cn(

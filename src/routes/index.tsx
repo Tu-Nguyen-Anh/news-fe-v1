@@ -244,6 +244,20 @@ const viewHistoryRoute = createRoute({
   component: lazyRouteComponent(() => import("@/pages/favorites/ViewHistoryPage")),
 });
 
+// ─── Feedback ─────────────────────────────────────────────────────────────────
+
+const feedbackRoute = createRoute({
+  getParentRoute: () => mainLayoutRoute,
+  path: "/feedback",
+  component: lazyRouteComponent(() => import("@/pages/feedback/FeedbackPage")),
+});
+
+const adminFeedbackRoute = createRoute({
+  getParentRoute: () => mainLayoutRoute,
+  path: "/admin/feedbacks",
+  component: lazyRouteComponent(() => import("@/pages/admin/feedbacks/AdminFeedbackPage")),
+});
+
 // ─── Route tree & router ──────────────────────────────────────────────────────
 
 const routeTree = rootRoute.addChildren([
@@ -272,6 +286,8 @@ const routeTree = rootRoute.addChildren([
       followTopicsRoute,
       favoritesRoute,
       viewHistoryRoute,
+      feedbackRoute,
+      adminFeedbackRoute,
       blogFeedRoute,
       blogPostDetailRoute,
       blogUserProfileRoute,

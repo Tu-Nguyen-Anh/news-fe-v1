@@ -26,6 +26,8 @@
     "viewHistory": "History",
     "blog": "Community",
     "chat": "Messages",
+    "feedback": "Feedback",
+    "adminFeedback": "Manage Feedback",
     "settings": "Settings"
   },
   "common": {

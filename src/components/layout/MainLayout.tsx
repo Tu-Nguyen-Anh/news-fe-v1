@@ -20,6 +20,8 @@ const navItems: NavItem[] = [
   { to: "/follow", label: "nav.follow" },
   { to: "/favorites", label: "nav.favorites" },
   { to: "/view-history", label: "nav.viewHistory" },
+  { to: "/feedback", label: "nav.feedback" },
+  { to: "/admin/feedbacks", label: "nav.adminFeedback" },
 ];
 
 export function MainLayout() {
@@ -69,7 +71,7 @@ export function MainLayout() {
         <main
           className={
             isChatPage
-              ? "flex min-h-0 min-w-0 flex-1 overflow-hidden bg-gray-50 dark:bg-gray-950 p-4 sm:p-6"
+              ? "flex min-h-0 min-w-0 flex-1 overflow-hidden bg-gray-50 dark:bg-gray-950 sm:p-4 lg:p-6"
               : "flex min-h-0 min-w-0 flex-1 flex-col overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-950 p-4 pb-6 sm:p-6 sm:pb-6"
           }
         >

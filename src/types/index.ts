@@ -449,6 +449,8 @@ export interface ChatMessage {
   created_at: number;
   readers?: ReaderResponse[];
   reactions?: ReactionResponse[];
+  /** Optimistic UI: true while waiting for server confirmation via WebSocket. */
+  pending?: boolean;
 }
 
 export interface ChatMessagePage {
@@ -469,4 +471,47 @@ export interface AddMemberRequest {
 export interface SendMessageRequest {
   content: string;
   message_type: "TEXT" | "IMAGE";
+}
+
+// ─── Upload ───────────────────────────────────────────────────────────────────
+
+export interface UploadResult {
+  url: string;
+  original_name: string;
+  size: number;
+  content_type: string;
+}
+
+// ─── Feedback ─────────────────────────────────────────────────────────────────
+
+export interface FeedbackImage {
+  id: number;
+  image_url: string;
+  original_name: string | null;
+  uploaded_at: number;
+}
+
+export interface Feedback {
+  id: number;
+  user_id: number;
+  user_full_name: string;
+  user_avatar: string | null;
+  title: string | null;
+  content: string;
+  status: 0 | 1 | 2 | 3;
+  status_label: "PENDING" | "IN_REVIEW" | "RESOLVED" | "REJECTED";
+  created_at: number;
+  updated_at: number;
+  images: FeedbackImage[];
+}
+
+export interface FeedbackRequest {
+  title?: string;
+  content: string;
+  image_urls?: string[];
+}
+
+export interface FeedbackListResponse {
+  items: Feedback[];
+  total: number;
 }

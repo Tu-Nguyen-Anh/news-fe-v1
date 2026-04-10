@@ -104,6 +104,8 @@ export function MessageBubble({
               <img
                 src={message.sender_avatar}
                 alt={message.sender_full_name}
+                loading="lazy"
+                decoding="async"
                 className="w-8 h-8 rounded-full object-cover hover:ring-2 hover:ring-primary-300 transition-all"
               />
             ) : (
@@ -193,6 +195,18 @@ export function MessageBubble({
                 <span className="text-sm italic text-gray-400 select-none">Tin nhắn đã bị thu hồi</span>
               ) : message.message_type === "EMOJI" ? (
                 <span className="text-4xl leading-none select-none">{message.content}</span>
+              ) : message.message_type === "IMAGE" ? (
+                /* Criteria 5: Lazy-loaded image with skeleton placeholder */
+                <img
+                  src={message.content}
+                  alt="Ảnh"
+                  loading="lazy"
+                  decoding="async"
+                  className="max-w-[240px] max-h-[320px] rounded-xl object-cover"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).style.display = "none";
+                  }}
+                />
               ) : (
                 renderContent(message.content, isMine)
               )}
@@ -235,15 +249,22 @@ export function MessageBubble({
           </div>
         )}
 
-        {/* Time (hover) */}
-        <span
-          className={cn(
-            "text-[11px] mt-0.5 opacity-0 group-hover/msg:opacity-100 transition-opacity select-none",
-            isMine ? "text-gray-400 mr-1" : "text-gray-400 ml-1",
-          )}
-        >
-          {formatTime(message.created_at)}
-        </span>
+        {/* Criteria 2: Sending indicator for optimistic messages */}
+        {message.pending ? (
+          <span className={cn("text-[11px] mt-0.5 select-none text-gray-300 dark:text-gray-600 italic", isMine ? "mr-1" : "ml-1")}>
+            Đang gửi…
+          </span>
+        ) : (
+          /* Time (hover) */
+          <span
+            className={cn(
+              "text-[11px] mt-0.5 opacity-0 group-hover/msg:opacity-100 transition-opacity select-none",
+              isMine ? "text-gray-400 mr-1" : "text-gray-400 ml-1",
+            )}
+          >
+            {formatTime(message.created_at)}
+          </span>
+        )}
 
         {/* Read receipt avatars (own messages, shown at bottom-right) */}
         {hasReadReceipts && (

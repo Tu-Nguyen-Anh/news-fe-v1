@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { useCreateSource, useUpdateSource, useSourceDetail } from "@/hooks/useSources";
 import { ModalHeader, ModalBody, ModalFooter } from "@/components/ui/Modal";
+import { ImageUpload } from "@/components/ui/ImageUpload";
 import type { SourceRequest } from "@/types";
 import type { AxiosError } from "axios";
 
@@ -150,8 +151,21 @@ function Fields({ form, setForm, readOnly, error }: {
         <input disabled={readOnly} type="url" value={form.url} onChange={(e) => setForm({ ...form, url: e.target.value })} required={!readOnly} className={INPUT} placeholder="https://vnexpress.net" />
       </div>
       <div>
-        <label className={LABEL}>URL Logo</label>
-        <input disabled={readOnly} type="url" value={form.avatar} onChange={(e) => setForm({ ...form, avatar: e.target.value })} className={INPUT} placeholder="https://..." />
+        <label className={LABEL}>Logo</label>
+        {readOnly ? (
+          form.avatar ? (
+            <img src={form.avatar} alt="Logo" className="h-20 w-20 rounded-xl object-cover border border-gray-200 dark:border-gray-700" />
+          ) : (
+            <span className="text-sm text-gray-400 dark:text-gray-500">Chưa có logo</span>
+          )
+        ) : (
+          <ImageUpload
+            max={1}
+            value={form.avatar ? [form.avatar] : []}
+            onChange={(urls) => setForm({ ...form, avatar: urls[0] ?? "" })}
+            disabled={readOnly}
+          />
+        )}
       </div>
       <div>
         <label className={LABEL}>Loại nguồn</label>
