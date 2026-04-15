@@ -6,8 +6,18 @@ import type {
   UserHistory,
   ChangePasswordRequest,
   MentionUser,
+  UserRole,
 } from "@/types";
 import { apiClient } from "./apiClient";
+
+const USER_ROLES: UserRole[] = ["ADMIN", "AUTHOR", "USER"];
+
+function normalizeRole(value: unknown): UserRole {
+  if (typeof value === "string" && USER_ROLES.includes(value as UserRole)) {
+    return value as UserRole;
+  }
+  return "USER";
+}
 
 /** BE trả `phone`, FE dùng `phone_number` */
 function normalizeUser(raw: Record<string, unknown>): User {
@@ -20,6 +30,7 @@ function normalizeUser(raw: Record<string, unknown>): User {
     phone_number: typeof phone === "string" && phone.length > 0 ? phone : null,
     avatar: (raw.avatar as string | null) ?? null,
     status: raw.status as number,
+    role: normalizeRole(raw.role),
   };
 }
 
