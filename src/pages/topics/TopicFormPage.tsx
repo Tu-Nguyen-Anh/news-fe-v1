@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import { useCreateTopic, useUpdateTopic, useTopicDetail } from "@/hooks/useTopics";
+import { useCreateTopic, useUpdateTopic, useTopicDetail, useTopicFilter } from "@/hooks/useTopics";
 import { useSourcesWithTopics } from "@/hooks/useSources";
 import { ModalHeader, ModalBody, ModalFooter } from "@/components/ui/Modal";
 import type { TopicRequest } from "@/types";
@@ -14,6 +14,12 @@ export interface TopicFormPageProps {
   onSuccess?: () => void;
   onEdit?: () => void;
 }
+
+type TopicDetailLike = TopicRequest & {
+  sourceId?: number;
+  source_name?: string;
+  source?: { id?: number; name?: string };
+};
 
 const INPUT =
   "w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 transition-colors focus:border-indigo-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-600 disabled:opacity-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-indigo-500 dark:focus:bg-gray-800 dark:focus:ring-indigo-900/30 dark:disabled:bg-gray-800 dark:disabled:text-gray-500";
@@ -32,7 +38,13 @@ export default function TopicFormPage({ mode, recordId, embedded = false, onClos
   const routeId = params.id ? parseInt(params.id as string, 10) : 0;
   const id = recordId ?? routeId;
 
-  const { data: existing, isPending: loadPending } = useTopicDetail(id);
+  const { data: existing, isPending: detailPending } = useTopicDetail(id);
+  const { data: topicFilterData } = useTopicFilter({
+    page: 0,
+    size: 200,
+    keyword: existing?.name ?? "",
+  });
+  const loadPending = mode !== "create" && detailPending;
   const { data: sources } = useSourcesWithTopics();
   const createMutation = useCreateTopic();
   const updateMutation = useUpdateTopic(id);
@@ -43,10 +55,49 @@ export default function TopicFormPage({ mode, recordId, embedded = false, onClos
 
   useEffect(() => {
     if (existing && (mode === "edit" || mode === "view")) {
+      const rawSourceId =
+        (existing as TopicDetailLike).source_id ??
+        (existing as TopicDetailLike).sourceId ??
+        (existing as TopicDetailLike).source?.id ??
+        0;
+      const resolvedSourceId = Number(rawSourceId) || 0;
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setForm({ name: existing.name, url: existing.url, rss_url: existing.rss_url ?? "", description: existing.description ?? "", source_id: existing.source_id });
+      setForm({
+        name: existing.name,
+        url: existing.url,
+        rss_url: existing.rss_url ?? "",
+        description: existing.description ?? "",
+        source_id: resolvedSourceId,
+      });
     }
   }, [existing, mode]);
+
+  // Fallback: detail may omit source info. Resolve from filter result first, then by source_name.
+  useEffect(() => {
+    if (!existing || !(mode === "edit" || mode === "view")) return;
+    if (!sources?.length) return;
+    if (form.source_id) return;
+
+    const normalize = (name: string) =>
+      name
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim()
+        .toLowerCase();
+
+    const fromFilter = topicFilterData?.content.find((topic) => topic.id === id);
+    const sourceName =
+      fromFilter?.source_name?.trim() ??
+      (existing as TopicDetailLike).source_name?.trim() ??
+      (existing as TopicDetailLike).source?.name?.trim();
+    if (!sourceName) return;
+
+    const normalizedSourceName = normalize(sourceName);
+    const matched = sources.find((s) => normalize(s.name) === normalizedSourceName);
+    if (!matched) return;
+
+    setForm((prev) => ({ ...prev, source_id: matched.id }));
+  }, [existing, mode, sources, form.source_id, topicFilterData, id]);
 
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();

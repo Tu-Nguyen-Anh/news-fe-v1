@@ -4,7 +4,6 @@ import { useCreateUser, useUpdateUser, useUserDetail } from "@/hooks/useUsers";
 import { ModalHeader, ModalBody, ModalFooter } from "@/components/ui/Modal";
 import type { UserRequest } from "@/types";
 import type { AxiosError } from "axios";
-import { isAdmin, isSuperAdmin } from "@/utils/adminBadge";
 import { useUserStore } from "@/store/userStore";
 
 export interface UserFormPageProps {
@@ -45,19 +44,11 @@ export default function UserFormPage({ mode, recordId, embedded = false, onClose
   const readOnly = mode === "view";
 
   const currentUser = useUserStore((s) => s.user);
-  const canManageUsers =
-    !!currentUser &&
-    (isAdmin(currentUser.username) ||
-      isSuperAdmin(currentUser.username) ||
-      isAdmin(currentUser.full_name) ||
-      isSuperAdmin(currentUser.full_name));
+  const canManageUsers = currentUser?.role === "ADMIN";
   const isOwnProfile = !!(currentUser && id && currentUser.id === id);
   const effectiveReadOnly = readOnly || (!canManageUsers && !isOwnProfile);
 
-  const targetUsername = existing?.username ?? form.username;
-  const targetFullName = existing?.full_name ?? form.full_name;
-  const targetIsPrivileged =
-    isAdmin(targetUsername) || isSuperAdmin(targetUsername) || isAdmin(targetFullName) || isSuperAdmin(targetFullName);
+  const targetIsPrivileged = existing?.role === "ADMIN";
 
   useEffect(() => {
     if (existing && (mode === "edit" || mode === "view")) {

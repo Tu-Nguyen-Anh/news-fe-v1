@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Outlet, useRouterState } from "@tanstack/react-router";
 import { useVisualViewport } from "@/hooks/useVisualViewport";
 import { Header } from "./Header";
@@ -9,27 +9,29 @@ import { useUserStore } from "@/store/userStore";
 import { useMyGroups } from "@/hooks/useChatGroups";
 import { useThemeStore } from "@/store/themeStore";
 
-const navItems: NavItem[] = [
-  { to: "/", label: "nav.dashboard" },
-  { to: "/articles", label: "nav.articles" },
-  { to: "/blog", label: "nav.blog" },
-  { to: "/chat", label: "nav.chat" },
-  { to: "/users", label: "nav.users" },
-  { to: "/sources", label: "nav.sources" },
-  { to: "/topics", label: "nav.topics" },
-  { to: "/follow", label: "nav.follow" },
-  { to: "/favorites", label: "nav.favorites" },
-  { to: "/view-history", label: "nav.viewHistory" },
-  { to: "/feedback", label: "nav.feedback" },
-  { to: "/admin/feedbacks", label: "nav.adminFeedback" },
-];
-
 export function MainLayout() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const location = useRouterState({ select: (s) => s.location.pathname });
   const isChatPage = location === "/chat";
   const isAuthenticated = useUserStore((s) => s.isAuthenticated);
+  const user = useUserStore((s) => s.user);
   const theme = useThemeStore((s) => s.theme);
+
+  const isAdmin = user?.role === "ADMIN";
+  const navItems = useMemo<NavItem[]>(() => [
+    ...(isAdmin ? [{ to: "/" as const, label: "nav.dashboard" }] : []),
+    { to: "/articles" as const, label: "nav.articles" },
+    { to: "/blog" as const, label: "nav.blog" },
+    { to: "/chat" as const, label: "nav.chat" },
+    ...(isAdmin ? [{ to: "/users" as const, label: "nav.users" }] : []),
+    { to: "/sources" as const, label: "nav.sources" },
+    { to: "/topics" as const, label: "nav.topics" },
+    { to: "/follow" as const, label: "nav.follow" },
+    { to: "/favorites" as const, label: "nav.favorites" },
+    { to: "/view-history" as const, label: "nav.viewHistory" },
+    { to: "/feedback" as const, label: "nav.feedback" },
+    ...(isAdmin ? [{ to: "/admin/feedbacks" as const, label: "nav.adminFeedback" }] : []),
+  ], [isAdmin]);
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");

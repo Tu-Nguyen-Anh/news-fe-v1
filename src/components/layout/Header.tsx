@@ -58,7 +58,8 @@ export type HeaderProps = {
 };
 
 function ThemeToggle() {
-  const { theme, toggle } = useThemeStore();
+  const theme = useThemeStore((s) => s.theme);
+  const toggle = useThemeStore((s) => s.toggle);
   return (
     <button
       type="button"

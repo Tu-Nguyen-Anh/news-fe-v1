@@ -12,6 +12,10 @@ export interface FollowingTopicItem {
   followed_at: number;
 }
 
+type TopicMutationPayload = TopicRequest & {
+  sourceId: number;
+};
+
 export const topicService = {
   filter: async (req: TopicFilterRequest): Promise<PageResponse<Topic>> => {
     const { data } = await apiClient.post<{ data: PageResponse<Topic> }>("/topics/filter", req);
@@ -24,12 +28,20 @@ export const topicService = {
   },
 
   create: async (req: TopicRequest): Promise<Topic> => {
-    const { data } = await apiClient.post<{ data: Topic }>("/topics", req);
+    const payload: TopicMutationPayload = {
+      ...req,
+      sourceId: req.source_id,
+    };
+    const { data } = await apiClient.post<{ data: Topic }>("/topics", payload);
     return data.data;
   },
 
   update: async (id: number, req: TopicRequest): Promise<Topic> => {
-    const { data } = await apiClient.put<{ data: Topic }>(`/topics/${id}`, req);
+    const payload: TopicMutationPayload = {
+      ...req,
+      sourceId: req.source_id,
+    };
+    const { data } = await apiClient.put<{ data: Topic }>(`/topics/${id}`, payload);
     return data.data;
   },
 

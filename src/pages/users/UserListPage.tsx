@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Modal } from "@/components/ui/Modal";
 import UserFormPage from "@/pages/users/UserFormPage";
 import { useDeleteUser, useResetPassword, useUserFilter } from "@/hooks/useUsers";
-import { isAdmin, isSuperAdmin } from "@/utils/adminBadge";
 import type { User } from "@/types";
 import { useUserStore } from "@/store/userStore";
 
@@ -19,6 +18,21 @@ function StatusBadge({ status }: { status: number }) {
   return (
     <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-2.5 py-1 text-[11px] font-semibold text-red-600 ring-1 ring-red-200/50 dark:bg-red-900/30 dark:text-red-200 dark:ring-red-800/60">
       <span className="h-1.5 w-1.5 rounded-full bg-red-500" />Vô hiệu hóa
+    </span>
+  );
+}
+
+const ROLE_CONFIG = {
+  ADMIN:  { label: "Admin",  cls: "bg-red-50 text-red-700 ring-red-200/50 dark:bg-red-900/30 dark:text-red-300 dark:ring-red-800/60" },
+  AUTHOR: { label: "Author", cls: "bg-indigo-50 text-indigo-700 ring-indigo-200/50 dark:bg-indigo-900/30 dark:text-indigo-300 dark:ring-indigo-800/60" },
+  USER:   { label: "User",   cls: "bg-gray-100 text-gray-600 ring-gray-200/50 dark:bg-gray-700 dark:text-gray-300 dark:ring-gray-600/60" },
+} as const;
+
+function RoleBadge({ role }: { role: string }) {
+  const cfg = ROLE_CONFIG[role as keyof typeof ROLE_CONFIG] ?? ROLE_CONFIG.USER;
+  return (
+    <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold ring-1 ${cfg.cls}`}>
+      {cfg.label}
     </span>
   );
 }
@@ -51,12 +65,7 @@ export default function UserListPage() {
   }, [searchInput]);
 
   const currentUser = useUserStore((s) => s.user);
-  const canManageUsers =
-    !!currentUser &&
-    (isAdmin(currentUser.username) ||
-      isSuperAdmin(currentUser.username) ||
-      isAdmin(currentUser.full_name) ||
-      isSuperAdmin(currentUser.full_name));
+  const canManageUsers = currentUser?.role === "ADMIN";
 
   const deleteMutation = useDeleteUser();
   const resetMutation = useResetPassword();
@@ -64,15 +73,8 @@ export default function UserListPage() {
   const handleDelete = async (user: User, e: React.MouseEvent) => {
     e.stopPropagation();
     if (!canManageUsers) return;
-    // Do not allow deleting admin/superadmin accounts.
-    if (
-      isAdmin(user.username) ||
-      isSuperAdmin(user.username) ||
-      isAdmin(user.full_name) ||
-      isSuperAdmin(user.full_name)
-    ) {
-      return;
-    }
+    // Không cho xóa tài khoản ADMIN
+    if (user.role === "ADMIN") return;
     if (!confirm(`Xóa người dùng "${user.username}"?`)) return;
     await deleteMutation.mutateAsync(user.id);
   };
@@ -149,7 +151,7 @@ export default function UserListPage() {
           <table className="min-w-[44rem] w-full">
             <thead>
               <tr className="border-b border-gray-100 bg-gray-50/80 dark:border-gray-700 dark:bg-gray-800">
-                {["#", "Tài khoản", "Họ tên", "Email", "SĐT", "Trạng thái", ""].map((h) => (
+                {["#", "Tài khoản", "Họ tên", "Email", "SĐT", "Vai trò", "Trạng thái", ""].map((h) => (
                   <th key={h} className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">{h}</th>
                 ))}
               </tr>
@@ -157,10 +159,10 @@ export default function UserListPage() {
             <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
               {isLoading ? (
                 [...Array(5)].map((_, i) => (
-                  <tr key={i}><td colSpan={7} className="px-5 py-3.5"><div className="h-5 animate-pulse rounded-lg bg-gray-100 dark:bg-gray-800" /></td></tr>
+                  <tr key={i}><td colSpan={8} className="px-5 py-3.5"><div className="h-5 animate-pulse rounded-lg bg-gray-100 dark:bg-gray-800" /></td></tr>
                 ))
               ) : data?.content.length === 0 ? (
-                <tr><td colSpan={7} className="py-16 text-center text-sm text-gray-400 dark:text-gray-500">Không có dữ liệu</td></tr>
+                <tr><td colSpan={8} className="py-16 text-center text-sm text-gray-400 dark:text-gray-500">Không có dữ liệu</td></tr>
               ) : (
                 data?.content.map((user, i) => (
                   <tr
@@ -180,6 +182,7 @@ export default function UserListPage() {
                     <td className="px-5 py-3.5 text-sm text-gray-700 dark:text-gray-100">{user.full_name}</td>
                     <td className="px-5 py-3.5 text-sm text-gray-600 dark:text-gray-200">{user.email}</td>
                     <td className="px-5 py-3.5 text-sm text-gray-500 dark:text-gray-400">{user.phone_number ?? "—"}</td>
+                    <td className="px-5 py-3.5"><RoleBadge role={user.role} /></td>
                     <td className="px-5 py-3.5"><StatusBadge status={user.status} /></td>
                     <td className="px-5 py-3.5" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">

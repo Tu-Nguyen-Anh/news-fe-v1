@@ -16,6 +16,8 @@ export interface AuthTokenResponse {
 
 // ─── User ─────────────────────────────────────────────────────────────────────
 
+export type UserRole = "ADMIN" | "AUTHOR" | "USER";
+
 export interface User {
   id: number;
   username: string;
@@ -24,6 +26,7 @@ export interface User {
   phone_number: string | null;
   avatar: string | null;
   status: number;
+  role: UserRole;
 }
 
 export interface UserRequest {
@@ -32,6 +35,7 @@ export interface UserRequest {
   email: string;
   phone_number?: string;
   status?: number;
+  role?: UserRole;
 }
 
 export interface UserFilterRequest {

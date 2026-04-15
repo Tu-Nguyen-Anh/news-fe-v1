@@ -40,7 +40,8 @@ export default function SourceFormPage({ mode, recordId, embedded = false, onClo
   const routeId = params.id ? parseInt(params.id as string, 10) : 0;
   const id = recordId ?? routeId;
 
-  const { data: existing, isPending: loadPending } = useSourceDetail(id);
+  const { data: existing, isPending: detailPending } = useSourceDetail(id);
+  const loadPending = mode !== "create" && detailPending;
   const createMutation = useCreateSource();
   const updateMutation = useUpdateSource(id);
 

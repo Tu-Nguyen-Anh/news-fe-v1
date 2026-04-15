@@ -1,4 +1,4 @@
-import { keepPreviousData, useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { articleService } from "@/services/articleService";
 import type { ArticleFilterRequest, ArticleRequest } from "@/types";
 
@@ -24,8 +24,6 @@ export function useArticleFilterInfinite(
       if (lastPage.content.length === 0) return undefined;
       return allPages.length;
     },
-    // Keep old results visible while new filter query is fetching → no skeleton flash
-    placeholderData: keepPreviousData,
   });
 }
 
