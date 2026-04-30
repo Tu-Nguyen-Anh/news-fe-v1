@@ -26,9 +26,10 @@ export default function SourceListPage() {
   const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState("");
   const [searchInput, setSearchInput] = useState("");
+  const [activeFilter, setActiveFilter] = useState<boolean | undefined>(undefined);
   const [modal, setModal] = useState<ModalState>({ kind: "none" });
 
-  const { data, isLoading } = useSourceFilter({ page, size: PAGE_SIZE, keyword });
+  const { data, isLoading } = useSourceFilter({ page, size: PAGE_SIZE, keyword, active: activeFilter });
   const deleteMutation = useDeleteSource();
   const totalPages = data ? Math.ceil(data.amount / PAGE_SIZE) : 0;
   const closeModal = () => setModal({ kind: "none" });
@@ -41,6 +42,11 @@ export default function SourceListPage() {
     }, KEYWORD_DEBOUNCE_MS);
     return () => clearTimeout(t);
   }, [searchInput]);
+
+  const handleActiveFilter = (val: string) => {
+    setActiveFilter(val === "" ? undefined : val === "true");
+    setPage(0);
+  };
 
   const handleDelete = async (source: Source, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -60,8 +66,8 @@ export default function SourceListPage() {
         </button>
       </div>
 
-      <div className="flex gap-2 sm:max-w-sm">
-        <div className="relative flex-1">
+      <div className="flex flex-wrap gap-2">
+        <div className="relative flex-1 sm:max-w-sm">
           <svg className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
           <input
             type="text"
@@ -83,6 +89,15 @@ export default function SourceListPage() {
             </button>
           )}
         </div>
+        <select
+          value={activeFilter === undefined ? "" : String(activeFilter)}
+          onChange={(e) => handleActiveFilter(e.target.value)}
+          className="rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm font-medium text-gray-700 focus:border-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+        >
+          <option value="">Tất cả trạng thái</option>
+          <option value="true">Active</option>
+          <option value="false">Inactive</option>
+        </select>
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
@@ -90,16 +105,16 @@ export default function SourceListPage() {
           <table className="min-w-[48rem] w-full">
             <thead>
               <tr className="border-b border-gray-100 bg-gray-50/80 dark:border-gray-700 dark:bg-gray-800">
-                {["#", "Nguồn tin", "URL", "Loại", "Mô tả", ""].map((h) => (
+                {["#", "Nguồn tin", "URL", "Loại", "Mô tả", "Trạng thái", ""].map((h) => (
                   <th key={h} className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50 dark:divide-gray-700">
               {isLoading ? (
-                [...Array(5)].map((_, i) => <tr key={i}><td colSpan={6} className="px-5 py-3.5"><div className="h-5 animate-pulse rounded-lg bg-gray-100 dark:bg-gray-700" /></td></tr>)
+                [...Array(5)].map((_, i) => <tr key={i}><td colSpan={7} className="px-5 py-3.5"><div className="h-5 animate-pulse rounded-lg bg-gray-100 dark:bg-gray-700" /></td></tr>)
               ) : data?.content.length === 0 ? (
-                <tr><td colSpan={6} className="py-16 text-center text-sm text-gray-400">Không có dữ liệu</td></tr>
+                <tr><td colSpan={7} className="py-16 text-center text-sm text-gray-400">Không có dữ liệu</td></tr>
               ) : (
                 data?.content.map((source, i) => (
                   <tr key={source.id} className="group cursor-pointer transition-colors hover:bg-emerald-50/30" onClick={() => setModal({ kind: "view", id: source.id })}>
@@ -126,6 +141,19 @@ export default function SourceListPage() {
                     </td>
                     <td className="max-w-[180px] px-5 py-3.5 text-sm text-gray-500 dark:text-gray-400">
                       <span className="line-clamp-1">{source.description ?? "—"}</span>
+                    </td>
+                    <td className="px-5 py-3.5">
+                      {source.active ? (
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400">
+                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                          Active
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-semibold text-gray-400 dark:bg-gray-700 dark:text-gray-500">
+                          <span className="h-1.5 w-1.5 rounded-full bg-gray-400" />
+                          Inactive
+                        </span>
+                      )}
                     </td>
                     <td className="px-5 py-3.5" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">

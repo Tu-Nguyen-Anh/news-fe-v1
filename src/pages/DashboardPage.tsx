@@ -21,7 +21,7 @@ import { useArticleFilter } from "@/hooks/useArticles";
 import { useSourceFilter } from "@/hooks/useSources";
 import { useTopicFilter } from "@/hooks/useTopics";
 import { useUserFilter } from "@/hooks/useUsers";
-import { useArticleGrowth, useArticlesBySource, useArticleDaily } from "@/hooks/useDashboard";
+import { useArticleGrowth, useArticlesBySource, useArticleDaily, useArticlesByTopicDaily } from "@/hooks/useDashboard";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -321,6 +321,9 @@ export default function DashboardPage() {
   const [year, setYear] = useState(CURRENT_YEAR);
   const [dailyYear, setDailyYear] = useState(CURRENT_YEAR);
   const [dailyMonth, setDailyMonth] = useState(CURRENT_MONTH);
+  const [tdYear, setTdYear] = useState(CURRENT_YEAR);
+  const [tdMonth, setTdMonth] = useState(CURRENT_MONTH);
+  const [tdTopicId, setTdTopicId] = useState<number | undefined>(undefined);
 
   // ── Stat counts ──────────────────────────────────────────────────────────
   const { data: users } = useUserFilter({ page: 0, size: 1 });
@@ -332,6 +335,8 @@ export default function DashboardPage() {
   const { data: growthData, isPending: growthLoading } = useArticleGrowth(year);
   const { data: sourceData, isPending: sourceLoading } = useArticlesBySource(year);
   const { data: dailyData, isPending: dailyLoading } = useArticleDaily(dailyYear, dailyMonth);
+  const { data: topicDailyData, isPending: topicDailyLoading } = useArticlesByTopicDaily(tdYear, tdMonth, tdTopicId);
+  const { data: allTopics } = useTopicFilter({ page: 0, size: 500 });
 
   // ── Topic pie (from light batch fetch) ───────────────────────────────────
   const { data: batchData, isPending: batchLoading } = useArticleFilter({ page: 0, size: 200 });
@@ -383,6 +388,33 @@ export default function DashboardPage() {
     if (!dailyData) return [];
     return dailyData.days.map((d) => ({ day: d.day, count: d.count }));
   }, [dailyData]);
+
+  // ── By-topic daily chart data ─────────────────────────────────────────
+  const topTopicDaily = useMemo(() => {
+    if (!topicDailyData) return [];
+    return [...topicDailyData.topics].sort((a, b) => b.total - a.total).slice(0, 10);
+  }, [topicDailyData]);
+
+  const topicDailyChartData = useMemo(() => {
+    if (!topicDailyData) return [];
+    const totalDays = topicDailyData.total_days;
+    if (tdTopicId) {
+      const topic = topicDailyData.topics[0];
+      if (!topic) return [];
+      return Array.from({ length: totalDays }, (_, i) => {
+        const day = i + 1;
+        return { day, count: topic.days.find((d) => d.day === day)?.count ?? 0 };
+      });
+    }
+    return Array.from({ length: totalDays }, (_, i) => {
+      const day = i + 1;
+      const row: Record<string, string | number> = { day };
+      for (const t of topTopicDaily) {
+        row[t.topic_name] = t.days.find((d) => d.day === day)?.count ?? 0;
+      }
+      return row;
+    });
+  }, [topicDailyData, tdTopicId, topTopicDaily]);
 
   // ── Greeting ─────────────────────────────────────────────────────────────
   const hour = new Date().getHours();
@@ -653,6 +685,113 @@ export default function DashboardPage() {
             {/* Source totals table */}
             <SourceTotalsTable
               sources={topSources}
+              colors={CHART_COLORS}
+            />
+          </>
+        )}
+      </ChartCard>
+
+      {/* ── By-topic daily chart ──────────────────────────────────────────── */}
+      <ChartCard
+        title="Bài viết theo chủ đề mỗi ngày"
+        subtitle={
+          topicDailyData
+            ? `Tháng ${tdMonth}/${tdYear} — tổng ${topicDailyData.grand_total.toLocaleString("vi-VN")} bài`
+            : `Tháng ${tdMonth}/${tdYear}`
+        }
+        action={
+          <div className="flex flex-wrap items-center gap-2">
+            <select
+              value={tdTopicId ?? ""}
+              onChange={(e) => {
+                setTdTopicId(e.target.value === "" ? undefined : Number(e.target.value));
+              }}
+              className="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 text-xs font-semibold text-gray-700 focus:outline-none focus:ring-1 focus:ring-indigo-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+            >
+              <option value="">Tất cả chủ đề</option>
+              {allTopics?.content.map((t) => (
+                <option key={t.id} value={t.id}>{t.name}</option>
+              ))}
+            </select>
+            <MonthYearPicker
+              year={tdYear}
+              month={tdMonth}
+              onChangeYear={setTdYear}
+              onChangeMonth={setTdMonth}
+            />
+          </div>
+        }
+        minH={280}
+      >
+        {topicDailyLoading ? (
+          <ChartSkeleton h={260} />
+        ) : !topicDailyData || topicDailyData.grand_total === 0 ? (
+          <div className="flex h-64 flex-col items-center justify-center text-center">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="mb-3 h-10 w-10 text-gray-300">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <p className="text-sm font-medium text-gray-400 dark:text-gray-500">
+              Không có dữ liệu tháng {tdMonth}/{tdYear}
+            </p>
+          </div>
+        ) : tdTopicId ? (
+          /* Single topic — simple bar chart */
+          <>
+            <ResponsiveContainer width="100%" height={240}>
+              <BarChart
+                data={topicDailyChartData}
+                margin={{ top: 8, right: 8, left: -20, bottom: 0 }}
+                barSize={topicDailyData.total_days > 28 ? 8 : 14}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" vertical={false} />
+                <XAxis dataKey="day" tick={{ fontSize: 10, fill: "#9CA3AF" }} axisLine={false} tickLine={false} interval={topicDailyData.total_days > 28 ? 2 : 1} />
+                <YAxis tick={{ fontSize: 11, fill: "#9CA3AF" }} axisLine={false} tickLine={false} allowDecimals={false} width={40} />
+                <Tooltip content={<DailyTooltip />} cursor={{ fill: "#F5F3FF" }} />
+                <Bar dataKey="count" fill="#8B5CF6" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+            {topicDailyData.topics[0] && (
+              <p className="mt-2 text-center text-xs text-gray-400">
+                {topicDailyData.topics[0].topic_name} — tổng{" "}
+                <span className="font-bold text-violet-600">{topicDailyData.topics[0].total.toLocaleString("vi-VN")}</span> bài
+              </p>
+            )}
+          </>
+        ) : (
+          /* All topics — stacked bar chart */
+          <>
+            <ResponsiveContainer width="100%" height={240}>
+              <BarChart
+                data={topicDailyChartData}
+                margin={{ top: 8, right: 8, left: -20, bottom: 0 }}
+                barSize={topicDailyData.total_days > 28 ? 6 : 12}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" vertical={false} />
+                <XAxis dataKey="day" tick={{ fontSize: 10, fill: "#9CA3AF" }} axisLine={false} tickLine={false} interval={topicDailyData.total_days > 28 ? 2 : 1} />
+                <YAxis tick={{ fontSize: 11, fill: "#9CA3AF" }} axisLine={false} tickLine={false} allowDecimals={false} width={40} />
+                <Tooltip content={<SourceTooltip />} />
+                <Legend
+                  iconType="circle"
+                  iconSize={8}
+                  wrapperStyle={{ paddingTop: 12 }}
+                  formatter={(value: string) => {
+                    if (!value) return null;
+                    return <span style={{ fontSize: 11, color: "#6B7280" }}>{value.length > 16 ? value.slice(0, 16) + "…" : value}</span>;
+                  }}
+                />
+                {topTopicDaily.map((t, i) => (
+                  <Bar
+                    key={t.topic_id}
+                    dataKey={t.topic_name}
+                    stackId="topics"
+                    fill={CHART_COLORS[i % CHART_COLORS.length]}
+                    radius={i === topTopicDaily.length - 1 ? [4, 4, 0, 0] : [0, 0, 0, 0]}
+                  />
+                ))}
+              </BarChart>
+            </ResponsiveContainer>
+            <SourceTotalsTable
+              sources={topTopicDaily.map((t) => ({ source_id: t.topic_id, source_name: t.topic_name, total: t.total }))}
               colors={CHART_COLORS}
             />
           </>

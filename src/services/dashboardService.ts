@@ -42,6 +42,45 @@ export interface ArticleDailyResponse {
   total: number;
 }
 
+export interface TopicMonthlyEntry {
+  month: number;
+  month_name: string;
+  count: number;
+}
+
+export interface TopicArticleData {
+  topic_id: number;
+  topic_name: string;
+  monthly_data: TopicMonthlyEntry[];
+  total: number;
+}
+
+export interface ArticleByTopicResponse {
+  year: number;
+  topics: TopicArticleData[];
+  grand_total: number;
+}
+
+export interface TopicDailyEntry {
+  day: number;
+  count: number;
+}
+
+export interface TopicDailyData {
+  topic_id: number;
+  topic_name: string;
+  days: TopicDailyEntry[];
+  total: number;
+}
+
+export interface ArticleByTopicDailyResponse {
+  year: number;
+  month: number;
+  total_days: number;
+  topics: TopicDailyData[];
+  grand_total: number;
+}
+
 export const dashboardService = {
   getArticleGrowth: async (year?: number): Promise<ArticleGrowthResponse> => {
     const { data } = await apiClient.get<{ data: ArticleGrowthResponse }>(
@@ -65,6 +104,30 @@ export const dashboardService = {
     if (month) params.month = month;
     const { data } = await apiClient.get<{ data: ArticleDailyResponse }>(
       "/dashboard/articles/daily",
+      { params },
+    );
+    return data.data;
+  },
+
+  getArticlesByTopic: async (year?: number): Promise<ArticleByTopicResponse> => {
+    const { data } = await apiClient.get<{ data: ArticleByTopicResponse }>(
+      "/dashboard/articles/by-topic",
+      { params: year ? { year } : {} },
+    );
+    return data.data;
+  },
+
+  getArticlesByTopicDaily: async (
+    year?: number,
+    month?: number,
+    topicId?: number,
+  ): Promise<ArticleByTopicDailyResponse> => {
+    const params: Record<string, number> = {};
+    if (year) params.year = year;
+    if (month) params.month = month;
+    if (topicId) params.topic_id = topicId;
+    const { data } = await apiClient.get<{ data: ArticleByTopicDailyResponse }>(
+      "/dashboard/articles/by-topic/daily",
       { params },
     );
     return data.data;

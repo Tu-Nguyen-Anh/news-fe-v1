@@ -149,10 +149,6 @@ export default function ViewHistoryPage() {
 
                       <div className="mt-2.5 flex items-end justify-between gap-2">
                         <div className="space-y-0.5 text-xs text-gray-400 dark:text-gray-500">
-                          <p>
-                            <span className="font-medium text-gray-500 dark:text-gray-400">Đăng:</span>{" "}
-                            {formatDate(item.pub_date)}
-                          </p>
                           <p className="flex items-center gap-1">
                             <svg
                               viewBox="0 0 24 24"
@@ -166,6 +162,10 @@ export default function ViewHistoryPage() {
                             </svg>
                             <span className="font-medium text-violet-500 dark:text-violet-300">Xem:</span>{" "}
                             {formatRelativeTime(item.viewed_at)}
+                          </p>
+                          <p>
+                            <span className="font-medium text-gray-500 dark:text-gray-400">Đăng:</span>{" "}
+                            {formatDate(item.pub_date)}
                           </p>
                         </div>
 

@@ -68,6 +68,7 @@ export interface Source {
   avatar: string | null;
   type: number | null;
   description: string | null;
+  active: boolean;
 }
 
 export interface SourceRequest {
@@ -82,6 +83,7 @@ export interface SourceFilterRequest {
   page?: number;
   size?: number;
   keyword?: string;
+  active?: boolean;
 }
 
 export interface SourceWithTopics {
@@ -119,6 +121,7 @@ export interface Topic {
   description: string | null;
   source_id: number;
   source_name: string;
+  active: boolean;
 }
 
 export interface TopicRequest {
@@ -133,6 +136,7 @@ export interface TopicFilterRequest {
   page?: number;
   size?: number;
   keyword?: string;
+  active?: boolean;
 }
 
 // ─── Article ──────────────────────────────────────────────────────────────────

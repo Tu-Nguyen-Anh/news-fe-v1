@@ -32,7 +32,7 @@ function FollowToggle({
       type="button"
       onClick={handle}
       disabled={isPending}
-      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold transition-all disabled:opacity-60 ${
+      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold transition-all disabled:cursor-not-allowed disabled:opacity-60 ${
         topic.followed
           ? "border-indigo-500 bg-indigo-500 text-white hover:bg-indigo-600 hover:border-indigo-600"
           : "border-gray-300 bg-white text-gray-600 hover:border-indigo-400 hover:text-indigo-600 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-indigo-500 dark:hover:text-indigo-400"
@@ -40,28 +40,28 @@ function FollowToggle({
       aria-pressed={topic.followed}
       title={topic.followed ? "Bỏ theo dõi" : "Theo dõi"}
     >
-      {topic.followed ? (
-        <>
-          <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-          </svg>
-          Đang theo dõi
-        </>
+      {isPending ? (
+        <svg className="h-3 w-3 animate-spin" fill="none" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+        </svg>
+      ) : topic.followed ? (
+        <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+        </svg>
       ) : (
-        <>
-          <svg className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-          </svg>
-          Theo dõi
-        </>
+        <svg className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+        </svg>
       )}
+      {isPending ? "Đang xử lý..." : topic.followed ? "Đang theo dõi" : "Theo dõi"}
     </button>
   );
 }
 
 function SourceCard({ source }: { source: ReturnType<typeof useSourcesWithFollowTopics>["data"] extends Array<infer T> | undefined ? T : never }) {
-  const [open, setOpen] = useState(true);
   const followedCount = source.topics.filter((t) => t.followed).length;
+  const [open, setOpen] = useState(followedCount > 0);
 
   return (
     <div className="rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
@@ -69,7 +69,7 @@ function SourceCard({ source }: { source: ReturnType<typeof useSourcesWithFollow
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex w-full items-center gap-3 px-5 py-4 text-left"
+        className="flex w-full cursor-pointer items-center gap-3 px-5 py-4 text-left transition-colors hover:bg-gray-50 dark:hover:bg-gray-700/50"
       >
         <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-gray-100 bg-gray-50 dark:border-gray-700 dark:bg-gray-900">
           {source.avatar ? (

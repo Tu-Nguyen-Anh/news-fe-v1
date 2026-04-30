@@ -35,7 +35,7 @@ type FilterState = {
   followedOnly: boolean;
 };
 
-const EMPTY_FILTER: FilterState = { keyword: "", topicId: "", sourceId: "", datePreset: "all", followedOnly: true };
+const EMPTY_FILTER: FilterState = { keyword: "", topicId: "", sourceId: "", datePreset: "all", followedOnly: false };
 
 const DATE_PRESETS: { id: DatePreset; label: string }[] = [
   { id: "all", label: "Tất cả" },
@@ -181,7 +181,7 @@ export default function ArticleListPage() {
     !!filters.topicId ||
     !!filters.sourceId ||
     filters.datePreset !== "all" ||
-    filters.followedOnly;
+    filters.followedOnly !== EMPTY_FILTER.followedOnly;
 
   const { data: sourcesWithTopics, isPending: sourcesLoading } = useSourcesWithTopics();
   const sources = sourcesWithTopics ?? [];
@@ -624,7 +624,7 @@ export default function ArticleListPage() {
         {isFilterFetching && (
           <div className="absolute inset-x-0 top-0 z-10 h-0.5 rounded-t-2xl bg-gradient-to-r from-indigo-500 via-fuchsia-400 to-rose-500 animate-pulse" />
         )}
-        <div className={`transition-opacity duration-150 ${isFilterFetching ? "opacity-60" : "opacity-100"}`}>
+        <div>
         {isError ? (
           <div className="p-10">
             <div className="mx-auto max-w-xl rounded-2xl border border-red-100 bg-red-50/60 p-6 text-center">
@@ -898,9 +898,11 @@ export default function ArticleListPage() {
 
         {modal.kind === "detail" && (
           <>
-            <div className="mb-4 flex items-center justify-between gap-2 border-b border-gray-100 pb-3 dark:border-gray-700">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Chi tiết bài viết</h2>
-              <div className="flex items-center gap-2">
+            <div className="mb-4 flex items-start justify-between gap-3 border-b border-gray-100 pb-3 dark:border-gray-700">
+              <h2 className="line-clamp-2 text-base font-semibold leading-snug text-gray-900 dark:text-gray-100">
+                {mergedDetailArticle?.title ?? "Chi tiết bài viết"}
+              </h2>
+              <div className="flex shrink-0 items-center gap-1.5">
                 <FavoriteButton
                   articleId={modal.id}
                   initialFavorited={isModalArticleFavorited ?? false}
@@ -910,9 +912,12 @@ export default function ArticleListPage() {
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="rounded-lg px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+                  aria-label="Đóng"
+                  className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:text-gray-500 dark:hover:bg-gray-800 dark:hover:text-gray-300"
                 >
-                  Đóng
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
                 </button>
               </div>
             </div>

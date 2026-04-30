@@ -36,7 +36,8 @@ export default function FavoritesPage() {
 
   const totalPages = data ? Math.ceil(data.amount / PAGE_SIZE) : 0;
 
-  const handleRemove = async (articleId: number) => {
+  const handleRemove = async (articleId: number, title: string) => {
+    if (!confirm(`Bỏ yêu thích bài viết "${title}"?`)) return;
     setRemovingId(articleId);
     try {
       await removeFavorite.mutateAsync(articleId);
@@ -98,7 +99,7 @@ export default function FavoritesPage() {
           </p>
           <Link
             to="/articles"
-            className="mt-5 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-blue-700"
+            className="mt-5 rounded-lg bg-rose-500 px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-rose-600"
           >
             Khám phá bài viết
           </Link>
@@ -167,7 +168,7 @@ export default function FavoritesPage() {
 
                         <button
                           type="button"
-                          onClick={() => handleRemove(item.article_id)}
+                          onClick={() => void handleRemove(item.article_id, item.title)}
                           disabled={removingId === item.article_id}
                           className="flex shrink-0 items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:border-red-300 hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-300 dark:hover:bg-red-900/30"
                           title="Bỏ yêu thích"

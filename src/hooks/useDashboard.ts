@@ -21,3 +21,17 @@ export function useArticleDaily(year?: number, month?: number) {
     queryFn: () => dashboardService.getArticleDaily(year, month),
   });
 }
+
+export function useArticlesByTopic(year?: number) {
+  return useQuery({
+    queryKey: ["dashboard", "articles-by-topic", year ?? "current"],
+    queryFn: () => dashboardService.getArticlesByTopic(year),
+  });
+}
+
+export function useArticlesByTopicDaily(year?: number, month?: number, topicId?: number) {
+  return useQuery({
+    queryKey: ["dashboard", "articles-by-topic-daily", year ?? "current", month ?? "current", topicId ?? "all"],
+    queryFn: () => dashboardService.getArticlesByTopicDaily(year, month, topicId),
+  });
+}

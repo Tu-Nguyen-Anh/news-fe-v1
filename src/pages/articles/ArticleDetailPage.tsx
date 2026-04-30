@@ -4,6 +4,8 @@ import { ArticleDetailBody } from "@/components/articles/ArticleDetailBody";
 import { FavoriteButton } from "@/components/articles/FavoriteButton";
 import { CommentSection } from "@/components/articles/CommentSection";
 import { useArticleDetail, useFavoriteStatus, useRecordView } from "@/hooks/useArticles";
+import { useUserStore } from "@/store/userStore";
+import { isAdmin } from "@/utils/adminBadge";
 
 export default function ArticleDetailPage() {
   const navigate = useNavigate();
@@ -13,7 +15,9 @@ export default function ArticleDetailPage() {
   const { data: isFavorited, isPending: isCheckingFavorite } = useFavoriteStatus(articleId);
   const recordView = useRecordView();
 
-  // Record view on mount (fire-and-forget)
+  const currentUser = useUserStore((s) => s.user);
+  const canEdit = !!currentUser && (isAdmin(currentUser.username) || isAdmin(currentUser.full_name));
+
   useEffect(() => {
     if (Number.isFinite(articleId) && articleId > 0) {
       recordView.mutate(articleId);
@@ -23,17 +27,19 @@ export default function ArticleDetailPage() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex min-w-0 items-center gap-3">
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/articles" })}
-            className="shrink-0 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-          >
-            ← Quay lại
-          </button>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Chi tiết bài viết</h1>
-        </div>
+      {/* Breadcrumb / toolbar */}
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+        <button
+          type="button"
+          onClick={() => navigate({ to: "/articles" })}
+          className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200"
+        >
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+          Danh sách bài viết
+        </button>
+
         <div className="flex items-center gap-2">
           <FavoriteButton
             articleId={articleId}
@@ -41,24 +47,33 @@ export default function ArticleDetailPage() {
             isLoading={isCheckingFavorite}
             size="md"
           />
-          <Link
-            to="/articles/$id/edit"
-            params={{ id }}
-            className="rounded-lg bg-yellow-500 px-4 py-2 text-sm font-medium text-white hover:bg-yellow-600"
-          >
-            Sửa
-          </Link>
+          {canEdit && (
+            <Link
+              to="/articles/$id/edit"
+              params={{ id }}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-amber-200 bg-amber-50 px-3 py-1.5 text-sm font-medium text-amber-700 transition-colors hover:bg-amber-100 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-300 dark:hover:bg-amber-900/40"
+            >
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+              Chỉnh sửa
+            </Link>
+          )}
         </div>
       </div>
 
-      <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900">
+      {/* Article content */}
+      <div className="rounded-xl border border-gray-100 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-900">
         <ArticleDetailBody article={article} isLoading={isPending} />
       </div>
 
-      {/* Comment section */}
+      {/* Comments */}
       {Number.isFinite(articleId) && articleId > 0 && (
-        <div className="mt-4 rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900">
-          <CommentSection articleId={articleId} />
+        <div className="mt-6">
+          <h2 className="mb-3 text-base font-semibold text-gray-800 dark:text-gray-100">Bình luận</h2>
+          <div className="rounded-xl border border-gray-100 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-900">
+            <CommentSection articleId={articleId} />
+          </div>
         </div>
       )}
     </div>
